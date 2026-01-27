@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+</head>
+<body style="background:#f5f6fa;">
+
+<div th:replace="fragments/headerLogin :: headerLogin"></div>
+
+<div style="width:360px;margin:60px auto;background:#fff;padding:30px;border-radius:8px;box-shadow:0 0 10px rgba(0,0,0,.1)">
+    <h3 style="text-align:center;">Log In</h3>
+
+    <p th:if="${error}" style="color:red;text-align:center" th:text="${error}"></p>
+
+    <form method="post" th:action="@{/login}">
+        <label>Email</label><br>
+        <input type="text" name="email" required style="width:100%;padding:8px"><br><br>
+
+        <label>Password</label><br>
+        <input type="password" name="password" required style="width:100%;padding:8px"><br><br>
+
+        <button type="submit" style="width:100%;padding:10px;background:black;color:white;border:none">
+            Log In
+        </button>
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body style="background:#f5f6fa;">
+
+<div th:replace="fragments/header :: header"></div>
+
+<div style="width:500px;margin:40px auto;background:#fff;padding:30px;border-radius:8px">
+    <h3>📝 Nhập thông tin booking</h3>
+
+    <form th:action="@{/booking/preview}" method="post">
+        <input type="hidden" name="roomId" th:value="${room.id}"/>
+
+        <label>Check-in</label><br>
+        <input type="date" name="checkIn" required><br><br>
+
+        <label>Check-out</label><br>
+        <input type="date" name="checkOut" required><br><br>
+
+        <label>Số khách</label><br>
+        <input type="number" name="guests" min="1" required><br><br>
+
+        <button type="submit">Tiếp tục</button>
+    </form>
+</div>
+
+</body>
+</html>
