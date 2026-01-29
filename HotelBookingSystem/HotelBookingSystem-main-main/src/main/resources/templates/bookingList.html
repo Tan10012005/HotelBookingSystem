@@ -1,91 +1,128 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>My Bookings</title>
+    <title>Booking của tôi</title>
+
     <style>
         body {
-            background: #f5f6fa;
-            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f6f7f8;
+            font-family: Arial, Helvetica, sans-serif;
         }
+
+        /* ===== STOCKX HEADER ===== */
+        .stockx-header {
+            background: #006340;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        .stockx-header-inner {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stockx-logo {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .stockx-nav {
+            display: flex;
+            gap: 28px;
+        }
+
+        .stockx-nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
         .container {
-            width: 1100px;
+            max-width: 1200px;
             margin: 40px auto;
-            background: #fff;
+            background: #ffffff;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
+
+        th, td {
+            padding: 14px;
+            border: 1px solid #dee2e6;
+        }
+
         th {
             background: #f8f9fa;
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #dee2e6;
         }
-        td {
-            padding: 12px;
-            border: 1px solid #dee2e6;
-        }
-        .btn-cancel {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .btn-cancel:hover {
-            background: #c0392b;
-        }
+
         .status-pending {
             color: #f39c12;
             font-weight: bold;
         }
+
         .status-confirmed {
             color: #27ae60;
             font-weight: bold;
         }
+
         .status-cancelled {
             color: #e74c3c;
             font-weight: bold;
         }
-        .alert {
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            border-radius: 4px;
+
+        .btn-cancel {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
         }
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+
+        .btn-cancel:hover {
+            background: #c0392b;
         }
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+
         .empty-message {
             text-align: center;
             color: #7f8c8d;
             margin-top: 40px;
-            font-size: 16px;
         }
     </style>
 </head>
+
 <body>
 
-<div th:replace="fragments/header :: header"></div>
+<header class="stockx-header">
+    <div class="stockx-header-inner">
+        <div class="stockx-logo">🏨 Hotel Booking System</div>
+        <nav class="stockx-nav">
+            <a th:href="@{/rooms}">Danh sách phòng</a>
+            <a th:href="@{/booking/my}">Booking của tôi</a>
+            <a th:href="@{/logout}">Logout</a>
+        </nav>
+    </div>
+</header>
 
 <div class="container">
     <h3>📄 Booking của tôi</h3>
-
-    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
 
     <table th:if="${!#lists.isEmpty(bookings)}">
         <thead>
@@ -105,30 +142,31 @@
             <td th:text="${b.checkIn}"></td>
             <td th:text="${b.checkOut}"></td>
             <td th:text="${b.guests}"></td>
-            <td th:text="${#numbers.formatDecimal(b.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+            <td th:text="${#numbers.formatDecimal(b.totalPrice,0,'COMMA',0,'POINT')} + ' VND'"></td>
+
+            <!-- STATUS -->
             <td>
-                    <span th:if="${b.status.name() == 'PENDING_CONFIRM'}" class="status-pending">
-                        ⏳ Đang chờ duyệt
-                    </span>
-                <span th:if="${b.status.name() == 'CONFIRMED'}" class="status-confirmed">
-                        ✓ Đã xác nhận
-                    </span>
-                <span th:if="${b.status.name() == 'CANCELLED'}" class="status-cancelled">
-                        ✗ Đã hủy
-                    </span>
+                <span th:if="${b.status.name() == 'PENDING_CONFIRM'}"
+                      class="status-pending">⏳ Đang chờ xác nhận</span>
+
+                <span th:if="${b.status.name() == 'CONFIRMED'}"
+                      class="status-confirmed">✓ Đã xác nhận</span>
+
+                <span th:if="${b.status.name() == 'CANCELLED'}"
+                      class="status-cancelled">✗ Đã hủy</span>
             </td>
+
+            <!-- ACTION -->
             <td>
                 <form th:if="${b.status.name() == 'PENDING_CONFIRM' || b.status.name() == 'CONFIRMED'}"
                       th:action="@{/booking/{id}/cancel(id=${b.id})}"
                       method="post"
-                      style="margin:0"
                       onsubmit="return confirm('Bạn có chắc muốn hủy booking này?');">
-                    <button type="submit" class="btn-cancel">Hủy booking</button>
+                    <button class="btn-cancel">Hủy booking</button>
                 </form>
 
-                <span th:if="${b.status.name() == 'CANCELLED'}" style="color:#95a5a6">
-                        Không thể hủy
-                    </span>
+                <span th:if="${b.status.name() == 'CANCELLED'}"
+                      style="color:#95a5a6">Không thể hủy</span>
             </td>
         </tr>
         </tbody>
