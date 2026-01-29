@@ -68,11 +68,19 @@ public class BookingController {
     }
 
     @GetMapping("/my")
-    public String myBookings(HttpSession session, Model model) {
+    public String myBookings(HttpSession session, Model model, RedirectAttributes ra) {
+
         User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            ra.addFlashAttribute("error", "Vui lòng đăng nhập");
+            return "redirect:/login";
+        }
+
         model.addAttribute("bookings", bookingService.getBookingsByUser(user));
         return "bookingList";
     }
+
 
     @PostMapping("/{id}/cancel")
     public String cancelBooking(
