@@ -5,6 +5,8 @@ import com.hotelbookingsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -24,5 +26,22 @@ public class AuthServiceImpl implements AuthService {
         }
 
         return user;
+    }
+
+    @Override
+    public User register(String email, String password) {
+        // Nếu đã tồn tại user cùng email hay ko
+        if (userRepository.findByEmail(email) != null) {
+            return null;
+        }
+
+        User user = User.builder()
+                .email(email)
+                .password(password)
+                .role("USER")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        return userRepository.save(user);
     }
 }

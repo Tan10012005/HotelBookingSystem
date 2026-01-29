@@ -36,7 +36,10 @@ public class DataInitializer implements CommandLineRunner {
                     .build());
         }
 
-        RoomType standard = roomTypeRepo.findAll().stream().findFirst()
+        // ensure STANDARD (capacity 2), DELUXE (capacity 3), SUITE (capacity 4)
+        RoomType standard = roomTypeRepo.findAll().stream()
+                .filter(rt -> "STANDARD".equals(rt.getName()))
+                .findFirst()
                 .orElseGet(() -> roomTypeRepo.save(
                         RoomType.builder()
                                 .name("STANDARD")
@@ -53,6 +56,17 @@ public class DataInitializer implements CommandLineRunner {
                                 .name("DELUXE")
                                 .capacity(3)
                                 .basePrice(new BigDecimal("800000"))
+                                .build()
+                ));
+
+        RoomType suite = roomTypeRepo.findAll().stream()
+                .filter(rt -> "SUITE".equals(rt.getName()))
+                .findFirst()
+                .orElseGet(() -> roomTypeRepo.save(
+                        RoomType.builder()
+                                .name("SUITE")
+                                .capacity(4)
+                                .basePrice(new BigDecimal("1200000"))
                                 .build()
                 ));
 
@@ -96,6 +110,17 @@ public class DataInitializer implements CommandLineRunner {
                         .status(RoomStatus.AVAILABLE)
                         .build()));
 
+        Room room301 = roomRepo.findAll().stream()
+                .filter(r -> "301".equals(r.getRoomNumber()))
+                .findFirst()
+                .orElseGet(() -> roomRepo.save(Room.builder()
+                        .roomNumber("301")
+                        .roomType(suite)
+                        .pricePerNight(new BigDecimal("1200000"))
+                        .status(RoomStatus.AVAILABLE)
+                        .build()));
+
+        // sample bookings (unchanged logic)
         if (bookingRepo.findByUserId(testUser.getId()).stream()
                 .noneMatch(b -> b.getRoom().getRoomNumber().equals("102"))) {
 

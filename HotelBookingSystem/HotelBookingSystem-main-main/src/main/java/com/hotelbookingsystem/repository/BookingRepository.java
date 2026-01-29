@@ -31,9 +31,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findByStatus(BookingStatus status);
 
-    // ✅ THÊM MỚI: Tìm booking theo ID và User (để check ownership)
+    //Tìm booking theo ID và User
     Optional<Booking> findByIdAndUser(Long id, User user);
 
-    // ✅ THÊM MỚI: Tìm booking theo User (có thể dùng thay cho findByUserId)
+    //  Tìm booking theo User
     List<Booking> findByUser(User user);
 }

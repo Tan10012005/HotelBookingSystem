@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Đăng ký — Hotel Booking</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --accent-1: #29a14a;
+            --accent-2: #178e3a;
+            --white: #ffffff;
+            --card:#ffffff;
+            --muted:#6b7280;
+            --radius:14px;
+            --shadow: 0 12px 40px rgba(11,24,40,0.12);
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{
+            margin:0;
+            font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+            color:#0f172a;
+            -webkit-font-smoothing:antialiased;
+            background:#f5f7fa;
+        }
+
+        .bg { position:fixed; inset:0; z-index:-2; background-size:cover; background-position:center; filter: blur(6px) brightness(0.86); transform: scale(1.03); }
+        .bg-overlay { position:fixed; inset:0; background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(255,255,255,0.02)); z-index:-1; pointer-events:none; }
+
+        .page { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:36px 18px; }
+        .container { width:100%; max-width:920px; display:flex; flex-direction:column; gap:28px; align-items:stretch; }
+
+        /* Intro top: no outer frame; centered, white text + shadow for readability */
+        .intro-top {
+            padding:8px 22px;
+            background: transparent; /* removed frame */
+            box-shadow: none;
+            text-align:center;
+        }
+        .intro-top h2{
+            margin:0;
+            font-family:'Playfair Display', serif;
+            font-size:32px;
+            font-weight:700;
+            color: var(--white); /* white for best contrast */
+            text-shadow: 0 8px 28px rgba(0,0,0,0.46);
+        }
+        .intro-top p{ margin:10px 0 0; color: rgba(255,255,255,0.92); font-size:16px; font-weight:700; text-shadow: 0 6px 18px rgba(0,0,0,0.36) }
+
+        .panel-wrap { display:flex; justify-content:center; }
+        .panel {
+            width:520px;
+            max-width:100%;
+            background:var(--card);
+            border-radius:14px;
+            padding:28px;
+            box-shadow:var(--shadow);
+            animation: cardFade .36s ease both;
+        }
+        .panel.shake{ animation: shake .45s linear both; }
+
+        .panel h3{
+            margin:0 0 6px 0;
+            font-family:'Playfair Display', serif;
+            font-size:28px;
+            font-weight:700;
+            color: var(--accent-1);
+            text-align:center;
+        }
+        .sub{ color:var(--muted); font-size:13px; text-align:center; margin-bottom:12px }
+
+        .error{ background:#ffe7e7; color:#9b1c1c; padding:10px; border-radius:8px; font-size:13px; text-align:center }
+
+        .form-group{ display:flex; flex-direction:column; gap:6px; margin-bottom:12px }
+        label{ font-size:13px; color:var(--muted) }
+        input{ padding:12px; border-radius:10px; border:1px solid #e6e9ef; font-size:14px; outline:none; }
+        input:focus{ border-color:var(--accent-2); box-shadow:0 6px 18px rgba(23,142,58,0.06) }
+
+        .btn-row{ display:flex; gap:10px; margin-top:6px }
+        .btn-primary {
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            color: #fff;
+            padding:12px 18px;
+            border-radius:10px;
+            border:none;
+            font-weight:700;
+            cursor:pointer;
+            flex:1;
+            text-align:center;
+        }
+        .btn-outline {
+            background: #fff;
+            border: 1px solid #e6e9ef;
+            padding:12px 18px;
+            border-radius:10px;
+            flex:1;
+            text-align:center;
+            color:var(--muted);
+            text-decoration:none;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:600;
+        }
+
+        @keyframes cardFade { from { transform: translateY(8px); opacity:0 } to { transform: translateY(0); opacity:1 } }
+        @keyframes shake { 0%{ transform: translateX(0) } 20%{ transform: translateX(-8px) } 40%{ transform: translateX(8px) } 60%{ transform: translateX(-6px) } 80%{ transform: translateX(6px) } 100%{ transform: translateX(0) } }
+
+        @media (max-width:920px){
+            .panel{ width:100%; padding:20px }
+            .intro-top h2{ font-size:22px }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg" th:style="'background-image: url(' + @{/images/backgrounds/nen.jpg} + ');'"></div>
+<div class="bg-overlay"></div>
+
+<main class="page">
+    <div class="container">
+
+        <!-- Intro centered above form (no frame, white text + shadow for legibility) -->
+        <section class="intro-top" aria-hidden="true">
+            <h2>Gia nhập cộng đồng khách hàng</h2>
+            <p>Đăng ký để đặt phòng nhanh, quản lý lịch sử đặt phòng và nhận ưu đãi độc quyền.</p>
+        </section>
+
+        <div class="panel-wrap">
+            <div class="panel" th:classappend="${error} ? ' shake' : ''">
+                <div>
+                    <h3>Tạo tài khoản</h3>
+                    <div class="sub">Nhập thông tin để bắt đầu</div>
+                </div>
+
+                <div id="clientError" class="error" style="display:none"></div>
+                <div th:if="${error}" class="error" th:text="${error}"></div>
+
+                <form th:action="@{/register}" method="post" onsubmit="return (function(e){ const p=document.getElementById('password').value; const c=document.getElementById('confirmPassword').value; if(p!==c){ e.preventDefault(); document.getElementById('clientError').textContent='Mật khẩu xác nhận không khớp'; document.getElementById('clientError').style.display='block'; return false;} return true; })(event)">
+                    <div class="form-group"><label for="email">Email</label><input id="email" name="email" type="email" required placeholder="you@example.com"></div>
+                    <div class="form-group"><label for="password">Mật khẩu</label><input id="password" name="password" type="password" required placeholder="Tối thiểu 6 ký tự"></div>
+                    <div class="form-group"><label for="confirmPassword">Xác nhận mật khẩu</label><input id="confirmPassword" name="confirmPassword" type="password" required placeholder="Nhập lại mật khẩu"></div>
+
+                    <div style="margin-top:6px;color:var(--muted);font-size:13px;text-align:center">Bằng việc tạo tài khoản, bạn đồng ý với <a href="#" style="color:var(--accent-1)">Điều khoản & Điều kiện</a>.</div>
+
+                    <div class="btn-row">
+                        <button type="submit" class="btn-primary">Tạo tài khoản</button>
+                        <a th:href="@{/login}" class="btn-outline">Đăng nhập</a>
+                    </div>
+                </form>
+
+                <div class="hint" style="text-align:center;margin-top:10px;color:var(--muted)">Cần hỗ trợ? <strong style="color:var(--accent-1)">support@hotel.test</strong></div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+</body>
+</html>

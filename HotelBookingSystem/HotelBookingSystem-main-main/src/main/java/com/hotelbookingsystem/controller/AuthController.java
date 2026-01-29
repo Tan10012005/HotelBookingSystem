@@ -48,4 +48,37 @@ public class AuthController {
         session.setAttribute("user", user);
         return "redirect:/rooms";
     }
+    // --- Đăng ký ---
+    @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String doRegister(
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam(required = false) String confirmPassword,
+            HttpSession session,
+            RedirectAttributes ra) {
+
+        if (email == null || email.isBlank() || password == null || password.isBlank()) {
+            ra.addFlashAttribute("error", "Vui lòng nhập đầy đủ email và mật khẩu");
+            return "redirect:/register";
+        }
+
+        if (confirmPassword != null && !password.equals(confirmPassword)) {
+            ra.addFlashAttribute("error", "Mật khẩu xác nhận không khớp");
+            return "redirect:/register";
+        }
+
+        User newUser = authService.register(email, password);
+        if (newUser == null) {
+            ra.addFlashAttribute("error", "Email đã được sử dụng");
+            return "redirect:/register";
+        }
+
+        session.setAttribute("user", newUser);
+        return "redirect:/rooms";
+    }
 }
