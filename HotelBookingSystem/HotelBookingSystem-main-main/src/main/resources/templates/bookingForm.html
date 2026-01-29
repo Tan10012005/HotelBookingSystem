@@ -1,27 +1,240 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<body style="background:#f5f6fa;">
+<head>
+    <title>Booking</title>
 
-<div th:replace="fragments/header :: header"></div>
+    <style>
+        body {
+            margin: 0;
+            background: #f5f6fa;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-<div style="width:500px;margin:40px auto;background:#fff;padding:30px;border-radius:8px">
-    <h3>📝 Nhập thông tin booking</h3>
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
 
-    <form th:action="@{/booking/preview}" method="post">
-        <input type="hidden" name="roomId" th:value="${room.id}"/>
+        .booking-wrapper {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
 
-        <label>Check-in</label><br>
-        <input type="date" name="checkIn" required><br><br>
+        /* ===== LEFT ===== */
+        .room-preview {
+            flex: 1;
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
 
-        <label>Check-out</label><br>
-        <input type="date" name="checkOut" required><br><br>
+        .room-preview img {
+            width: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+        }
 
-        <label>Số khách</label><br>
-        <input type="number" name="guests" min="1" required><br><br>
+        .view-btn {
+            margin-top: 14px;
+            width: 100%;
+            padding: 12px;
+            background: #006340;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-        <button type="submit">Tiếp tục</button>
-    </form>
+        /* ===== RIGHT ===== */
+        .booking-box {
+            width: 420px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            margin-top: 60px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 12px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        .submit-btn {
+            margin-top: 22px;
+            width: 100%;
+            padding: 12px;
+            background: #006340;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .modal-content {
+            background: #111;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal img {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 22px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 30px;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .prev { left: -50px; }
+        .next { right: -50px; }
+    </style>
+</head>
+
+<body>
+
+<div class="page-wrapper">
+
+    <div class="booking-wrapper">
+
+        <!-- ===== ROOM PREVIEW ===== -->
+        <div class="room-preview"
+             th:attr="data-room=${room.roomNumber}">
+
+            <img th:src="${room.roomNumber == '101'}
+                 ? '/images/rooms/executiveRoom.webp'
+                 : '/images/rooms/superiorCityView.webp'"
+                 onclick="openModal()">
+
+            <button class="view-btn" onclick="openModal()">
+                View room pictures
+            </button>
+        </div>
+
+        <!-- ===== FORM ===== -->
+        <div class="booking-box">
+            <h3>📝 Nhập thông tin booking</h3>
+
+            <form th:action="@{/booking/preview}" method="post">
+                <input type="hidden" name="roomId" th:value="${room.id}"/>
+
+                <label>Check-in</label>
+                <input type="date" name="checkIn" required>
+
+                <label>Check-out</label>
+                <input type="date" name="checkOut" required>
+
+                <label>Số khách</label>
+                <input type="number" name="guests" min="1" required>
+
+                <button class="submit-btn">Tiếp tục</button>
+            </form>
+        </div>
+
+    </div>
 </div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal" id="imageModal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">✕</span>
+        <button class="nav-btn prev" onclick="prevImage()">‹</button>
+        <img id="modalImage">
+        <button class="nav-btn next" onclick="nextImage()">›</button>
+    </div>
+</div>
+
+<script>
+    /* ===== IMAGE SETS ===== */
+
+    const executiveImages = [
+        "/images/rooms/executiveRoom.webp",
+        "/images/rooms/executiveRoom1.webp", // THÊM HÌNH DETAIL PHÒNG EXECUTIVE Ở ĐÂY
+        "/images/rooms/executiveRoom2.webp"  // THÊM HÌNH DETAIL PHÒNG EXECUTIVE Ở ĐÂY
+    ];
+
+    const superiorImages = [
+        "/images/rooms/superiorCityView.webp",
+        "/images/rooms/superiorCityView1.webp", // THÊM HÌNH DETAIL PHÒNG SUPERIOR Ở ĐÂY
+        "/images/rooms/superiorCityView2.webp"  // THÊM HÌNH DETAIL PHÒNG SUPERIOR Ở ĐÂY
+    ];
+
+    let images = [];
+    let currentIndex = 0;
+
+    function openModal() {
+        const roomNumber =
+            document.querySelector(".room-preview").dataset.room;
+
+        images = (roomNumber === "101")
+            ? executiveImages
+            : superiorImages;
+
+        currentIndex = 0;
+        document.getElementById("modalImage").src = images[0];
+        document.getElementById("imageModal").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("imageModal").style.display = "none";
+    }
+
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        document.getElementById("modalImage").src = images[currentIndex];
+    }
+
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        document.getElementById("modalImage").src = images[currentIndex];
+    }
+</script>
 
 </body>
 </html>
