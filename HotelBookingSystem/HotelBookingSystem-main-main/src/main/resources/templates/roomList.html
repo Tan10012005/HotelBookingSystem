@@ -1,31 +1,248 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<body style="background:#f5f6fa;">
+<head>
+    <title>Danh sách phòng</title>
 
-<div th:replace="fragments/header :: header"></div>
+    <style>
+        /* ===== RESET ===== */
+        body {
+            margin: 0;
+            background: #f6f7f8;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-<div style="width:800px;margin:40px auto;background:#fff;padding:30px;border-radius:8px">
-    <h3>🏠 Danh sách phòng trống</h3>
+        /* ===== STOCKX HEADER ===== */
+        .stockx-header {
+            background: #006340;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
 
-    <p th:if="${#lists.isEmpty(rooms)}" style="color:red">
-        ❌ Hiện tại không còn phòng trống
-    </p>
+        .stockx-header-inner {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-    <table border="1" cellpadding="8" width="100%" th:if="${!#lists.isEmpty(rooms)}">
-        <tr>
-            <th>Phòng</th>
-            <th>Trạng thái</th>
-            <th></th>
-        </tr>
+        .stockx-logo {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-        <tr th:each="room : ${rooms}">
-            <td th:text="${room.roomNumber}"></td>
-            <td th:text="${room.status}"></td>
-            <td>
-                <a th:href="@{/rooms/{id}(id=${room.id})}">Chọn phòng</a>
-            </td>
-        </tr>
-    </table>
+        .stockx-nav {
+            display: flex;
+            gap: 28px;
+        }
+
+        .stockx-nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.9;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
+        }
+
+        .stockx-nav a:hover {
+            opacity: 1;
+            border-bottom: 2px solid #ffffff;
+        }
+
+        /* ===== PAGE ===== */
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .room-container {
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+
+        .room-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .room-list {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        /* ===== ROOM CARD ===== */
+        .room-card {
+            display: flex;
+            gap: 22px;
+            border: 1px solid #e3e3e3;
+            border-radius: 16px;
+            padding: 18px;
+            background: #ffffff;
+            transition: box-shadow .25s, transform .15s;
+        }
+
+        .room-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .room-image {
+            width: 240px;
+            height: 160px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #ececec;
+            flex-shrink: 0;
+        }
+
+        .room-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .room-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .room-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .room-desc {
+            font-size: 14px;
+            color: #555;
+            margin-top: 4px;
+        }
+
+        .room-status {
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #006340;
+        }
+
+        .room-action {
+            text-align: right;
+        }
+
+        .room-action a {
+            display: inline-block;
+            padding: 11px 22px;
+            background: #006340;
+            color: #ffffff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .room-action a:hover {
+            background: #004f33;
+        }
+
+        .no-room {
+            color: red;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ===== HEADER (KHÔNG DÙNG FRAGMENT) ===== -->
+<header class="stockx-header">
+    <div class="stockx-header-inner">
+
+        <div class="stockx-logo">
+            🏨 Hotel Booking System
+        </div>
+
+        <nav class="stockx-nav">
+            <a th:href="@{/rooms}">Danh sách phòng</a>
+            <a th:href="@{/booking/my}">Booking của tôi</a>
+            <a th:href="@{/logout}">Logout</a>
+        </nav>
+
+    </div>
+</header>
+
+<!-- ===== BODY ===== -->
+<div class="page-wrapper">
+    <div class="room-container">
+
+        <div class="room-title">
+            🏨 Danh sách phòng trống
+        </div>
+
+        <p th:if="${#lists.isEmpty(rooms)}" class="no-room">
+            ❌ Hiện tại không còn phòng trống
+        </p>
+
+        <div class="room-list" th:if="${!#lists.isEmpty(rooms)}">
+
+            <div class="room-card" th:each="room : ${rooms}">
+
+                <!-- IMAGE -->
+                <div class="room-image">
+                    <img th:if="${room.roomNumber == '101'}"
+                         th:src="@{/images/rooms/executiveRoom.webp}"
+                         alt="Executive Room"/>
+
+                    <img th:if="${room.roomNumber == '202'}"
+                         th:src="@{/images/rooms/superiorCityView.webp}"
+                         alt="Superior Room"/>
+                </div>
+
+                <!-- INFO -->
+                <div class="room-info">
+                    <div>
+                        <div class="room-name"
+                             th:text="${room.roomNumber == '101' ? 'Executive Room' : 'Superior Room'}">
+                        </div>
+
+                        <div class="room-desc"
+                             th:text="${room.roomNumber == '101'
+                             ? '1 King Bed · City View'
+                             : 'Twin Beds · City View'}">
+                        </div>
+
+                        <div class="room-status" th:text="${room.status}"></div>
+                    </div>
+
+                    <div class="room-action">
+                        <a th:href="@{/rooms/{id}(id=${room.id})}">
+                            Xem &amp; Chọn phòng
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 </div>
 
 </body>
