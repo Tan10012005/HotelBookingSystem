@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>Quản lý booking</title></head>
+<body>
+<h2>Quản lý booking</h2>
+
+<table>
+    <thead><tr><th>ID</th><th>User</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+    <tbody>
+    <tr th:each="b : ${bookings}">
+        <td th:text="${b.id}">1</td>
+        <td th:text="${b.user.email}">a@b.com</td>
+        <td th:text="${b.room.roomNumber}">101</td>
+        <td th:text="${#temporals.format(b.checkIn,'yyyy-MM-dd')}">2026-01-01</td>
+        <td th:text="${#temporals.format(b.checkOut,'yyyy-MM-dd')}">2026-01-05</td>
+        <td th:text="${b.status}">PENDING_CONFIRM</td>
+        <td>
+            <form th:if="${b.status.name() == 'PENDING_CONFIRM'}" th:action="@{/admin/bookings/{id}/accept(id=${b.id})}" method="post" style="display:inline">
+                <button type="submit">Accept</button>
+            </form>
+            <form th:if="${b.status.name() == 'PENDING_CONFIRM'}" th:action="@{/admin/bookings/{id}/deny(id=${b.id})}" method="post" style="display:inline" onsubmit="return confirm('Confirm deny?');">
+                <button type="submit">Deny</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a href="/admin/dashboard">Back to dashboard</a></p>
+</body>
+</html>

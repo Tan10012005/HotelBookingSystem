@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"/><title>Quản lý phòng</title></head>
+<body>
+<h2>Quản lý phòng</h2>
+<p><a href="/admin/rooms/new">Thêm phòng mới</a></p>
+
+<table>
+    <thead><tr><th>ID</th><th>Số phòng</th><th>Loại</th><th>Giá</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+    <tbody>
+    <tr th:each="r : ${rooms}">
+        <td th:text="${r.id}">1</td>
+        <td th:text="${r.roomNumber}">101</td>
+        <td th:text="${r.roomType.name}">Standard</td>
+        <td th:text="${r.pricePerNight}">100000</td>
+        <td th:text="${r.status}">AVAILABLE</td>
+        <td>
+            <a th:href="@{/admin/rooms/{id}/edit(id=${r.id})}">Sửa</a>
+            <form th:action="@{/admin/rooms/{id}/delete(id=${r.id})}" method="post" style="display:inline" onsubmit="return confirm('Xóa phòng?');">
+                <button type="submit">Xóa</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a href="/admin/dashboard">Back to dashboard</a></p>
+</body>
+</html>

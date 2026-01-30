@@ -3,6 +3,7 @@ package com.hotelbookingsystem.controller;
 import com.hotelbookingsystem.entity.Admin;
 import com.hotelbookingsystem.entity.User;
 import com.hotelbookingsystem.service.AuthService;
+import com.hotelbookingsystem.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,9 @@ public class AuthController {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private UserRepository userRepository; // NEW: để kiểm tra trạng thái khi login thất bại
 
     @GetMapping("/")
     public String root() {
@@ -48,7 +52,13 @@ public class AuthController {
         // ===== STEP 2: Check if normal user =====
         User user = authService.login(email, password);
         if (user == null) {
-            ra.addFlashAttribute("error", "Sai email hoặc mật khẩu");
+            // Provide clearer message if account exists but is inactive/banned
+            User maybe = userRepository.findByEmail(email);
+            if (maybe != null && (maybe.getIsActive() == null || !maybe.getIsActive())) {
+                ra.addFlashAttribute("error", "Tài khoản của bạn đã bị khoá. Liên hệ admin để mở lại.");
+            } else {
+                ra.addFlashAttribute("error", "Sai email hoặc mật khẩu");
+            }
             return "redirect:/login";
         }
 

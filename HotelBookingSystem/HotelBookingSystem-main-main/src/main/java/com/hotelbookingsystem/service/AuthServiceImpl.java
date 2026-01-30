@@ -30,6 +30,11 @@ public class AuthServiceImpl implements AuthService {
             return null;
         }
 
+        // NEW: block login if users is inactive/banned
+        if (user.getIsActive() == null || !user.getIsActive()) {
+            return null;
+        }
+
         return user;
     }
 
