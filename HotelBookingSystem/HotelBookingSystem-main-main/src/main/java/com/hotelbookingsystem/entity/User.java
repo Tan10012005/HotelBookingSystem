@@ -26,7 +26,20 @@ public class User {
 
     private String role;
 
+    // ===== NEW FIELDS =====
+    private String fullName;
+
+    @Column(length = 15)
+    private String phoneNumber;
+
+    @Column(length = 20)
+    private String citizenId; // CCCD
+
     private LocalDateTime createdAt;
+
+    public boolean isProfileComplete() {
+        return fullName != null && !fullName.isBlank()
+                && phoneNumber != null && !phoneNumber.isBlank()
+                && citizenId != null && !citizenId.isBlank();
+    }
 }
-
-

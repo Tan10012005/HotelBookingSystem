@@ -30,8 +30,19 @@ public class BookingController {
             @RequestParam LocalDate checkIn,
             @RequestParam LocalDate checkOut,
             @RequestParam int guests,
-            Model model
+            HttpSession session,
+            Model model,
+            RedirectAttributes ra
     ) {
+        User user = (User) session.getAttribute("user");
+
+        // CHECK: User must complete profile
+        if (user == null || !user.isProfileComplete()) {
+            ra.addFlashAttribute("error", "Vui lòng cập nhật đầy đủ thông tin hồ sơ (Họ tên, SĐT, CCCD) trước khi đặt phòng!");
+            ra.addFlashAttribute("redirectUrl", "/rooms");
+            return "redirect:/profile";
+        }
+
         Room room = roomService.getRoomById(roomId);
 
         long days = checkOut.toEpochDay() - checkIn.toEpochDay();
@@ -53,9 +64,17 @@ public class BookingController {
             @RequestParam LocalDate checkIn,
             @RequestParam LocalDate checkOut,
             @RequestParam int guests,
-            HttpSession session
+            HttpSession session,
+            RedirectAttributes ra
     ) {
         User user = (User) session.getAttribute("user");
+
+        // DOUBLE CHECK: Profile must be complete
+        if (user == null || !user.isProfileComplete()) {
+            ra.addFlashAttribute("error", "Vui lòng cập nhật hồ sơ trước khi đặt phòng!");
+            return "redirect:/profile";
+        }
+
         Room room = roomService.getRoomById(roomId);
 
         bookingService.createBooking(user, room, checkIn, checkOut, guests);
