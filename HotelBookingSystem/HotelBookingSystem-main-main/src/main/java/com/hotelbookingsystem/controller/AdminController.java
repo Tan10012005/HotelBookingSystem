@@ -2,6 +2,7 @@ package com.hotelbookingsystem.controller;
 
 import com.hotelbookingsystem.entity.*;
 import com.hotelbookingsystem.repository.*;
+import com.hotelbookingsystem.service.BookingService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,9 @@ public class AdminController {
 
     @Autowired
     private RoomTypeRepository roomTypeRepo;
+
+    @Autowired
+    private BookingService bookingService;
 
     // ===== DASHBOARD =====
     @GetMapping({"/dashboard", ""})
@@ -244,6 +248,19 @@ public class AdminController {
         return "redirect:/admin/bookings";
     }
 
+    @PostMapping("/bookings/{id}/refund-transferred")
+    public String markRefundTransferred(@PathVariable Long id, HttpSession session, RedirectAttributes ra) {
+        if (!isAdminSession(session, ra)) return "redirect:/login";
+
+        boolean ok = bookingService.adminMarkRefundTransferred(id);
+        if (ok) {
+            ra.addFlashAttribute("message", "Đã đánh dấu: đã chuyển tiền cho booking #" + id);
+        } else {
+            ra.addFlashAttribute("error", "Không thể đánh dấu chuyển tiền (kiểm tra trạng thái booking).");
+        }
+        return "redirect:/admin/bookings";
+    }
+
     /* ===== helpers ===== */
     private boolean isAdminSession(HttpSession session, RedirectAttributes ra) {
         Admin admin = (Admin) session.getAttribute("admin");
@@ -253,4 +270,5 @@ public class AdminController {
         }
         return true;
     }
+
 }

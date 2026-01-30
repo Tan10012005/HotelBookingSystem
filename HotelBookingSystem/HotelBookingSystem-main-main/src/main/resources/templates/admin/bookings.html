@@ -1,11 +1,27 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Quản lý booking</title></head>
-<body>
-<h2>Quản lý booking</h2>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Admin - Quản lý booking</title>
+</head>
 
-<table>
-    <thead><tr><th>ID</th><th>User</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+<body>
+<h2>📋 Quản lý booking</h2>
+
+<table border="1" cellpadding="8">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Room</th>
+        <th>Check-in</th>
+        <th>Check-out</th>
+        <th>Trạng thái</th>
+        <th>Hoàn tiền</th>
+        <th>Hành động</th>
+    </tr>
+    </thead>
+
     <tbody>
     <tr th:each="b : ${bookings}">
         <td th:text="${b.id}">1</td>
@@ -14,18 +30,41 @@
         <td th:text="${#temporals.format(b.checkIn,'yyyy-MM-dd')}">2026-01-01</td>
         <td th:text="${#temporals.format(b.checkOut,'yyyy-MM-dd')}">2026-01-05</td>
         <td th:text="${b.status}">PENDING_CONFIRM</td>
+
+        <!-- REFUND STATUS -->
+        <td th:text="${b.refundStatus}">NONE</td>
+
         <td>
-            <form th:if="${b.status.name() == 'PENDING_CONFIRM'}" th:action="@{/admin/bookings/{id}/accept(id=${b.id})}" method="post" style="display:inline">
+            <!-- ACCEPT -->
+            <form th:if="${b.status.name() == 'PENDING_CONFIRM'}"
+                  th:action="@{/admin/bookings/{id}/accept(id=${b.id})}"
+                  method="post"
+                  style="display:inline">
                 <button type="submit">Accept</button>
             </form>
-            <form th:if="${b.status.name() == 'PENDING_CONFIRM'}" th:action="@{/admin/bookings/{id}/deny(id=${b.id})}" method="post" style="display:inline" onsubmit="return confirm('Confirm deny?');">
+
+            <!-- DENY -->
+            <form th:if="${b.status.name() == 'PENDING_CONFIRM'}"
+                  th:action="@{/admin/bookings/{id}/deny(id=${b.id})}"
+                  method="post"
+                  style="display:inline"
+                  onsubmit="return confirm('Confirm deny?');">
                 <button type="submit">Deny</button>
+            </form>
+
+            <!-- MARK REFUND TRANSFERRED -->
+            <form th:if="${b.status.name() == 'CANCELLED'
+                          and b.refundStatus.name() == 'REQUESTED'}"
+                  th:action="@{/admin/bookings/{id}/refund-transferred(id=${b.id})}"
+                  method="post"
+                  style="display:inline">
+                <button type="submit">💸 Đã chuyển tiền</button>
             </form>
         </td>
     </tr>
     </tbody>
 </table>
 
-<p><a href="/admin/dashboard">Back to dashboard</a></p>
+<p><a href="/admin/dashboard">⬅ Back to dashboard</a></p>
 </body>
 </html>
