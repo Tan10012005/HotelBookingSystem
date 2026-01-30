@@ -1,31 +1,71 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Quản lý booking</title></head>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Quản lý booking — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--accent-1:#29a14a;--muted:#6b7280;--card:#fff;--bg:#f6f8fb;--radius:12px;--shadow:0 8px 24px rgba(11,24,40,0.06)}
+        body{font-family:Inter,system-ui;margin:0;background:var(--bg);padding:28px;color:#0f172a}
+        .wrap{max-width:1100px;margin:0 auto}
+        .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+        .card{background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:var(--shadow)}
+        table{width:100%;border-collapse:collapse;margin-top:12px}
+        th,td{padding:12px 10px;text-align:left;border-bottom:1px solid #eef2f6;font-size:14px}
+        th{color:var(--muted);font-weight:700;font-size:13px}
+        .badge{padding:6px 8px;border-radius:999px;font-weight:700;font-size:12px}
+        .status-pending{background:#fff7ed;color:#92400e}
+        .status-confirmed{background:#ecfdf5;color:#065f46}
+        .status-cancelled{background:#fff1f2;color:#b91c1c}
+        .btn{background:linear-gradient(90deg,var(--accent-1),#178e3a);color:white;padding:8px 10px;border-radius:8px;text-decoration:none;font-weight:700}
+        .btn-ghost{background:transparent;border:1px solid #e6eef3;padding:6px 10px;border-radius:8px}
+        .actions form{display:inline-block;margin-right:6px}
+        @media (max-width:720px){table,th,td{font-size:13px;padding:10px}}
+    </style>
+</head>
 <body>
-<h2>Quản lý booking</h2>
+<div class="wrap">
+    <div class="head">
+        <div>
+            <h2 style="margin:0">📋 Quản lý booking</h2>
+            <div class="small" style="color:#6b7280">Xem toàn bộ booking, xác nhận hoặc từ chối</div>
+        </div>
+        <div>
+            <a th:href="@{/admin/dashboard}" class="btn-ghost">Quay lại</a>
+        </div>
+    </div>
 
-<table>
-    <thead><tr><th>ID</th><th>User</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
-    <tbody>
-    <tr th:each="b : ${bookings}">
-        <td th:text="${b.id}">1</td>
-        <td th:text="${b.user.email}">a@b.com</td>
-        <td th:text="${b.room.roomNumber}">101</td>
-        <td th:text="${#temporals.format(b.checkIn,'yyyy-MM-dd')}">2026-01-01</td>
-        <td th:text="${#temporals.format(b.checkOut,'yyyy-MM-dd')}">2026-01-05</td>
-        <td th:text="${b.status}">PENDING_CONFIRM</td>
-        <td>
-            <form th:if="${b.status.name() == 'PENDING_CONFIRM'}" th:action="@{/admin/bookings/{id}/accept(id=${b.id})}" method="post" style="display:inline">
-                <button type="submit">Accept</button>
-            </form>
-            <form th:if="${b.status.name() == 'PENDING_CONFIRM'}" th:action="@{/admin/bookings/{id}/deny(id=${b.id})}" method="post" style="display:inline" onsubmit="return confirm('Confirm deny?');">
-                <button type="submit">Deny</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<p><a href="/admin/dashboard">Back to dashboard</a></p>
+    <div class="card">
+        <table>
+            <thead>
+            <tr><th>ID</th><th>User</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Giá</th><th>Trạng thái</th><th>Hành động</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="b : ${bookings}">
+                <td th:text="${b.id}">1</td>
+                <td th:text="${b.user.email}">user@test.com</td>
+                <td th:text="${b.room.roomNumber}">101</td>
+                <td th:text="${#temporals.format(b.checkIn,'yyyy-MM-dd')}">2026-01-01</td>
+                <td th:text="${#temporals.format(b.checkOut,'yyyy-MM-dd')}">2026-01-05</td>
+                <td th:text="${#numbers.formatDecimal(b.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'">1,000,000 VND</td>
+                <td>
+                    <span th:if="${b.status.name()=='PENDING_CONFIRM'}" class="badge status-pending">⏳ Đang chờ</span>
+                    <span th:if="${b.status.name()=='CONFIRMED'}" class="badge status-confirmed">✓ Đã xác nhận</span>
+                    <span th:if="${b.status.name()=='CANCELLED'}" class="badge status-cancelled">✗ Đã huỷ</span>
+                </td>
+                <td class="actions">
+                    <form th:if="${b.status.name()=='PENDING_CONFIRM'}" th:action="@{/admin/bookings/{id}/accept(id=${b.id})}" method="post">
+                        <button class="btn" type="submit">Accept</button>
+                    </form>
+                    <form th:if="${b.status.name()=='PENDING_CONFIRM'}" th:action="@{/admin/bookings/{id}/deny(id=${b.id})}" method="post" onsubmit="return confirm('Bạn chắc chắn muốn từ chối booking này?');">
+                        <button class="btn" type="submit" style="background:#ef4444">Deny</button>
+                    </form>
+                    <span th:if="${b.status.name()!='PENDING_CONFIRM'}" style="color:#6b7280;font-weight:600">—</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>

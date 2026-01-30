@@ -106,6 +106,7 @@
         .panel .sub{ color:var(--muted);font-size:13px;text-align:center;margin-bottom:12px }
 
         .error{ background:#ffe7e7; color:#9b1c1c; padding:10px; border-radius:8px; font-size:13px; text-align:center }
+        .success{ background:#ecfdf5; color:#065f46; padding:10px; border-radius:8px; font-size:13px; text-align:center }
 
         /* Admin hint */
         .admin-hint{
@@ -182,7 +183,20 @@
                     🔐 Admin? Đăng nhập với email admin để truy cập Dashboard
                 </div>
 
-                <div th:if="${error}" class="error" th:text="${error}"></div>
+                <!-- Alerts: show banned message (from ?banned=true) and any flash messages -->
+                <div style="margin-bottom:12px;">
+                    <!-- Redirected by interceptor: /login?banned=true -->
+                    <div th:if="${param.banned == 'true'}"
+                         class="error">
+                        ⚠️ Tài khoản của bạn đã bị khoá. Liên hệ admin để mở lại.
+                    </div>
+
+                    <!-- Flash error set by controller (e.g. login failed or account banned) -->
+                    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+                    <!-- Flash success message -->
+                    <div th:if="${message}" class="success" th:text="${message}"></div>
+                </div>
 
                 <form th:action="@{/login}" method="post" novalidate>
                     <div class="form-group">
