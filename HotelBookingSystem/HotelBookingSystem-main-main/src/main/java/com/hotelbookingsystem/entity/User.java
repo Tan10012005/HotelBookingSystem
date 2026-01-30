@@ -24,16 +24,20 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    private String role;
+    @Column(nullable = false)
+    private String role; // "USER" hoặc "ADMIN"
 
-    // ===== NEW FIELDS =====
     private String fullName;
 
     @Column(length = 15)
     private String phoneNumber;
 
     @Column(length = 20)
-    private String citizenId; // CCCD
+    private String citizenId;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isActive = true; // true = active, false = banned
 
     private LocalDateTime createdAt;
 
@@ -41,5 +45,9 @@ public class User {
         return fullName != null && !fullName.isBlank()
                 && phoneNumber != null && !phoneNumber.isBlank()
                 && citizenId != null && !citizenId.isBlank();
+    }
+
+    public boolean isAdmin() {
+        return "ADMIN".equalsIgnoreCase(role);
     }
 }

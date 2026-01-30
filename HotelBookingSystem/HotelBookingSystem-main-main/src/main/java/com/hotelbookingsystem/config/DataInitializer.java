@@ -8,12 +8,16 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
 
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private AdminRepository adminRepo;
 
     @Autowired
     private RoomRepository roomRepo;
@@ -27,16 +31,34 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
+        // ===== CREATE ADMIN ACCOUNT =====
+        Admin admin = adminRepo.findByUsername("admin");
+        if (admin == null) {
+            admin = adminRepo.save(Admin.builder()
+                    .username("admin")
+                    .password("admin123")
+                    .email("admin@hotel.com")
+                    .fullName("System Administrator")
+                    .isActive(true)
+                    .build());
+            System.out.println("✅ Admin account created:");
+            System.out.println("   Username: admin");
+            System.out.println("   Password: admin123");
+            System.out.println("   Email: admin@hotel.com");
+        }
+
+        // ===== CREATE TEST USER =====
         User testUser = userRepo.findByEmail("user@test.com");
         if (testUser == null) {
             testUser = userRepo.save(User.builder()
                     .email("user@test.com")
                     .password("123456")
                     .role("USER")
+                    .createdAt(LocalDateTime.now())
                     .build());
         }
 
-        // ensure STANDARD (capacity 2), DELUXE (capacity 3), SUITE (capacity 4)
+        // ===== ROOM TYPES =====
         RoomType standard = roomTypeRepo.findAll().stream()
                 .filter(rt -> "STANDARD".equals(rt.getName()))
                 .findFirst()
@@ -70,6 +92,7 @@ public class DataInitializer implements CommandLineRunner {
                                 .build()
                 ));
 
+        // ===== ROOMS =====
         Room room101 = roomRepo.findAll().stream()
                 .filter(r -> "101".equals(r.getRoomNumber()))
                 .findFirst()
@@ -120,7 +143,7 @@ public class DataInitializer implements CommandLineRunner {
                         .status(RoomStatus.AVAILABLE)
                         .build()));
 
-        // sample bookings (unchanged logic)
+        // ===== SAMPLE BOOKINGS =====
         if (bookingRepo.findByUserId(testUser.getId()).stream()
                 .noneMatch(b -> b.getRoom().getRoomNumber().equals("102"))) {
 
@@ -176,9 +199,13 @@ public class DataInitializer implements CommandLineRunner {
                     .build());
         }
 
-        System.out.println("Data initialized successfully!");
-        System.out.println("Test user: user@test.com / 123456");
-        System.out.println("Total rooms: " + roomRepo.count());
-        System.out.println("Total bookings: " + bookingRepo.count());
+        System.out.println("✅ Data initialized successfully!");
+        System.out.println("📊 Statistics:");
+        System.out.println("   👤 Total users: " + userRepo.count());
+        System.out.println("   🏨 Total rooms: " + roomRepo.count());
+        System.out.println("   📋 Total bookings: " + bookingRepo.count());
+        System.out.println("\n🔑 Login credentials:");
+        System.out.println("   Admin: admin / admin123");
+        System.out.println("   User: user@test.com / 123456");
     }
 }

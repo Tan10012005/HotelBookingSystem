@@ -1,5 +1,6 @@
 package com.hotelbookingsystem.controller;
 
+import com.hotelbookingsystem.entity.Admin;
 import com.hotelbookingsystem.entity.User;
 import com.hotelbookingsystem.service.AuthService;
 import jakarta.servlet.http.HttpSession;
@@ -30,7 +31,6 @@ public class AuthController {
         return "redirect:/login";
     }
 
-
     @PostMapping("/login")
     public String doLogin(
             @RequestParam String email,
@@ -38,8 +38,15 @@ public class AuthController {
             HttpSession session,
             RedirectAttributes ra) {
 
-        User user = authService.login(email, password);
+        // ===== STEP 1: Check if admin =====
+        Admin admin = authService.adminLogin(email, password);
+        if (admin != null) {
+            session.setAttribute("admin", admin);
+            return "redirect:/admin/dashboard";
+        }
 
+        // ===== STEP 2: Check if normal user =====
+        User user = authService.login(email, password);
         if (user == null) {
             ra.addFlashAttribute("error", "Sai email hoặc mật khẩu");
             return "redirect:/login";
@@ -48,7 +55,7 @@ public class AuthController {
         session.setAttribute("user", user);
         return "redirect:/rooms";
     }
-    // --- Đăng ký ---
+
     @GetMapping("/register")
     public String register() {
         return "register";

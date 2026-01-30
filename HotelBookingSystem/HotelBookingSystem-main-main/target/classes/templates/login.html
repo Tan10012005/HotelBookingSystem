@@ -58,12 +58,10 @@
             align-items:stretch;
         }
 
-        /* HERO TOP: no outer panel, text sits on blurred background,
-           use strong white + shadow for legibility */
         .hero-top {
-            padding:8px 28px;      /* small padding, no rounded box */
-            background: transparent; /* removed frame/background */
-            box-shadow: none;       /* removed outer shadow/frame */
+            padding:8px 28px;
+            background: transparent;
+            box-shadow: none;
             text-align:center;
         }
         .hero-top h1{
@@ -72,18 +70,17 @@
             font-size:46px;
             line-height:1.02;
             font-weight:700;
-            color: var(--white); /* changed to white for max contrast */
-            text-shadow: 0 10px 30px rgba(0,0,0,0.55); /* reading aid */
+            color: var(--white);
+            text-shadow: 0 10px 30px rgba(0,0,0,0.55);
         }
         .hero-top p{
             margin:12px 0 0;
-            color: rgba(255,255,255,0.92); /* subtitle in near-white */
+            color: rgba(255,255,255,0.92);
             font-size:18px;
             font-weight:700;
             text-shadow: 0 6px 18px rgba(0,0,0,0.45);
         }
 
-        /* PANEL centered below hero */
         .panel-wrap { display:flex; justify-content:center; }
         .panel {
             width:420px;
@@ -98,18 +95,30 @@
         }
         .panel.shake{ animation: shake .45s linear both; }
 
-        /* Panel heading centered and use accent for heading text itself */
         .panel h3{
             margin:0 0 4px 0;
             font-family:'Playfair Display', serif;
             font-size:28px;
             font-weight:700;
-            color: var(--accent-1); /* keep panel heading in accent */
+            color: var(--accent-1);
             text-align:center;
         }
         .panel .sub{ color:var(--muted);font-size:13px;text-align:center;margin-bottom:12px }
 
         .error{ background:#ffe7e7; color:#9b1c1c; padding:10px; border-radius:8px; font-size:13px; text-align:center }
+
+        /* Admin hint */
+        .admin-hint{
+            background:linear-gradient(135deg, #e0e7ff, #ddd6fe);
+            border:2px solid #a78bfa;
+            padding:12px;
+            border-radius:8px;
+            font-size:13px;
+            text-align:center;
+            margin-bottom:12px;
+            color:#5b21b6;
+            font-weight:600;
+        }
 
         .form-group{ display:flex; flex-direction:column; gap:8px; margin-bottom:12px }
         label{ font-size:13px; color:var(--muted) }
@@ -156,18 +165,21 @@
 <main class="page" role="main">
     <div class="container">
 
-        <!-- HERO TOP: removed framed box; text in white with shadow for legibility -->
         <section class="hero-top" aria-hidden="true">
             <h1>Chào mừng đến với Hotel Booking</h1>
             <p>Đặt phòng nhanh chóng — Trải nghiệm thoải mái — Giá minh bạch.</p>
         </section>
 
-        <!-- PANEL area (centered) -->
         <div class="panel-wrap">
             <div class="panel" th:classappend="${error} ? ' shake' : ''">
                 <div>
                     <h3>Đăng nhập</h3>
                     <div class="sub">Đăng nhập để quản lý đặt phòng của bạn</div>
+                </div>
+
+                <!-- ADMIN HINT -->
+                <div class="admin-hint">
+                    🔐 Admin? Đăng nhập với email admin để truy cập Dashboard
                 </div>
 
                 <div th:if="${error}" class="error" th:text="${error}"></div>

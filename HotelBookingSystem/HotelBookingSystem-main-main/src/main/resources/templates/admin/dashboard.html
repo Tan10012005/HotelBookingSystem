@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin Dashboard - Hotel Booking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{
+            font-family:'Inter', sans-serif;
+            background:#f3f4f6;
+            min-height:100vh;
+        }
+
+        /* Header */
+        .admin-header{
+            background:#fff;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+            padding:16px 24px;
+        }
+
+        .header-inner{
+            max-width:1400px;
+            margin:0 auto;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .logo{
+            font-size:20px;
+            font-weight:700;
+            color:#1f2937;
+        }
+
+        .admin-info{
+            display:flex;
+            align-items:center;
+            gap:16px;
+        }
+
+        .admin-name{
+            font-weight:600;
+            color:#374151;
+        }
+
+        .btn-logout{
+            padding:8px 16px;
+            background:#ef4444;
+            color:#fff;
+            border:none;
+            border-radius:8px;
+            font-size:14px;
+            font-weight:600;
+            cursor:pointer;
+            text-decoration:none;
+        }
+
+        .btn-logout:hover{
+            background:#dc2626;
+        }
+
+        /* Main content */
+        .main-content{
+            max-width:1400px;
+            margin:32px auto;
+            padding:0 24px;
+        }
+
+        .page-title{
+            font-size:32px;
+            color:#1f2937;
+            margin-bottom:32px;
+        }
+
+        /* Stats grid */
+        .stats-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+            gap:24px;
+            margin-bottom:40px;
+        }
+
+        .stat-card{
+            background:#fff;
+            padding:24px;
+            border-radius:12px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.08);
+            transition:transform .2s;
+        }
+
+        .stat-card:hover{
+            transform:translateY(-4px);
+            box-shadow:0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .stat-icon{
+            font-size:40px;
+            margin-bottom:12px;
+        }
+
+        .stat-label{
+            font-size:14px;
+            color:#6b7280;
+            margin-bottom:8px;
+        }
+
+        .stat-value{
+            font-size:32px;
+            font-weight:700;
+            color:#1f2937;
+        }
+
+        /* Menu grid */
+        .menu-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+            gap:24px;
+        }
+
+        .menu-card{
+            background:#fff;
+            padding:32px;
+            border-radius:12px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.08);
+            text-align:center;
+            transition:transform .2s;
+            cursor:pointer;
+            text-decoration:none;
+            color:inherit;
+        }
+
+        .menu-card:hover{
+            transform:translateY(-6px);
+            box-shadow:0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .menu-icon{
+            font-size:56px;
+            margin-bottom:16px;
+        }
+
+        .menu-title{
+            font-size:20px;
+            font-weight:700;
+            color:#1f2937;
+            margin-bottom:8px;
+        }
+
+        .menu-desc{
+            font-size:14px;
+            color:#6b7280;
+        }
+
+        .coming-soon{
+            display:inline-block;
+            background:#fef3c7;
+            color:#92400e;
+            padding:4px 12px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:600;
+            margin-top:12px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="admin-header">
+    <div class="header-inner">
+        <div class="logo">🏨 Hotel Admin Dashboard</div>
+        <div class="admin-info">
+            <span class="admin-name">👤 <span th:text="${admin.fullName}">Admin</span></span>
+            <a th:href="@{/admin/logout}" class="btn-logout">Đăng xuất</a>
+        </div>
+    </div>
+</header>
+
+<!-- Main content -->
+<main class="main-content">
+    <h1 class="page-title">📊 Dashboard</h1>
+
+    <!-- Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-label">Tổng số người dùng</div>
+            <div class="stat-value" th:text="${totalUsers}">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🏨</div>
+            <div class="stat-label">Tổng số phòng</div>
+            <div class="stat-value" th:text="${totalRooms}">0</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-label">Tổng số booking</div>
+            <div class="stat-value" th:text="${totalBookings}">0</div>
+        </div>
+    </div>
+
+    <!-- Management menu -->
+    <h2 style="font-size:24px;margin-bottom:24px;color:#1f2937">⚙️ Quản lý hệ thống</h2>
+    <div class="menu-grid">
+        <a href="#" class="menu-card">
+            <div class="menu-icon">👥</div>
+            <div class="menu-title">Quản lý người dùng</div>
+            <div class="menu-desc">Ban/Active tài khoản người dùng</div>
+            <span class="coming-soon">Coming Soon</span>
+        </a>
+
+        <a href="#" class="menu-card">
+            <div class="menu-icon">🏨</div>
+            <div class="menu-title">Quản lý phòng</div>
+            <div class="menu-desc">Thêm, sửa, xóa phòng khách sạn</div>
+            <span class="coming-soon">Coming Soon</span>
+        </a>
+
+        <a href="#" class="menu-card">
+            <div class="menu-icon">📋</div>
+            <div class="menu-title">Quản lý booking</div>
+            <div class="menu-desc">Accept/Deny đặt phòng</div>
+            <span class="coming-soon">Coming Soon</span>
+        </a>
+    </div>
+</main>
+
+</body>
+</html>
