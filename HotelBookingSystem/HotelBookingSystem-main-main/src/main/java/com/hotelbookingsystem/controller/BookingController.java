@@ -25,6 +25,9 @@ public class BookingController {
     @Autowired
     private RoomService roomService;
 
+    /**
+     * Bước 1: Xem trước thông tin đặt phòng (từ bookingForm.html chuyển sang)
+     */
     @PostMapping("/preview")
     public String previewBooking(
             @RequestParam Long roomId,
@@ -37,7 +40,7 @@ public class BookingController {
     ) {
         User user = (User) session.getAttribute("user");
 
-        // CHECK: User must complete profile
+        // KIỂM TRA: Người dùng phải hoàn tất hồ sơ mới được đặt phòng
         if (user == null || !user.isProfileComplete()) {
             ra.addFlashAttribute("error", "Vui lòng cập nhật đầy đủ thông tin hồ sơ (Họ tên, SĐT, CCCD) trước khi đặt phòng!");
             ra.addFlashAttribute("redirectUrl", "/rooms");
@@ -46,6 +49,7 @@ public class BookingController {
 
         Room room = roomService.getRoomById(roomId);
 
+        // Tính toán tổng tiền dựa trên số đêm lưu trú
         long days = checkOut.toEpochDay() - checkIn.toEpochDay();
         BigDecimal totalPrice = room.getPricePerNight()
                 .multiply(BigDecimal.valueOf(days));
@@ -56,11 +60,12 @@ public class BookingController {
         model.addAttribute("guests", guests);
         model.addAttribute("totalPrice", totalPrice);
 
-        return "bookingConfirm";
+        return "bookingConfirm"; // Chuyển đến trang xác nhận thông tin đơn hàng
     }
 
     /**
-     * THAY ĐỔI: Sau khi confirm, không redirect ngay mà trả về trang VietQR
+     * Bước 2: Xác nhận đặt phòng và thực hiện thanh toán
+     * Thay đổi: Sau khi bấm xác nhận, hệ thống lưu đơn vào DB và hiện trang VietQR thay vì Redirect thành công ngay.
      */
     @PostMapping("/confirm")
     public String confirmBooking(
@@ -68,14 +73,14 @@ public class BookingController {
             @RequestParam LocalDate checkIn,
             @RequestParam LocalDate checkOut,
             @RequestParam int guests,
-            @RequestParam BigDecimal totalPrice, // Lấy số tiền từ hidden input của bookingConfirm.html
+            @RequestParam BigDecimal totalPrice, // Nhận tổng tiền từ form để truyền sang trang thanh toán
             HttpSession session,
-            Model model, // Thêm Model để truyền dữ liệu sang vietqr.html
+            Model model,
             RedirectAttributes ra
     ) {
         User user = (User) session.getAttribute("user");
 
-        // DOUBLE CHECK: Profile must be complete
+        // KIỂM TRA LẠI: Đảm bảo hồ sơ vẫn đầy đủ
         if (user == null || !user.isProfileComplete()) {
             ra.addFlashAttribute("error", "Vui lòng cập nhật hồ sơ trước khi đặt phòng!");
             return "redirect:/profile";
@@ -83,25 +88,30 @@ public class BookingController {
 
         Room room = roomService.getRoomById(roomId);
 
-        // Tạo booking trong DB (giữ nguyên logic cũ)
+        // Tạo đơn đặt phòng trong Database (Trạng thái mặc định là PENDING_CONFIRM)
         bookingService.createBooking(user, room, checkIn, checkOut, guests);
 
-        // TRUYỀN DỮ LIỆU SANG TRANG VIETQR
+        // Nạp dữ liệu vào Model để trang vietqr.html có thông tin hiển thị mã QR động
         model.addAttribute("room", room);
         model.addAttribute("totalPrice", totalPrice);
 
-        // Trả về view vietqr.html thay vì redirect
+        // Trả về View vietqr.html. Script trong trang này sẽ tự redirect sang /success sau khi "thanh toán".
         return "vietqr";
     }
 
+    /**
+     * Bước 3: Thông báo đặt phòng thành công (được gọi từ Javascript của vietqr.html)
+     */
     @GetMapping("/success")
     public String success() {
         return "bookingSuccess";
     }
 
+    /**
+     * Xem danh sách các đơn đặt phòng của tôi
+     */
     @GetMapping("/my")
     public String myBookings(HttpSession session, Model model, RedirectAttributes ra) {
-
         User user = (User) session.getAttribute("user");
 
         if (user == null) {
@@ -113,7 +123,9 @@ public class BookingController {
         return "bookingList";
     }
 
-
+    /**
+     * Hủy đơn đặt phòng
+     */
     @PostMapping("/{id}/cancel")
     public String cancelBooking(
             @PathVariable Long id,
@@ -149,6 +161,9 @@ public class BookingController {
         return "redirect:/booking/my";
     }
 
+    /**
+     * Người dùng xác nhận đã nhận được tiền hoàn trả
+     */
     @PostMapping("/{id}/confirm-refund")
     public String confirmRefundReceived(
             @PathVariable Long id,

@@ -1,100 +1,209 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Xác nhận booking</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Xác nhận đặt phòng — Hotel Booking</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 
     <style>
         :root{
-            --card-bg: rgba(255,255,255,0.96);
-            --shadow: 0 12px 40px rgba(11,24,40,0.12);
-            --accent: #006340;
+            --accent-1: #29a14a;
+            --accent-2: #178e3a;
+            --white: #ffffff;
+            --card: rgba(255, 255, 255, 0.98);
             --muted: #6b7280;
-            --radius: 16px;
+            --radius: 20px;
+            --shadow: 0 12px 40px rgba(11,24,40,0.12);
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        body{
+            margin:0;
+            font-family: 'Inter', sans-serif;
+            color:#0f172a;
+            -webkit-font-smoothing:antialiased;
+            background:#f5f7fa;
         }
 
-        html,body{height:100%;margin:0;font-family: Arial, Helvetica, sans-serif;background:#f6f7f8;}
-        /* Background layers (shared pattern) */
-        .bg{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;filter:blur(6px) brightness(0.86);transform:scale(1.03);}
-        .bg-overlay{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.02));pointer-events:none;}
-
-        /* Header */
-        .stockx-header{background:transparent;height:64px;display:flex;align-items:center;box-shadow:none;padding:0 24px}
-        .stockx-header-inner{max-width:1200px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-        .stockx-logo{color:#ffffff;font-size:20px;font-weight:bold;display:flex;align-items:center;gap:8px}
-        .stockx-nav{display:flex;gap:20px}
-        .stockx-nav a{color:rgba(255,255,255,0.95);text-decoration:none;font-size:14px;font-weight:600}
-
-        /* Confirm box sits above background with translucent white */
-        .confirm-box{
-            width:520px;
-            margin:80px auto;
-            background:var(--card-bg);
-            padding:30px;
-            border-radius:var(--radius);
-            box-shadow:var(--shadow);
-            color:#162029;
+        /* Background layers đồng bộ */
+        .bg {
+            position:fixed; inset:0; z-index:-2;
+            background-size:cover;
+            background-position:center;
+            filter: blur(6px) brightness(0.86);
+            transform: scale(1.03);
+        }
+        .bg-overlay {
+            position:fixed; inset:0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.02));
+            z-index:-1; pointer-events:none;
         }
 
-        .confirm-box h3{margin-bottom:20px;display:flex;align-items:center;gap:8px}
-        .confirm-box p{margin:10px 0;font-size:15px;color:var(--muted)}
-        .price{font-size:18px;font-weight:bold;color:var(--accent);margin-top:12px}
+        .page {
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:40px 18px;
+        }
 
-        .btn-group{display:flex;gap:12px;margin-top:24px}
-        .btn-back{flex:1;padding:12px;background:#e9ecef;border:none;border-radius:10px;font-weight:700;cursor:pointer}
-        .btn-confirm{flex:3;padding:12px;background:linear-gradient(90deg,var(--accent), #004f33);color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer}
+        /* Confirm Card */
+        .confirm-card {
+            width:100%;
+            max-width:540px;
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            animation: cardFade .4s ease both;
+        }
 
-        .btn-back:hover{background:#dfe6e7}
-        .btn-confirm:hover{opacity:0.95}
+        .confirm-card h3 {
+            margin: 0 0 24px 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent-1);
+            text-align: center;
+        }
 
-        @media (max-width:640px){
-            .confirm-box{width:92%;margin:40px auto}
+        /* Summary List */
+        .summary-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 30px 0;
+            border-top: 1px solid #f1f5f9;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 15px;
+        }
+        .summary-label { color: var(--muted); font-weight: 400; }
+        .summary-value { color: #1e293b; font-weight: 600; }
+
+        /* Price Highlight */
+        .total-price-row {
+            background: #f0fdf4;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #dcfce7;
+        }
+        .price-label { font-size: 16px; font-weight: 700; color: #166534; }
+        .price-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--accent-2);
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .btn {
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            border: none;
+            flex: 1;
+            text-decoration: none;
+        }
+        .btn-back {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .btn-back:hover { background: #e2e8f0; }
+
+        .btn-confirm {
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            color: #fff;
+            flex: 2;
+        }
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(23,142,58,0.25);
+            opacity: 0.96;
+        }
+
+        @keyframes cardFade {
+            from { transform: translateY(15px); opacity:0 }
+            to { transform: translateY(0); opacity:1 }
+        }
+
+        @media (max-width:500px){
+            .confirm-card { padding: 25px; }
+            .confirm-card h3 { font-size: 26px; }
+            .actions { flex-direction: column-reverse; }
         }
     </style>
 </head>
-
 <body>
 
 <div class="bg" th:style="'background-image: url(' + @{/images/backgrounds/nen.jpg} + ');'"></div>
 <div class="bg-overlay"></div>
 
-<!-- ===== HEADER ===== -->
-<header class="stockx-header">
-    <div class="stockx-header-inner">
-        <div class="stockx-logo">🏨 Hotel Booking System</div>
-        <nav class="stockx-nav">
-            <a th:href="@{/rooms}">Danh sách phòng</a>
-            <a th:href="@{/bookings/my}">Booking của tôi</a>
-            <a th:href="@{/logout}">Logout</a>
-        </nav>
-    </div>
-</header>
+<main class="page">
+    <div class="confirm-card">
+        <h3>Xác nhận Booking</h3>
 
-<!-- ===== CONTENT ===== -->
-<div class="confirm-box">
-    <h3>✅ Xác nhận booking</h3>
-
-    <p><b>Phòng:</b> <span th:text="${room.roomNumber}"></span></p>
-    <p><b>Check-in:</b> <span th:text="${checkIn}"></span></p>
-    <p><b>Check-out:</b> <span th:text="${checkOut}"></span></p>
-    <p><b>Số khách:</b> <span th:text="${guests}"></span></p>
-
-    <p class="price">
-        Tổng tiền: <span th:text="${totalPrice}"></span> VND
-    </p>
-
-    <form th:action="@{/booking/confirm}" method="post">
-        <input type="hidden" name="roomId" th:value="${room.id}">
-        <input type="hidden" name="checkIn" th:value="${checkIn}">
-        <input type="hidden" name="checkOut" th:value="${checkOut}">
-        <input type="hidden" name="guests" th:value="${guests}">
-        <input type="hidden" name="totalPrice" th:value="${totalPrice}">
-
-        <div class="btn-group">
-            <button type="button" class="btn-back" onclick="history.back()">← Quay lại</button>
-            <button type="submit" class="btn-confirm">Xác nhận booking</button>
+        <div class="summary-list">
+            <div class="summary-item">
+                <span class="summary-label">Mã phòng</span>
+                <span class="summary-value" th:text="${room.roomNumber}">101</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Loại phòng</span>
+                <span class="summary-value" th:text="${room.roomType.name}">Executive</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Ngày Check-in</span>
+                <span class="summary-value" th:text="${checkIn}">2026-01-30</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Ngày Check-out</span>
+                <span class="summary-value" th:text="${checkOut}">2026-01-31</span>
+            </div>
+            <div class="summary-item">
+                <span class="summary-label">Số lượng khách</span>
+                <span class="summary-value" th:text="${guests + ' khách'}">2 khách</span>
+            </div>
         </div>
-    </form>
-</div>
+
+        <div class="total-price-row">
+            <span class="price-label">TỔNG THANH TOÁN</span>
+            <span class="price-value">
+                <span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')}">500,000</span> VND
+            </span>
+        </div>
+
+        <form th:action="@{/booking/confirm}" method="post">
+            <input type="hidden" name="roomId" th:value="${room.id}">
+            <input type="hidden" name="checkIn" th:value="${checkIn}">
+            <input type="hidden" name="checkOut" th:value="${checkOut}">
+            <input type="hidden" name="guests" th:value="${guests}">
+            <input type="hidden" name="totalPrice" th:value="${totalPrice}">
+
+            <div class="actions">
+                <button type="button" class="btn btn-back" onclick="history.back()">Quay lại</button>
+                <button type="submit" class="btn btn-confirm">Xác nhận thanh toán</button>
+            </div>
+        </form>
+    </div>
+</main>
 
 </body>
 </html>

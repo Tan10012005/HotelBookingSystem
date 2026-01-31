@@ -1,94 +1,297 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Booking</title>
+    <meta charset="utf-8" />
+    <title>Chi tiết đặt phòng — Hotel Booking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
-        :root{ --card-bg: rgba(255,255,255,0.96); --shadow:0 12px 40px rgba(11,24,40,0.12); --accent:#006340; --muted:#6b7280; --radius:16px }
-        html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f6fa}
-        .bg{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;filter:blur(6px) brightness(0.86);transform:scale(1.03)}
-        .bg-overlay{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.02));pointer-events:none}
+        :root {
+            --accent: #006340;
+            --radius: 20px;
+            --shadow: 0 15px 45px rgba(0,0,0,0.15);
+        }
 
-        .page-wrapper{max-width:1200px;margin:80px auto;padding:0 20px}
-        .booking-wrapper{display:flex;gap:40px;align-items:flex-start}
-        .room-preview{flex:1;background:var(--card-bg);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-        .room-preview img{width:100%;border-radius:12px;cursor:pointer}
-        .view-btn{margin-top:14px;width:100%;padding:12px;background:linear-gradient(90deg,var(--accent),#004f33);color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: #1f2937;
+            overflow-x: hidden;
+        }
 
-        .booking-box{width:420px;background:var(--card-bg);padding:30px;border-radius:var(--radius);box-shadow:var(--shadow);margin-top:0}
-        label{font-weight:bold;margin-top:12px;display:block}
-        input{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #e6e9ef}
-        .submit-btn{margin-top:22px;width:100%;padding:12px;background:linear-gradient(90deg,var(--accent),#004f33);color:#fff;border:none;border-radius:10px;font-weight:bold;cursor:pointer}
+        /* --- PHẦN BACKGROUND ĐỒNG BỘ --- */
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-size: cover;
+            background-position: center;
+            filter: blur(6px) brightness(0.86);
+            transform: scale(1.03);
+        }
 
-        /* modal */
-        .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);justify-content:center;align-items:center;z-index:999}
-        .modal-content{background:#111;padding:20px;border-radius:12px;max-width:900px;width:90%;position:relative}
-        .modal img{width:100%;border-radius:10px}
-        .close{position:absolute;top:10px;right:14px;font-size:22px;color:#fff;cursor:pointer}
-        .nav-btn{position:absolute;top:50%;transform:translateY(-50%);font-size:30px;background:rgba(255,255,255,0.2);color:#fff;border:none;padding:10px 16px;cursor:pointer;border-radius:50%}
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.02));
+            pointer-events: none;
+        }
 
-        @media (max-width:980px){ .booking-wrapper{flex-direction:column} .booking-box{width:100%} }
+        /* --- LAYOUT CHÍNH --- */
+        .container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .booking-card {
+            background: rgba(255, 255, 255, 0.98); /* Độ trong suốt nhẹ để thấy nền */
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* --- GALLERY ẢNH --- */
+        .gallery-side {
+            width: 58%;
+            background: #000;
+            position: relative;
+            min-height: 500px;
+        }
+
+        .main-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+
+        .thumb-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.5);
+            padding: 8px;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        .thumb {
+            width: 65px;
+            height: 50px;
+            border-radius: 6px;
+            cursor: pointer;
+            object-fit: cover;
+            opacity: 0.7;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .thumb:hover, .thumb.active {
+            border-color: #fff;
+            opacity: 1;
+        }
+
+        /* --- FORM SIDE --- */
+        .form-side {
+            width: 42%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .room-type-tag {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin: 0 0 10px 0;
+        }
+
+        .price-tag {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(90deg, var(--accent), #004f33);
+            color: #fff;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 99, 64, 0.2);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 900px) {
+            .booking-card { flex-direction: column; }
+            .gallery-side, .form-side { width: 100%; }
+            .gallery-side { min-height: 300px; }
+        }
     </style>
 </head>
-
 <body>
 
 <div class="bg" th:style="'background-image: url(' + @{/images/backgrounds/nen.jpg} + ');'"></div>
 <div class="bg-overlay"></div>
 
-<div class="page-wrapper">
-    <div class="booking-wrapper">
+<div class="container">
+    <div class="booking-card">
+        <div class="gallery-side">
+            <img id="mainImage" class="main-img"
+                 th:src="${room.roomNumber.startsWith('1')} ? @{/images/rooms/executiveRoom.webp} : (${room.roomNumber.startsWith('3')} ? @{/images/rooms/suiteCityView.webp} : @{/images/rooms/superiorCityView.webp})">
 
-        <!-- ROOM PREVIEW -->
-        <div class="room-preview" th:attr="data-room=${room.roomNumber}">
-            <img th:src="${room.roomNumber == '101'} ? '/images/rooms/executiveRoom.webp' : '/images/rooms/superiorCityView.webp'" onclick="openModal()">
-            <button class="view-btn" onclick="openModal()">Xem ảnh phòng</button>
+            <div class="thumb-nav">
+                <th:block th:if="${room.roomNumber.startsWith('1')}">
+                    <img class="thumb active" th:src="@{/images/rooms/executiveRoom.webp}" onclick="changeImg(this.src, this)">
+                    <img class="thumb" th:src="@{/images/rooms/executiveRoom1.webp}" onclick="changeImg(this.src, this)">
+                    <img class="thumb" th:src="@{/images/rooms/executiveRoom2.webp}" onclick="changeImg(this.src, this)">
+                </th:block>
+
+                <th:block th:if="${room.roomNumber.startsWith('2')}">
+                    <img class="thumb active" th:src="@{/images/rooms/superiorCityView.webp}" onclick="changeImg(this.src, this)">
+                    <img class="thumb" th:src="@{/images/rooms/superiorCityView1.webp}" onclick="changeImg(this.src, this)">
+                    <img class="thumb" th:src="@{/images/rooms/superiorCityView2.webp}" onclick="changeImg(this.src, this)">
+                </th:block>
+
+                <th:block th:if="${room.roomNumber.startsWith('3')}">
+                    <img class="thumb active" th:src="@{/images/rooms/suiteCityView.webp}" onclick="changeImg(this.src, this)">
+                </th:block>
+            </div>
         </div>
 
-        <!-- FORM -->
-        <div class="booking-box">
-            <h3 style="margin:0 0 10px 0; font-family: 'Playfair Display', serif;">📝 Nhập thông tin booking</h3>
-            <p style="margin:0 0 12px;color:var(--muted)">Vui lòng chọn ngày và số khách</p>
+        <div class="form-side">
+            <div class="room-type-tag" th:text="${room.roomType.name}">Standard</div>
+            <h2 th:text="'Phòng ' + ${room.roomNumber}">Phòng 101</h2>
+            <div class="price-tag" th:text="${#numbers.formatDecimal(room.pricePerNight, 0, 'COMMA', 0, 'POINT')} + ' VND/đêm'"></div>
 
             <form th:action="@{/booking/preview}" method="post">
-                <input type="hidden" name="roomId" th:value="${room.id}"/>
-                <label>Check-in</label>
-                <input type="date" name="checkIn" required>
-                <label>Check-out</label>
-                <input type="date" name="checkOut" required>
-                <label>Số khách</label>
-                <input type="number" name="guests" min="1" required>
-                <button class="submit-btn">Tiếp tục</button>
+                <input type="hidden" name="roomId" th:value="${room.id}">
+
+                <div class="form-group">
+                    <label>Ngày nhận phòng</label>
+                    <input type="date" name="checkIn" id="checkIn" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Ngày trả phòng</label>
+                    <input type="date" name="checkOut" id="checkOut" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Số lượng khách (Tối đa: <span th:text="${room.roomType.capacity}">2</span>)</label>
+                    <input type="number" name="guests" min="1" th:max="${room.roomType.capacity}" value="1" required>
+                </div>
+
+                <button type="submit" class="btn-submit">Tiếp tục đặt phòng</button>
             </form>
+
+            <a th:href="@{/rooms}" class="back-link">← Quay lại danh sách phòng</a>
         </div>
-
-    </div>
-</div>
-
-<!-- modal -->
-<div class="modal" id="imageModal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">✕</span>
-        <button class="nav-btn prev" onclick="prevImage()">‹</button>
-        <img id="modalImage">
-        <button class="nav-btn next" onclick="nextImage()">›</button>
     </div>
 </div>
 
 <script>
-    const executiveImages = ["/images/rooms/executiveRoom.webp","/images/rooms/executiveRoom1.webp","/images/rooms/executiveRoom2.webp"];
-    const superiorImages = ["/images/rooms/superiorCityView.webp","/images/rooms/superiorCityView1.webp","/images/rooms/superiorCityView2.webp"];
-    let images=[], currentIndex=0;
-    function openModal(){
-        const roomNumber = document.querySelector(".room-preview").dataset.room;
-        images = (roomNumber === "101") ? executiveImages : superiorImages;
-        currentIndex=0;
-        document.getElementById("modalImage").src = images[0];
-        document.getElementById("imageModal").style.display = "flex";
+    // Xử lý Gallery ảnh
+    function changeImg(src, el) {
+        document.getElementById('mainImage').src = src;
+        document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
     }
-    function closeModal(){ document.getElementById("imageModal").style.display = "none"; }
-    function nextImage(){ currentIndex=(currentIndex+1)%images.length; document.getElementById("modalImage").src=images[currentIndex]; }
-    function prevImage(){ currentIndex=(currentIndex-1+images.length)%images.length; document.getElementById("modalImage").src=images[currentIndex]; }
+
+    // Ràng buộc ngày (Validation)
+    const today = new Date().toISOString().split('T')[0];
+    const checkIn = document.getElementById('checkIn');
+    const checkOut = document.getElementById('checkOut');
+
+    checkIn.min = today;
+    checkOut.min = today;
+
+    checkIn.addEventListener('change', () => {
+        if (checkIn.value) {
+            let nextDay = new Date(checkIn.value);
+            nextDay.setDate(nextDay.getDate() + 1);
+            checkOut.min = nextDay.toISOString().split('T')[0];
+
+            // Tự động đẩy ngày check-out lên nếu đang nhỏ hơn hoặc bằng check-in
+            if (checkOut.value && new Date(checkOut.value) <= new Date(checkIn.value)) {
+                checkOut.value = nextDay.toISOString().split('T')[0];
+            }
+        }
+    });
 </script>
 
 </body>
