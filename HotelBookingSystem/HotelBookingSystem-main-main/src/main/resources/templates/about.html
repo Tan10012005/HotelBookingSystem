@@ -154,9 +154,47 @@
                 height: 260px;
             }
         }
+
+        /* BACK TO HOME */
+        .back-home {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 999;
+        }
+
+        .back-home a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            background: #2563eb;
+            color: #fff;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 12px 28px rgba(37,99,235,.4);
+            transition: all .25s ease;
+        }
+
+        .back-home a i {
+            font-size: 16px;
+        }
+
+        .back-home a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 36px rgba(37,99,235,.55);
+            background: #1d4ed8;
+        }
     </style>
 </head>
 
+<div class="back-home">
+    <a href="/rooms">
+        <i class="fa-solid fa-arrow-left"></i>
+        Trang chủ
+    </a>
+</div>
 <body>
 <div class="container">
     <header>
