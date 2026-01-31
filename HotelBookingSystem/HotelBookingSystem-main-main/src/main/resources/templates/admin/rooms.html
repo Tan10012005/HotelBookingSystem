@@ -1,29 +1,65 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Quản lý phòng</title></head>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Quản lý phòng — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--accent-1:#29a14a;--muted:#6b7280;--card:#fff;--bg:#f6f8fb;--radius:12px;--shadow:0 8px 24px rgba(11,24,40,0.06)}
+        body{font-family:Inter,system-ui;margin:0;background:var(--bg);padding:28px;color:#0f172a}
+        .wrap{max-width:1100px;margin:0 auto}
+        .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+        .card{background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:var(--shadow)}
+        table{width:100%;border-collapse:collapse;margin-top:12px}
+        th,td{padding:12px 10px;text-align:left;border-bottom:1px solid #eef2f6;font-size:14px}
+        th{color:var(--muted);font-weight:700;font-size:13px}
+        .badge{padding:6px 8px;border-radius:999px;font-weight:700;font-size:12px}
+        .badge.available{background:#ecfdf5;color:#065f46}
+        .badge.booked{background:#fff7ed;color:#92400e}
+        .btn{background:linear-gradient(90deg,var(--accent-1),#178e3a);color:white;padding:8px 10px;border-radius:8px;text-decoration:none;font-weight:700}
+        .btn-ghost{background:transparent;border:1px solid #e6eef3;padding:6px 10px;border-radius:8px}
+        .actions form{display:inline-block;margin-right:6px}
+        @media (max-width:720px){table,th,td{font-size:13px;padding:10px}}
+    </style>
+</head>
 <body>
-<h2>Quản lý phòng</h2>
-<p><a href="/admin/rooms/new">Thêm phòng mới</a></p>
+<div class="wrap">
+    <div class="head">
+        <div>
+            <h2 style="margin:0">🏨 Quản lý phòng</h2>
+            <div class="small" style="color:#6b7280">Thêm/sửa/xóa phòng</div>
+        </div>
+        <div>
+            <a th:href="@{/admin/rooms/new}" class="btn">+ Thêm phòng</a>
+            <a th:href="@{/admin/dashboard}" class="btn-ghost" style="margin-left:8px">Quay lại</a>
+        </div>
+    </div>
 
-<table>
-    <thead><tr><th>ID</th><th>Số phòng</th><th>Loại</th><th>Giá</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
-    <tbody>
-    <tr th:each="r : ${rooms}">
-        <td th:text="${r.id}">1</td>
-        <td th:text="${r.roomNumber}">101</td>
-        <td th:text="${r.roomType.name}">Standard</td>
-        <td th:text="${r.pricePerNight}">100000</td>
-        <td th:text="${r.status}">AVAILABLE</td>
-        <td>
-            <a th:href="@{/admin/rooms/{id}/edit(id=${r.id})}">Sửa</a>
-            <form th:action="@{/admin/rooms/{id}/delete(id=${r.id})}" method="post" style="display:inline" onsubmit="return confirm('Xóa phòng?');">
-                <button type="submit">Xóa</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<p><a href="/admin/dashboard">Back to dashboard</a></p>
+    <div class="card">
+        <table>
+            <thead>
+            <tr><th>ID</th><th>Số phòng</th><th>Loại</th><th>Giá / đêm</th><th>Trạng thái</th><th>Hành động</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="r : ${rooms}">
+                <td th:text="${r.id}">1</td>
+                <td th:text="${r.roomNumber}">101</td>
+                <td th:text="${r.roomType.name}">STANDARD</td>
+                <td th:text="${#numbers.formatDecimal(r.pricePerNight, 0, 'COMMA', 0, 'POINT')}">500,000</td>
+                <td>
+                    <span th:classappend="${r.status.name()=='AVAILABLE'} ? 'badge available' : 'badge booked'"
+                          th:text="${r.status}">AVAILABLE</span>
+                </td>
+                <td class="actions">
+                    <a th:href="@{/admin/rooms/{id}/edit(id=${r.id})}" class="btn-ghost">Sửa</a>
+                    <form th:action="@{/admin/rooms/{id}/delete(id=${r.id})}" method="post" onsubmit="return confirm('Xóa phòng?');" style="display:inline">
+                        <button class="btn" type="submit" style="background:#ef4444">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </body>
 </html>
