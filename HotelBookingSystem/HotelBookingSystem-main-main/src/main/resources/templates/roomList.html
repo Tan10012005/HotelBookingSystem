@@ -2,25 +2,137 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Danh sách phòng — Hotel Booking</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/global.css}">
     <style>
-        :root{ --card-bg: rgba(255,255,255,0.98); --accent:#006340; --muted:#6b7280; --radius:18px; --shadow:0 12px 40px rgba(11,24,40,0.12); }
-        html,body{height:100%;margin:0;font-family:Inter, Arial, sans-serif}
-        .bg{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;filter:blur(6px) brightness(0.86);transform:scale(1.03)}
-        .bg-overlay{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.02));pointer-events:none}
-        .page-wrapper{max-width:1100px;margin:40px auto;padding:0 20px;position:relative;z-index:5}
-        .room-container{background:var(--card-bg);padding:32px;border-radius:var(--radius);box-shadow:var(--shadow);color:#1f2937}
-        .room-title{font-size:24px;font-weight:700;margin-bottom:24px;font-family:'Playfair Display', serif;}
-        .room-list{display:flex;flex-direction:column;gap:20px}
-        .room-card{display:flex;gap:24px;border-radius:14px;padding:20px;background:#fff;transition: all .2s ease;align-items:center;border:1px solid #f0f0f0}
-        .room-card:hover{transform: translateY(-5px);box-shadow: 0 15px 35px rgba(0,0,0,0.1)}
-        .room-image{width:280px;height:170px;border-radius:12px;overflow:hidden;flex-shrink:0}
-        .room-image img{width:100%;height:100%;object-fit:cover}
-        .room-info{flex:1;display:flex;flex-direction:column;gap:10px}
-        .room-name{font-size:20px;font-weight:700;color:#111827}
-        .room-price{font-size:17px;font-weight:600;color:var(--accent)}
-        .btn-select{display:inline-block;padding:12px 24px;background:var(--accent);color:#fff;border-radius:10px;text-decoration:none;font-size:14px;font-weight:700;transition:all .2s}
-        .btn-select:hover{background:#004f33;transform:translateY(-2px);box-shadow:0 6px 15px rgba(0,99,64,0.2)}
+        :root {
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --accent: #006340;
+            --muted: #6b7280;
+            --radius: 18px;
+            --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, Arial, sans-serif
+        }
+
+        .bg {
+            position: fixed;
+            inset: -20px;
+            z-index: -2;
+
+            background-size: cover;
+            background-position: center;
+            filter: blur(6px) brightness(0.86);
+        }
+
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.02));
+            pointer-events: none
+        }
+
+        .page-wrapper {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 5
+        }
+
+        .room-container {
+            background: var(--card-bg);
+            padding: 32px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            color: #1f2937
+        }
+
+        .room-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .room-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px
+        }
+
+        .room-card {
+            display: flex;
+            gap: 24px;
+            border-radius: 14px;
+            padding: 20px;
+            background: #fff;
+            transition: all .2s ease;
+            align-items: center;
+            border: 1px solid #f0f0f0
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1)
+        }
+
+        .room-image {
+            width: 280px;
+            height: 170px;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0
+        }
+
+        .room-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .room-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .room-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827
+        }
+
+        .room-price {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--accent)
+        }
+
+        .btn-select {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all .2s
+        }
+
+        .btn-select:hover {
+            background: #004f33;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 99, 64, 0.2)
+        }
     </style>
 </head>
 <body>
@@ -33,12 +145,14 @@
         <div class="room-list">
             <div class="room-card" th:each="room : ${rooms}">
                 <div class="room-image">
-                    <img th:src="${room.roomNumber.startsWith('1')} ? @{/images/rooms/executiveRoom.webp} : (${room.roomNumber.startsWith('3')} ? @{/images/rooms/suiteCityView.webp} : @{/images/rooms/superiorCityView.webp})" />
+                    <img th:src="${room.roomNumber.startsWith('1')} ? @{/images/rooms/executiveRoom.webp} : (${room.roomNumber.startsWith('3')} ? @{/images/rooms/suiteCityView.webp} : @{/images/rooms/superiorCityView.webp})"/>
                 </div>
                 <div class="room-info">
                     <div class="room-name" th:text="|Phòng ${room.roomNumber} - ${room.roomType.name}|"></div>
-                    <div style="font-size:14px;color:var(--muted)" th:text="|Sức chứa: ${room.roomType.capacity} khách|"></div>
-                    <div class="room-price" th:text="|${#numbers.formatDecimal(room.pricePerNight, 0, 'COMMA', 0, 'POINT')} VND/đêm|"></div>
+                    <div style="font-size:14px;color:var(--muted)"
+                         th:text="|Sức chứa: ${room.roomType.capacity} khách|"></div>
+                    <div class="room-price"
+                         th:text="|${#numbers.formatDecimal(room.pricePerNight, 0, 'COMMA', 0, 'POINT')} VND/đêm|"></div>
                     <div style="margin-top:8px">
                         <a th:href="@{/rooms/{id}(id=${room.id})}" class="btn-select">Xem &amp; Chọn phòng</a>
                     </div>
