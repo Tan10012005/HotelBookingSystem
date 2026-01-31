@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Về chúng tôi — Hotel Booking</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          crossorigin="anonymous"/>
+
+    <style>
+        :root {
+            --card-bg: rgba(255, 255, 255, 0.98);
+            --muted: #6b7280;
+            --radius: 18px;
+            --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, Arial, sans-serif;
+            color: #1f2937;
+            overflow-x: hidden;
+            background: #f6f8fb;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            margin: 0 0 8px;
+        }
+
+        .lead {
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 24px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 18px;
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(11, 24, 40, 0.06);
+        }
+
+        /* MAP */
+        .map-wrapper {
+            margin-top: 16px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+
+        iframe {
+            width: 100%;
+            height: 360px;
+            border: 0;
+        }
+
+        /* TEAM */
+        .team-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            background: #fafafa;
+            transition: all .25s ease;
+        }
+
+        .team-member:hover {
+            border-color: #2563eb;
+            background: #f0f6ff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(37,99,235,.15);
+        }
+
+        .avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #60a5fa, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        /* SOCIAL */
+        .social-links {
+            display: flex;
+            gap: 14px;
+            margin-top: 12px;
+        }
+
+        .social-links a {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f3f4f6;
+            color: #1f2937;
+            font-size: 18px;
+            transition: all .25s ease;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: #2563eb;
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(37,99,235,.35);
+        }
+
+        @media (max-width: 880px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            iframe {
+                height: 260px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <header>
+        <h1>Về chúng tôi</h1>
+        <div class="lead">Hotel Booking — cung cấp trải nghiệm đặt phòng nhanh chóng, an toàn và thân thiện.</div>
+    </header>
+
+    <div class="grid">
+        <main>
+            <div class="card">
+                <h2>Liên hệ & Địa điểm</h2>
+                <p class="muted">
+                    Địa chỉ: 7 Đ. D1, Long Thạnh Mỹ, Thủ Đức, TP.HCM<br>
+                    Email: <a href="mailto:support@hotel.test">support@hotel.test</a>
+                </p>
+
+                <div class="map-wrapper">
+                    <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.610010397031!2d106.809883!3d10.8411276!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752731176b07b1%3A0xb752b24b379bae5e!2sFPT%20University%20HCMC!5e0!3m2!1sen!2s!4v1769859283319"
+                            loading="lazy"></iframe>
+                </div>
+            </div>
+        </main>
+
+        <aside>
+            <div class="card">
+                <h3>Đội ngũ</h3>
+                <div class="team-list">
+                    <div class="team-member">
+                        <div class="avatar">D</div>
+                        <div>
+                            <div style="font-weight:700">Nguyễn Hữu Duy</div>
+                            <div class="muted">Team leader</div>
+                        </div>
+                    </div>
+
+                    <div class="team-member">
+                        <div class="avatar">T</div>
+                        <div>
+                            <div style="font-weight:700">Nguyễn Quốc Nhật Tân</div>
+                            <div class="muted">Co-leader</div>
+                        </div>
+                    </div>
+
+                    <div class="team-member">
+                        <div class="avatar">P</div>
+                        <div>
+                            <div style="font-weight:700">Phạm Mai Tâm Phúc</div>
+                            <div class="muted">Member</div>
+                        </div>
+                    </div>
+
+                    <div class="team-member">
+                        <div class="avatar">T</div>
+                        <div>
+                            <div style="font-weight:700">Nguyễn Sỹ Tuấn</div>
+                            <div class="muted">Member</div>
+                        </div>
+                    </div>
+
+                    <div class="team-member">
+                        <div class="avatar">L</div>
+                        <div>
+                            <div style="font-weight:700">Huỳnh Minh Lộc</div>
+                            <div class="muted">Member</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="height:14px"></div>
+
+            <div class="card">
+                <h4>Theo dõi</h4>
+                <div class="muted">Theo dõi chúng tôi trên mạng xã hội để nhận ưu đãi mới nhất.</div>
+
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<div th:insert="fragments/footer :: footer"></div>
+</body>
+</html>
