@@ -59,13 +59,18 @@ public class BookingController {
         return "bookingConfirm";
     }
 
+    /**
+     * THAY ĐỔI: Sau khi confirm, không redirect ngay mà trả về trang VietQR
+     */
     @PostMapping("/confirm")
     public String confirmBooking(
             @RequestParam Long roomId,
             @RequestParam LocalDate checkIn,
             @RequestParam LocalDate checkOut,
             @RequestParam int guests,
+            @RequestParam BigDecimal totalPrice, // Lấy số tiền từ hidden input của bookingConfirm.html
             HttpSession session,
+            Model model, // Thêm Model để truyền dữ liệu sang vietqr.html
             RedirectAttributes ra
     ) {
         User user = (User) session.getAttribute("user");
@@ -78,8 +83,15 @@ public class BookingController {
 
         Room room = roomService.getRoomById(roomId);
 
+        // Tạo booking trong DB (giữ nguyên logic cũ)
         bookingService.createBooking(user, room, checkIn, checkOut, guests);
-        return "redirect:/booking/success";
+
+        // TRUYỀN DỮ LIỆU SANG TRANG VIETQR
+        model.addAttribute("room", room);
+        model.addAttribute("totalPrice", totalPrice);
+
+        // Trả về view vietqr.html thay vì redirect
+        return "vietqr";
     }
 
     @GetMapping("/success")
