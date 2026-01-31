@@ -2,12 +2,14 @@ package com.hotelbookingsystem.controller;
 
 import com.hotelbookingsystem.entity.Admin;
 import com.hotelbookingsystem.entity.User;
-import com.hotelbookingsystem.service.AuthService;
 import com.hotelbookingsystem.repository.UserRepository;
+import com.hotelbookingsystem.service.AuthService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller

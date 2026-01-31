@@ -8,51 +8,111 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root{
-            --accent-1:#29a14a;
-            --muted:#6b7280;
-            --card:#fff;
-            --bg:#f6f8fb;
-            --radius:12px;
-            --shadow:0 8px 24px rgba(11,24,40,0.06)
+        :root {
+            --accent-1: #29a14a;
+            --muted: #6b7280;
+            --card: #fff;
+            --bg: #f6f8fb;
+            --radius: 12px;
+            --shadow: 0 8px 24px rgba(11, 24, 40, 0.06)
         }
-        body{
-            font-family:Inter,system-ui;
-            margin:0;
-            background:var(--bg);
-            padding:28px;
-            color:#0f172a
+
+        body {
+            font-family: Inter, system-ui;
+            margin: 0;
+            background: var(--bg);
+            padding: 28px;
+            color: #0f172a
         }
-        .wrap{max-width:1200px;margin:0 auto}
-        .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-        .card{background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:var(--shadow)}
-        table{width:100%;border-collapse:collapse;margin-top:12px}
-        th,td{padding:12px 10px;text-align:left;border-bottom:1px solid #eef2f6;font-size:14px}
-        th{color:var(--muted);font-weight:700;font-size:13px}
-        .badge{padding:6px 8px;border-radius:999px;font-weight:700;font-size:12px}
-        .status-pending{background:#fff7ed;color:#92400e}
-        .status-confirmed{background:#ecfdf5;color:#065f46}
-        .status-cancelled{background:#fff1f2;color:#b91c1c}
-        .btn{
-            background:linear-gradient(90deg,var(--accent-1),#178e3a);
-            color:white;
-            padding:8px 10px;
-            border-radius:8px;
-            border:none;
-            cursor:pointer;
-            font-weight:700
+
+        .wrap {
+            max-width: 1200px;
+            margin: 0 auto
         }
-        .btn-danger{background:#ef4444}
-        .btn-ghost{
-            background:transparent;
-            border:1px solid #e6eef3;
-            padding:6px 10px;
-            border-radius:8px;
-            text-decoration:none;
-            color:#0f172a;
-            font-weight:600
+
+        .head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px
         }
-        .actions form{display:inline-block;margin-right:6px}
+
+        .card {
+            background: var(--card);
+            padding: 16px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow)
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px
+        }
+
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #eef2f6;
+            font-size: 14px
+        }
+
+        th {
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 13px
+        }
+
+        .badge {
+            padding: 6px 8px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 12px
+        }
+
+        .status-pending {
+            background: #fff7ed;
+            color: #92400e
+        }
+
+        .status-confirmed {
+            background: #ecfdf5;
+            color: #065f46
+        }
+
+        .status-cancelled {
+            background: #fff1f2;
+            color: #b91c1c
+        }
+
+        .btn {
+            background: linear-gradient(90deg, var(--accent-1), #178e3a);
+            color: white;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700
+        }
+
+        .btn-danger {
+            background: #ef4444
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid #e6eef3;
+            padding: 6px 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #0f172a;
+            font-weight: 600
+        }
+
+        .actions form {
+            display: inline-block;
+            margin-right: 6px
+        }
     </style>
 </head>
 

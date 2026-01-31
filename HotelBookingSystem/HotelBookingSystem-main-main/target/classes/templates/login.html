@@ -1,160 +1,288 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>Đăng nhập — Hotel Booking</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap"
+          rel="stylesheet">
 
     <style>
-        :root{
+        :root {
             --accent-1: #29a14a;
             --accent-2: #178e3a;
             --white: #ffffff;
-            --card:#ffffff;
-            --muted:#6b7280;
-            --radius:14px;
-            --shadow: 0 12px 40px rgba(11,24,40,0.12);
+            --card: #ffffff;
+            --muted: #6b7280;
+            --radius: 14px;
+            --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
         }
-        *{box-sizing:border-box}
-        html,body{height:100%}
-        body{
-            margin:0;
-            font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-            color:#0f172a;
-            -webkit-font-smoothing:antialiased;
-            background:#f5f7fa;
+
+        * {
+            box-sizing: border-box
+        }
+
+        html, body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+            background: #f5f7fa;
         }
 
         /* Background */
         .bg {
-            position:fixed; inset:0; z-index:-2;
-            background-size:cover;
-            background-position:center;
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-size: cover;
+            background-position: center;
             filter: blur(6px) brightness(0.86);
             transform: scale(1.03);
         }
+
         .bg-overlay {
-            position:fixed; inset:0;
-            background: linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.02));
-            z-index:-1; pointer-events:none;
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.02));
+            z-index: -1;
+            pointer-events: none;
         }
 
         .page {
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:36px 18px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 36px 18px;
         }
 
         .container {
-            width:100%;
-            max-width:1000px;
-            display:flex;
-            flex-direction:column;
-            gap:28px;
-            align-items:stretch;
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            align-items: stretch;
         }
 
         .hero-top {
-            padding:8px 28px;
+            padding: 8px 28px;
             background: transparent;
             box-shadow: none;
-            text-align:center;
-        }
-        .hero-top h1{
-            margin:0;
-            font-family:'Playfair Display', serif;
-            font-size:46px;
-            line-height:1.02;
-            font-weight:700;
-            color: var(--white);
-            text-shadow: 0 10px 30px rgba(0,0,0,0.55);
-        }
-        .hero-top p{
-            margin:12px 0 0;
-            color: rgba(255,255,255,0.92);
-            font-size:18px;
-            font-weight:700;
-            text-shadow: 0 6px 18px rgba(0,0,0,0.45);
+            text-align: center;
         }
 
-        .panel-wrap { display:flex; justify-content:center; }
+        .hero-top h1 {
+            margin: 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 46px;
+            line-height: 1.02;
+            font-weight: 700;
+            color: var(--white);
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+        }
+
+        .hero-top p {
+            margin: 12px 0 0;
+            color: rgba(255, 255, 255, 0.92);
+            font-size: 18px;
+            font-weight: 700;
+            text-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+        }
+
+        .panel-wrap {
+            display: flex;
+            justify-content: center;
+        }
+
         .panel {
-            width:420px;
-            background:var(--card);
-            border-radius:14px;
-            padding:28px;
+            width: 420px;
+            background: var(--card);
+            border-radius: 14px;
+            padding: 28px;
             box-shadow: var(--shadow);
-            display:flex;
-            flex-direction:column;
-            gap:10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
             animation: cardFade .36s ease both;
         }
-        .panel.shake{ animation: shake .45s linear both; }
 
-        .panel h3{
-            margin:0 0 4px 0;
-            font-family:'Playfair Display', serif;
-            font-size:28px;
-            font-weight:700;
-            color: var(--accent-1);
-            text-align:center;
+        .panel.shake {
+            animation: shake .45s linear both;
         }
-        .panel .sub{ color:var(--muted);font-size:13px;text-align:center;margin-bottom:12px }
 
-        .error{ background:#ffe7e7; color:#9b1c1c; padding:10px; border-radius:8px; font-size:13px; text-align:center }
-        .success{ background:#ecfdf5; color:#065f46; padding:10px; border-radius:8px; font-size:13px; text-align:center }
+        .panel h3 {
+            margin: 0 0 4px 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent-1);
+            text-align: center;
+        }
+
+        .panel .sub {
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 12px
+        }
+
+        .error {
+            background: #ffe7e7;
+            color: #9b1c1c;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: center
+        }
+
+        .success {
+            background: #ecfdf5;
+            color: #065f46;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: center
+        }
 
         /* Admin hint */
-        .admin-hint{
-            background:linear-gradient(135deg, #e0e7ff, #ddd6fe);
-            border:2px solid #a78bfa;
-            padding:12px;
-            border-radius:8px;
-            font-size:13px;
-            text-align:center;
-            margin-bottom:12px;
-            color:#5b21b6;
-            font-weight:600;
+        .admin-hint {
+            background: linear-gradient(135deg, #e0e7ff, #ddd6fe);
+            border: 2px solid #a78bfa;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 12px;
+            color: #5b21b6;
+            font-weight: 600;
         }
 
-        .form-group{ display:flex; flex-direction:column; gap:8px; margin-bottom:12px }
-        label{ font-size:13px; color:var(--muted) }
-        input[type="email"], input[type="password"]{
-            padding:12px 14px; border-radius:10px; border:1px solid #e6e9ef; font-size:14px; outline:none;
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px
         }
-        input:focus{ border-color:var(--accent-2); box-shadow: 0 6px 18px rgba(23,142,58,0.06) }
 
-        .small-row{ display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--muted) }
-        .remember{ display:flex; align-items:center; gap:8px }
+        label {
+            font-size: 13px;
+            color: var(--muted)
+        }
 
-        .actions { display:flex; flex-direction:column; gap:10px; margin-top:6px }
+        input[type="email"], input[type="password"] {
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #e6e9ef;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent-2);
+            box-shadow: 0 6px 18px rgba(23, 142, 58, 0.06)
+        }
+
+        .small-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--muted)
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px
+        }
+
         .btn-primary {
             background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
             color: #fff;
             border: none;
-            padding:12px;
-            border-radius:10px;
-            font-weight:700;
-            cursor:pointer;
-            text-align:center;
-            font-size:15px;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            font-size: 15px;
         }
-        .btn-primary:hover{ opacity:0.96 }
 
-        .minor{ font-size:13px; color:var(--muted); text-align:center }
-        .minor a{ color:var(--accent-1); text-decoration:none; font-weight:700 }
+        .btn-primary:hover {
+            opacity: 0.96
+        }
 
-        @keyframes cardFade { from { transform: translateY(8px); opacity:0 } to { transform: translateY(0); opacity:1 } }
-        @keyframes shake { 0%{ transform: translateX(0) } 20%{ transform: translateX(-8px) } 40%{ transform: translateX(8px) } 60%{ transform: translateX(-6px) } 80%{ transform: translateX(6px) } 100%{ transform: translateX(0) } }
+        .minor {
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center
+        }
 
-        @media (max-width:920px){
-            .hero-top h1{ font-size:30px }
-            .panel{ width:100%; padding:20px }
-            .container{ gap:18px }
+        .minor a {
+            color: var(--accent-1);
+            text-decoration: none;
+            font-weight: 700
+        }
+
+        @keyframes cardFade {
+            from {
+                transform: translateY(8px);
+                opacity: 0
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1
+            }
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0)
+            }
+            20% {
+                transform: translateX(-8px)
+            }
+            40% {
+                transform: translateX(8px)
+            }
+            60% {
+                transform: translateX(-6px)
+            }
+            80% {
+                transform: translateX(6px)
+            }
+            100% {
+                transform: translateX(0)
+            }
+        }
+
+        @media (max-width: 920px) {
+            .hero-top h1 {
+                font-size: 30px
+            }
+
+            .panel {
+                width: 100%;
+                padding: 20px
+            }
+
+            .container {
+                gap: 18px
+            }
         }
     </style>
 </head>
@@ -201,17 +329,17 @@
                 <form th:action="@{/login}" method="post" novalidate>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input id="email" name="email" type="email" placeholder="you@example.com" required />
+                        <input id="email" name="email" type="email" placeholder="you@example.com" required/>
                     </div>
 
                     <div class="form-group">
                         <label for="password">Mật khẩu</label>
-                        <input id="password" name="password" type="password" placeholder="••••••••" required />
+                        <input id="password" name="password" type="password" placeholder="••••••••" required/>
                     </div>
 
                     <div class="small-row">
                         <label class="remember">
-                            <input type="checkbox" id="remember" name="remember" />
+                            <input type="checkbox" id="remember" name="remember"/>
                             <span style="font-size:13px;color:var(--muted)">Ghi nhớ đăng nhập</span>
                         </label>
                         <a th:href="@{/register}">Tạo tài khoản</a>
@@ -222,7 +350,8 @@
                     </div>
                 </form>
 
-                <div class="minor" style="margin-top:8px">Hoặc liên hệ hỗ trợ: <strong style="color:var(--accent-1)">support@hotel.test</strong></div>
+                <div class="minor" style="margin-top:8px">Hoặc liên hệ hỗ trợ: <strong style="color:var(--accent-1)">support@hotel.test</strong>
+                </div>
             </div>
         </div>
 

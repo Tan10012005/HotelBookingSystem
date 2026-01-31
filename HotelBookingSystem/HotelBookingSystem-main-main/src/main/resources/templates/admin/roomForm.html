@@ -1,29 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"/><title>Form phòng</title></head>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Form phòng</title></head>
 <body>
 <h2 th:text="${room.id} != null ? 'Sửa phòng' : 'Thêm phòng'">Form</h2>
 
 <form th:if="${room.id} == null" th:action="@{/admin/rooms}" method="post">
-    Số phòng: <input name="roomNumber" /><br/>
+    Số phòng: <input name="roomNumber"/><br/>
     Loại phòng:
     <select name="roomTypeId">
         <option th:each="t : ${types}" th:value="${t.id}" th:text="${t.name}"></option>
     </select><br/>
-    Giá / đêm: <input name="pricePerNight" /><br/>
+    Giá / đêm: <input name="pricePerNight"/><br/>
     <button type="submit">Tạo</button>
 </form>
 
 <form th:if="${room.id} != null" th:action="@{/admin/rooms/{id}/update(id=${room.id})}" method="post">
-    Số phòng: <input name="roomNumber" th:value="${room.roomNumber}" /><br/>
+    Số phòng: <input name="roomNumber" th:value="${room.roomNumber}"/><br/>
     Loại phòng:
     <select name="roomTypeId">
-        <option th:each="t : ${types}" th:value="${t.id}" th:selected="${t.id == room.roomType.id}" th:text="${t.name}"></option>
+        <option th:each="t : ${types}" th:value="${t.id}" th:selected="${t.id == room.roomType.id}"
+                th:text="${t.name}"></option>
     </select><br/>
-    Giá / đêm: <input name="pricePerNight" th:value="${room.pricePerNight}" /><br/>
+    Giá / đêm: <input name="pricePerNight" th:value="${room.pricePerNight}"/><br/>
     Trạng thái:
     <select name="status">
-        <option th:each="s : ${T(com.hotelbookingsystem.entity.RoomStatus).values()}" th:value="${s}" th:text="${s}" th:selected="${s == room.status}"></option>
+        <option th:each="s : ${T(com.hotelbookingsystem.entity.RoomStatus).values()}" th:value="${s}" th:text="${s}"
+                th:selected="${s == room.status}"></option>
     </select><br/>
     <button type="submit">Cập nhật</button>
 </form>

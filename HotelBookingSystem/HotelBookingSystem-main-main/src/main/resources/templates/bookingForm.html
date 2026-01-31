@@ -4,30 +4,168 @@
     <title>Booking</title>
 
     <style>
-        :root{ --card-bg: rgba(255,255,255,0.96); --shadow:0 12px 40px rgba(11,24,40,0.12); --accent:#006340; --muted:#6b7280; --radius:16px }
-        html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f6fa}
-        .bg{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;filter:blur(6px) brightness(0.86);transform:scale(1.03)}
-        .bg-overlay{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.02));pointer-events:none}
+        :root {
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
+            --accent: #006340;
+            --muted: #6b7280;
+            --radius: 16px
+        }
 
-        .page-wrapper{max-width:1200px;margin:80px auto;padding:0 20px}
-        .booking-wrapper{display:flex;gap:40px;align-items:flex-start}
-        .room-preview{flex:1;background:var(--card-bg);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
-        .room-preview img{width:100%;border-radius:12px;cursor:pointer}
-        .view-btn{margin-top:14px;width:100%;padding:12px;background:linear-gradient(90deg,var(--accent),#004f33);color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f6fa
+        }
 
-        .booking-box{width:420px;background:var(--card-bg);padding:30px;border-radius:var(--radius);box-shadow:var(--shadow);margin-top:0}
-        label{font-weight:bold;margin-top:12px;display:block}
-        input{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #e6e9ef}
-        .submit-btn{margin-top:22px;width:100%;padding:12px;background:linear-gradient(90deg,var(--accent),#004f33);color:#fff;border:none;border-radius:10px;font-weight:bold;cursor:pointer}
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-size: cover;
+            background-position: center;
+            filter: blur(6px) brightness(0.86);
+            transform: scale(1.03)
+        }
+
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.02));
+            pointer-events: none
+        }
+
+        .page-wrapper {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px
+        }
+
+        .booking-wrapper {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start
+        }
+
+        .room-preview {
+            flex: 1;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow)
+        }
+
+        .room-preview img {
+            width: 100%;
+            border-radius: 12px;
+            cursor: pointer
+        }
+
+        .view-btn {
+            margin-top: 14px;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, var(--accent), #004f33);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer
+        }
+
+        .booking-box {
+            width: 420px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-top: 0
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 12px;
+            display: block
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 8px;
+            border: 1px solid #e6e9ef
+        }
+
+        .submit-btn {
+            margin-top: 22px;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(90deg, var(--accent), #004f33);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer
+        }
 
         /* modal */
-        .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);justify-content:center;align-items:center;z-index:999}
-        .modal-content{background:#111;padding:20px;border-radius:12px;max-width:900px;width:90%;position:relative}
-        .modal img{width:100%;border-radius:10px}
-        .close{position:absolute;top:10px;right:14px;font-size:22px;color:#fff;cursor:pointer}
-        .nav-btn{position:absolute;top:50%;transform:translateY(-50%);font-size:30px;background:rgba(255,255,255,0.2);color:#fff;border:none;padding:10px 16px;cursor:pointer;border-radius:50%}
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 999
+        }
 
-        @media (max-width:980px){ .booking-wrapper{flex-direction:column} .booking-box{width:100%} }
+        .modal-content {
+            background: #111;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 90%;
+            position: relative
+        }
+
+        .modal img {
+            width: 100%;
+            border-radius: 10px
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 22px;
+            color: #fff;
+            cursor: pointer
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            cursor: pointer;
+            border-radius: 50%
+        }
+
+        @media (max-width: 980px) {
+            .booking-wrapper {
+                flex-direction: column
+            }
+
+            .booking-box {
+                width: 100%
+            }
+        }
     </style>
 </head>
 
@@ -41,7 +179,8 @@
 
         <!-- ROOM PREVIEW -->
         <div class="room-preview" th:attr="data-room=${room.roomNumber}">
-            <img th:src="${room.roomNumber == '101'} ? '/images/rooms/executiveRoom.webp' : '/images/rooms/superiorCityView.webp'" onclick="openModal()">
+            <img th:src="${room.roomNumber == '101'} ? '/images/rooms/executiveRoom.webp' : '/images/rooms/superiorCityView.webp'"
+                 onclick="openModal()">
             <button class="view-btn" onclick="openModal()">Xem ảnh phòng</button>
         </div>
 
@@ -76,19 +215,31 @@
 </div>
 
 <script>
-    const executiveImages = ["/images/rooms/executiveRoom.webp","/images/rooms/executiveRoom1.webp","/images/rooms/executiveRoom2.webp"];
-    const superiorImages = ["/images/rooms/superiorCityView.webp","/images/rooms/superiorCityView1.webp","/images/rooms/superiorCityView2.webp"];
-    let images=[], currentIndex=0;
-    function openModal(){
+    const executiveImages = ["/images/rooms/executiveRoom.webp", "/images/rooms/executiveRoom1.webp", "/images/rooms/executiveRoom2.webp"];
+    const superiorImages = ["/images/rooms/superiorCityView.webp", "/images/rooms/superiorCityView1.webp", "/images/rooms/superiorCityView2.webp"];
+    let images = [], currentIndex = 0;
+
+    function openModal() {
         const roomNumber = document.querySelector(".room-preview").dataset.room;
         images = (roomNumber === "101") ? executiveImages : superiorImages;
-        currentIndex=0;
+        currentIndex = 0;
         document.getElementById("modalImage").src = images[0];
         document.getElementById("imageModal").style.display = "flex";
     }
-    function closeModal(){ document.getElementById("imageModal").style.display = "none"; }
-    function nextImage(){ currentIndex=(currentIndex+1)%images.length; document.getElementById("modalImage").src=images[currentIndex]; }
-    function prevImage(){ currentIndex=(currentIndex-1+images.length)%images.length; document.getElementById("modalImage").src=images[currentIndex]; }
+
+    function closeModal() {
+        document.getElementById("imageModal").style.display = "none";
+    }
+
+    function nextImage() {
+        currentIndex = (currentIndex + 1) % images.length;
+        document.getElementById("modalImage").src = images[currentIndex];
+    }
+
+    function prevImage() {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        document.getElementById("modalImage").src = images[currentIndex];
+    }
 </script>
 
 </body>

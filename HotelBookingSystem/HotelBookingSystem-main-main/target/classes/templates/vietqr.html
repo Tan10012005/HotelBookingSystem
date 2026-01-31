@@ -1,69 +1,82 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>Thanh toán đơn hàng — Hotel Booking</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap"
+          rel="stylesheet">
 
     <style>
-        :root{
+        :root {
             --accent-1: #29a14a;
             --accent-2: #178e3a;
             --white: #ffffff;
-            --card:#ffffff;
-            --muted:#6b7280;
-            --radius:14px;
-            --shadow: 0 12px 40px rgba(11,24,40,0.12);
+            --card: #ffffff;
+            --muted: #6b7280;
+            --radius: 14px;
+            --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
         }
-        *{box-sizing:border-box}
-        html,body{height:100%}
-        body{
-            margin:0;
-            font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-            color:#0f172a;
-            background:#f5f7fa;
+
+        * {
+            box-sizing: border-box
+        }
+
+        html, body {
+            height: 100%
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+            color: #0f172a;
+            background: #f5f7fa;
         }
 
         /* Background mờ đồng bộ trang Login */
         .bg {
-            position:fixed; inset:0; z-index:-2;
-            background-size:cover;
-            background-position:center;
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-size: cover;
+            background-position: center;
             filter: blur(6px) brightness(0.86);
             transform: scale(1.03);
         }
+
         .bg-overlay {
-            position:fixed; inset:0;
-            background: linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.02));
-            z-index:-1; pointer-events:none;
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.02));
+            z-index: -1;
+            pointer-events: none;
         }
 
         .page {
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
         .panel {
             width: 100%;
-            max-width:420px;
-            background:var(--card);
-            border-radius:var(--radius);
-            padding:32px;
+            max-width: 420px;
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 32px;
             box-shadow: var(--shadow);
             text-align: center;
             animation: cardFade .36s ease both;
         }
 
-        .panel h3{
-            margin:0 0 8px 0;
-            font-family:'Playfair Display', serif;
-            font-size:28px;
-            font-weight:700;
+        .panel h3 {
+            margin: 0 0 8px 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
             color: var(--accent-1);
         }
 
@@ -82,6 +95,7 @@
             border: 1px solid #e2e8f0;
             margin: 20px 0;
         }
+
         .qr-image {
             width: 100%;
             max-width: 260px;
@@ -94,7 +108,7 @@
             display: none;
             position: absolute;
             inset: 0;
-            background: rgba(255,255,255,0.98);
+            background: rgba(255, 255, 255, 0.98);
             border-radius: 12px;
             flex-direction: column;
             align-items: center;
@@ -114,8 +128,22 @@
             vertical-align: middle;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes cardFade { from { transform: translateY(8px); opacity:0 } to { transform: translateY(0); opacity:1 } }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes cardFade {
+            from {
+                transform: translateY(8px);
+                opacity: 0
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1
+            }
+        }
     </style>
 </head>
 <body>
@@ -126,7 +154,8 @@
 <main class="page">
     <div class="panel">
         <h3>Thanh toán VietQR</h3>
-        <p style="color:var(--muted); font-size:14px;">Quét mã để đặt phòng: <strong th:text="${room.roomNumber}">101</strong></p>
+        <p style="color:var(--muted); font-size:14px;">Quét mã để đặt phòng: <strong
+                th:text="${room.roomNumber}">101</strong></p>
 
         <div class="price-text">
             <span th:text="${#numbers.formatDecimal(totalPrice, 0, 'COMMA', 0, 'POINT')}">500,000</span> VND
@@ -144,17 +173,19 @@
         </div>
 
         <div id="statusInfo" style="font-size: 13px; color: var(--muted);">
-            <div class="loader-spin"></div> Đang kiểm tra giao dịch của bạn...
+            <div class="loader-spin"></div>
+            Đang kiểm tra giao dịch của bạn...
         </div>
 
-        <button onclick="history.back()" style="margin-top: 25px; background: none; border: none; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: 13px;">
+        <button onclick="history.back()"
+                style="margin-top: 25px; background: none; border: none; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: 13px;">
             Quay lại chỉnh sửa thông tin
         </button>
     </div>
 </main>
 
 <script>
-    window.onload = function() {
+    window.onload = function () {
         // Giả lập sau 7 giây sẽ tự động xác nhận thành công cho đồ án
         setTimeout(() => {
             document.getElementById('statusInfo').style.opacity = '0';

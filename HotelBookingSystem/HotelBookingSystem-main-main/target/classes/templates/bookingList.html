@@ -4,22 +4,23 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Booking của tôi - Hotel Booking System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Inter:wght@300;400;600&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Inter:wght@300;400;600&amp;display=swap"
+          rel="stylesheet"/>
 
     <style>
-        :root{
-            --card-bg: rgba(255,255,255,0.96);
-            --accent:#006340;
-            --muted:#6b7280;
-            --radius:18px;
-            --shadow:0 12px 40px rgba(11,24,40,0.12);
+        :root {
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --accent: #006340;
+            --muted: #6b7280;
+            --radius: 18px;
+            --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
         }
 
-        html,body{
-            height:100%;
-            margin:0;
-            font-family:Inter, Arial, Helvetica, sans-serif;
-            overflow-x:hidden;
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, Arial, Helvetica, sans-serif;
+            overflow-x: hidden;
         }
 
         body {
@@ -34,134 +35,178 @@
         }
 
         @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
-        .container{
-            max-width:1200px;
-            margin:40px auto;
-            background:var(--card-bg);
-            padding:20px;
-            border-radius:var(--radius);
-            box-shadow:var(--shadow);
-            color:#1f2937;
-            position:relative;
-            z-index:1;
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            color: #1f2937;
+            position: relative;
+            z-index: 1;
             backdrop-filter: blur(10px);
         }
 
-        h3.page-title{
-            margin:0 0 18px 0;
-            font-size:22px;
-            display:flex;
-            align-items:center;
-            gap:10px;
-            color:#1f2937;
+        h3.page-title {
+            margin: 0 0 18px 0;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1f2937;
         }
 
-        table{width:100%;border-collapse:separate;border-spacing:0 12px}
-        thead th{
-            font-weight:700;
-            padding:10px 14px;
-            text-align:left;
-            color:#374151;
-            background:transparent;
-        }
-        tbody tr{
-            background:#fff;
-            box-shadow:0 6px 18px rgba(0,0,0,0.04);
-            border-radius:10px;
-            transition:transform .15s ease,box-shadow .15s ease;
-        }
-        tbody tr:hover{
-            transform:translateY(-6px);
-            box-shadow:0 22px 48px rgba(11,24,40,0.16);
-        }
-        td{
-            padding:16px;
-            background:transparent;
-            border:none;
-            vertical-align:middle;
-        }
-        td:first-child{border-top-left-radius:10px;border-bottom-left-radius:10px}
-        td:last-child{border-top-right-radius:10px;border-bottom-right-radius:10px}
-
-        .badge{
-            display:inline-block;
-            padding:8px 12px;
-            border-radius:999px;
-            font-weight:700;
-            font-size:13px;
-        }
-        .status-pending{
-            background:linear-gradient(90deg,#fff7e6,#fff2dc);
-            color:#b76a00;
-            animation:pulse 2.5s infinite;
-        }
-        .status-confirmed{
-            background:linear-gradient(90deg,#e6ffef,#dff8f0);
-            color:#1f8b4a;
-        }
-        .status-cancelled{
-            background:linear-gradient(90deg,#ffecec,#fff0f0);
-            color:#c0392b;
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 12px
         }
 
-        @keyframes pulse{
-            0%{transform:scale(1)}
-            50%{transform:scale(1.02)}
-            100%{transform:scale(1)}
+        thead th {
+            font-weight: 700;
+            padding: 10px 14px;
+            text-align: left;
+            color: #374151;
+            background: transparent;
         }
 
-        .btn-cancel{
-            background:#e74c3c;
-            color:#fff;
-            border:none;
-            padding:8px 16px;
-            border-radius:8px;
-            cursor:pointer;
-            font-weight:700;
-            transition:transform .12s,box-shadow .12s;
-        }
-        .btn-cancel:hover{
-            transform:translateY(-4px);
-            box-shadow:0 12px 30px rgba(199,57,43,0.18);
+        tbody tr {
+            background: #fff;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+            border-radius: 10px;
+            transition: transform .15s ease, box-shadow .15s ease;
         }
 
-        .btn-refund{
-            background:#27ae60;
-            color:#fff;
-            border:none;
-            padding:8px 16px;
-            border-radius:8px;
-            cursor:pointer;
-            font-weight:700;
-            margin-top:6px;
+        tbody tr:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 22px 48px rgba(11, 24, 40, 0.16);
         }
 
-        .empty-message{
-            text-align:center;
-            color:var(--muted);
-            margin-top:20px;
-            padding:24px;
+        td {
+            padding: 16px;
+            background: transparent;
+            border: none;
+            vertical-align: middle;
         }
 
-        @media (max-width:980px){
-            table, thead, tbody, th, td, tr{display:block}
-            thead{display:none}
-            tbody tr{margin-bottom:12px;padding:12px;border-radius:12px}
-            td{
-                padding:8px 6px;
-                display:block;
-                text-align:left;
+        td:first-child {
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px
+        }
+
+        td:last-child {
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .status-pending {
+            background: linear-gradient(90deg, #fff7e6, #fff2dc);
+            color: #b76a00;
+            animation: pulse 2.5s infinite;
+        }
+
+        .status-confirmed {
+            background: linear-gradient(90deg, #e6ffef, #dff8f0);
+            color: #1f8b4a;
+        }
+
+        .status-cancelled {
+            background: linear-gradient(90deg, #ffecec, #fff0f0);
+            color: #c0392b;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1)
             }
-            td:before{
-                content:attr(data-label);
-                font-weight:bold;
-                display:inline-block;
-                width:120px;
+            50% {
+                transform: scale(1.02)
+            }
+            100% {
+                transform: scale(1)
+            }
+        }
+
+        .btn-cancel {
+            background: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: transform .12s, box-shadow .12s;
+        }
+
+        .btn-cancel:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(199, 57, 43, 0.18);
+        }
+
+        .btn-refund {
+            background: #27ae60;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: var(--muted);
+            margin-top: 20px;
+            padding: 24px;
+        }
+
+        @media (max-width: 980px) {
+            table, thead, tbody, th, td, tr {
+                display: block
+            }
+
+            thead {
+                display: none
+            }
+
+            tbody tr {
+                margin-bottom: 12px;
+                padding: 12px;
+                border-radius: 12px
+            }
+
+            td {
+                padding: 8px 6px;
+                display: block;
+                text-align: left;
+            }
+
+            td:before {
+                content: attr(data-label);
+                font-weight: bold;
+                display: inline-block;
+                width: 120px;
             }
         }
     </style>
@@ -206,7 +251,8 @@
             <td data-label="Hoàn tiền:">
                 <span th:if="${b.refundStatus.name() == 'NONE'}">—</span>
                 <span th:if="${b.refundStatus.name() == 'REQUESTED'}" class="badge status-pending">⏳ Đang xử lý</span>
-                <span th:if="${b.refundStatus.name() == 'TRANSFERRED'}" class="badge status-confirmed">💸 Đã chuyển</span>
+                <span th:if="${b.refundStatus.name() == 'TRANSFERRED'}"
+                      class="badge status-confirmed">💸 Đã chuyển</span>
                 <span th:if="${b.refundStatus.name() == 'RECEIVED'}" class="badge status-confirmed">✅ Đã nhận</span>
             </td>
 

@@ -6,23 +6,118 @@
     <title>Quản lý người dùng — Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root{--accent-1:#29a14a;--muted:#6b7280;--card:#fff;--bg:#f6f8fb;--radius:12px;--shadow:0 8px 24px rgba(11,24,40,0.06)}
-        body{font-family:Inter,system-ui;margin:0;background:var(--bg);padding:28px;color:#0f172a}
-        .wrap{max-width:1100px;margin:0 auto}
-        .head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
-        .card{background:var(--card);padding:16px;border-radius:var(--radius);box-shadow:var(--shadow)}
-        table{width:100%;border-collapse:collapse;margin-top:12px}
-        th,td{padding:12px 10px;text-align:left;border-bottom:1px solid #eef2f6;font-size:14px}
-        th{color:var(--muted);font-weight:700;font-size:13px}
-        .badge{padding:6px 8px;border-radius:999px;font-weight:700;font-size:12px}
-        .badge.active{background:#ecfdf5;color:#065f46}
-        .badge.banned{background:#fff1f2;color:#b91c1c}
-        .actions form{display:inline-block;margin-right:6px}
-        .btn{background:linear-gradient(90deg,var(--accent-1),#178e3a);color:white;padding:8px 10px;border-radius:8px;text-decoration:none;font-weight:700}
-        .btn-ghost{background:transparent;border:1px solid #e6eef3;padding:6px 10px;border-radius:8px}
-        .search{padding:8px;border-radius:10px;border:1px solid #e6eef3;width:280px}
-        .small{color:var(--muted);font-size:13px}
-        @media (max-width:720px){table,th,td{font-size:13px;padding:10px}}
+        :root {
+            --accent-1: #29a14a;
+            --muted: #6b7280;
+            --card: #fff;
+            --bg: #f6f8fb;
+            --radius: 12px;
+            --shadow: 0 8px 24px rgba(11, 24, 40, 0.06)
+        }
+
+        body {
+            font-family: Inter, system-ui;
+            margin: 0;
+            background: var(--bg);
+            padding: 28px;
+            color: #0f172a
+        }
+
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto
+        }
+
+        .head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px
+        }
+
+        .card {
+            background: var(--card);
+            padding: 16px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow)
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px
+        }
+
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #eef2f6;
+            font-size: 14px
+        }
+
+        th {
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 13px
+        }
+
+        .badge {
+            padding: 6px 8px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 12px
+        }
+
+        .badge.active {
+            background: #ecfdf5;
+            color: #065f46
+        }
+
+        .badge.banned {
+            background: #fff1f2;
+            color: #b91c1c
+        }
+
+        .actions form {
+            display: inline-block;
+            margin-right: 6px
+        }
+
+        .btn {
+            background: linear-gradient(90deg, var(--accent-1), #178e3a);
+            color: white;
+            padding: 8px 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid #e6eef3;
+            padding: 6px 10px;
+            border-radius: 8px
+        }
+
+        .search {
+            padding: 8px;
+            border-radius: 10px;
+            border: 1px solid #e6eef3;
+            width: 280px
+        }
+
+        .small {
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        @media (max-width: 720px) {
+            table, th, td {
+                font-size: 13px;
+                padding: 10px
+            }
+        }
     </style>
 </head>
 <body>
@@ -58,10 +153,13 @@
                 <td th:text="${u.fullName}">Nguyen Van A</td>
                 <td th:text="${u.phoneNumber}">0123456789</td>
                 <td>
-                    <span th:classappend="${u.isActive} ? 'badge active' : 'badge banned'" th:text="${u.isActive} ? 'Active' : 'Banned'">Active</span>
+                    <span th:classappend="${u.isActive} ? 'badge active' : 'badge banned'"
+                          th:text="${u.isActive} ? 'Active' : 'Banned'">Active</span>
                 </td>
-                <td th:text="${u.createdAt != null ? #temporals.format(u.createdAt,'yyyy-MM-dd') : '—'}">—</td>                <td class="actions">
-                    <form th:if="${u.isActive}" th:action="@{/admin/users/{id}/ban(id=${u.id})}" method="post" onsubmit="return confirm('Bạn có chắc muốn ban người dùng này?');">
+                <td th:text="${u.createdAt != null ? #temporals.format(u.createdAt,'yyyy-MM-dd') : '—'}">—</td>
+                <td class="actions">
+                    <form th:if="${u.isActive}" th:action="@{/admin/users/{id}/ban(id=${u.id})}" method="post"
+                          onsubmit="return confirm('Bạn có chắc muốn ban người dùng này?');">
                         <button class="btn" type="submit" style="background:#ef4444">Ban</button>
                     </form>
                     <form th:if="${!u.isActive}" th:action="@{/admin/users/{id}/activate(id=${u.id})}" method="post">
@@ -75,10 +173,10 @@
 </div>
 
 <script>
-    function filterTable(q){
+    function filterTable(q) {
         q = q.trim().toLowerCase();
         const rows = document.querySelectorAll('#usersTable tbody tr');
-        rows.forEach(r=>{
+        rows.forEach(r => {
             const email = r.children[1].innerText.toLowerCase();
             r.style.display = (!q || email.includes(q)) ? '' : 'none';
         })

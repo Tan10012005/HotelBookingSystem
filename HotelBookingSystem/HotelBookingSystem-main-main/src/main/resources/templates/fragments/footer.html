@@ -1,34 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="utf-8"/></head>
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+</head>
 <body>
-<!-- Footer fragment -->
+
 <div th:fragment="footer">
+
     <style>
         :root{
             --accent-1:#29a14a;
             --muted:#6b7280;
-            --bg:#f6f8fb;
         }
+
+        /* ===== FOOTER ===== */
         .site-footer{
-            padding:18px 20px;
-            background:#ffffff;
-            box-shadow:0 6px 20px rgba(11,24,40,0.04);
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:12px;
-            font-size:14px;
-            color:var(--muted);
-            margin:28px -28px 0 -28px; /* ăn hết padding body */
-            border-radius:0;
+            width: 100%;
+            padding: 18px 20px;
+            background: #ffffff;
+            box-shadow: 0 -4px 16px rgba(11, 24, 40, 0.06);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+
+            font-size: 14px;
+            color: var(--muted);
         }
-        .site-footer a{color:var(--accent-1);text-decoration:none;font-weight:700}
-        .small{font-size:13px;color:var(--muted)}
-        @media (max-width:760px){
+
+        .site-footer a {
+            color: var(--accent-1);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .small {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* Mobile */
+        @media (max-width: 760px) {
             .site-footer{
-                flex-direction:column;
-                align-items:flex-start
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .footer-right {
+                text-align: left;
+                width: 100%;
             }
         }
     </style>
@@ -36,17 +59,24 @@
     <footer class="site-footer" role="contentinfo">
         <div>
             <div style="font-weight:700;color:#0f172a">Hotel Booking</div>
-            <div class="small">Địa chỉ: 123 Đường ABC, Quận XYZ — Email: <a href="mailto:support@hotel.test">support@hotel.test</a></div>
+            <div class="small">
+                Địa chỉ: 123 Đường ABC, Quận XYZ —
+                Email: <a href="mailto:support@hotel.test">support@hotel.test</a>
+            </div>
         </div>
 
-        <div style="text-align:right">
-            <div class="small">© <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2026</span> Hotel Booking — All rights reserved</div>
+        <div class="footer-right" style="text-align:right">
+            <div class="small">
+                © <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2026</span>
+                Hotel Booking — All rights reserved
+            </div>
             <div style="margin-top:6px">
                 <a href="#" style="margin-right:10px">Privacy</a>
                 <a href="#">Terms</a>
             </div>
         </div>
     </footer>
+
 </div>
 </body>
 </html>

@@ -4,50 +4,151 @@
     <title>Xác nhận booking</title>
 
     <style>
-        :root{
-            --card-bg: rgba(255,255,255,0.96);
-            --shadow: 0 12px 40px rgba(11,24,40,0.12);
+        :root {
+            --card-bg: rgba(255, 255, 255, 0.96);
+            --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
             --accent: #006340;
             --muted: #6b7280;
             --radius: 16px;
         }
 
-        html,body{height:100%;margin:0;font-family: Arial, Helvetica, sans-serif;background:#f6f7f8;}
-        /* Background layers (shared pattern) */
-        .bg{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;filter:blur(6px) brightness(0.86);transform:scale(1.03);}
-        .bg-overlay{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.02));pointer-events:none;}
-
-        /* Header */
-        .stockx-header{background:transparent;height:64px;display:flex;align-items:center;box-shadow:none;padding:0 24px}
-        .stockx-header-inner{max-width:1200px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-        .stockx-logo{color:#ffffff;font-size:20px;font-weight:bold;display:flex;align-items:center;gap:8px}
-        .stockx-nav{display:flex;gap:20px}
-        .stockx-nav a{color:rgba(255,255,255,0.95);text-decoration:none;font-size:14px;font-weight:600}
-
-        /* Confirm box sits above background with translucent white */
-        .confirm-box{
-            width:520px;
-            margin:80px auto;
-            background:var(--card-bg);
-            padding:30px;
-            border-radius:var(--radius);
-            box-shadow:var(--shadow);
-            color:#162029;
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f6f7f8;
         }
 
-        .confirm-box h3{margin-bottom:20px;display:flex;align-items:center;gap:8px}
-        .confirm-box p{margin:10px 0;font-size:15px;color:var(--muted)}
-        .price{font-size:18px;font-weight:bold;color:var(--accent);margin-top:12px}
+        /* Background layers (shared pattern) */
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-size: cover;
+            background-position: center;
+            filter: blur(6px) brightness(0.86);
+            transform: scale(1.03);
+        }
 
-        .btn-group{display:flex;gap:12px;margin-top:24px}
-        .btn-back{flex:1;padding:12px;background:#e9ecef;border:none;border-radius:10px;font-weight:700;cursor:pointer}
-        .btn-confirm{flex:3;padding:12px;background:linear-gradient(90deg,var(--accent), #004f33);color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer}
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.02));
+            pointer-events: none;
+        }
 
-        .btn-back:hover{background:#dfe6e7}
-        .btn-confirm:hover{opacity:0.95}
+        /* Header */
+        .stockx-header {
+            background: transparent;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            box-shadow: none;
+            padding: 0 24px
+        }
 
-        @media (max-width:640px){
-            .confirm-box{width:92%;margin:40px auto}
+        .stockx-header-inner {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .stockx-logo {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .stockx-nav {
+            display: flex;
+            gap: 20px
+        }
+
+        .stockx-nav a {
+            color: rgba(255, 255, 255, 0.95);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600
+        }
+
+        /* Confirm box sits above background with translucent white */
+        .confirm-box {
+            width: 520px;
+            margin: 80px auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            color: #162029;
+        }
+
+        .confirm-box h3 {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .confirm-box p {
+            margin: 10px 0;
+            font-size: 15px;
+            color: var(--muted)
+        }
+
+        .price {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--accent);
+            margin-top: 12px
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px
+        }
+
+        .btn-back {
+            flex: 1;
+            padding: 12px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer
+        }
+
+        .btn-confirm {
+            flex: 3;
+            padding: 12px;
+            background: linear-gradient(90deg, var(--accent), #004f33);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer
+        }
+
+        .btn-back:hover {
+            background: #dfe6e7
+        }
+
+        .btn-confirm:hover {
+            opacity: 0.95
+        }
+
+        @media (max-width: 640px) {
+            .confirm-box {
+                width: 92%;
+                margin: 40px auto
+            }
         }
     </style>
 </head>
