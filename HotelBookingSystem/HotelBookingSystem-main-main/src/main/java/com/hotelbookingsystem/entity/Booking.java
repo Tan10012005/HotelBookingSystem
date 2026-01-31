@@ -6,9 +6,6 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
-
 @Entity
 @Table(name = "bookings")
 @Getter
@@ -45,18 +42,19 @@ public class Booking {
     @Column(nullable = false)
     private BookingStatus status;
 
+    // NEW: refund tracking
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RefundStatus refundStatus;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-//    @OneToMany(mappedBy = "booking", fetch = FetchType.LAZY)
-//    private List<Payment> payments;
-
-    /* ===== Lifecycle ===== */
 
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.status = BookingStatus.PENDING_CONFIRM;
+        this.refundStatus = RefundStatus.NONE; // default
     }
 
     @PreUpdate
@@ -64,4 +62,3 @@ public class Booking {
         this.updatedAt = LocalDateTime.now();
     }
 }
-

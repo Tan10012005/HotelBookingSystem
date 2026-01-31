@@ -1,6 +1,7 @@
 package com.hotelbookingsystem.service;
 
 import com.hotelbookingsystem.entity.Booking;
+import com.hotelbookingsystem.entity.CancelResult;
 import com.hotelbookingsystem.entity.Room;
 import com.hotelbookingsystem.entity.User;
 
@@ -19,5 +20,12 @@ public interface BookingService {
 
     List<Booking> getBookingsByUser(User user);
 
-    boolean cancelBooking(Long bookingId, User user);
+    // Changed: return CancelResult to indicate reason
+    CancelResult cancelBooking(Long bookingId, User user);
+
+    // Admin marks that money has been transferred to user
+    boolean adminMarkRefundTransferred(Long bookingId);
+
+    // User confirms they received the refund
+    boolean userConfirmRefundReceived(Long bookingId, User user);
 }

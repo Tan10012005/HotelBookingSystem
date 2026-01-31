@@ -1,5 +1,6 @@
 package com.hotelbookingsystem.controller;
 
+import com.hotelbookingsystem.entity.CancelResult;
 import com.hotelbookingsystem.entity.Room;
 import com.hotelbookingsystem.entity.User;
 import com.hotelbookingsystem.service.BookingService;
@@ -114,14 +115,47 @@ public class BookingController {
             return "redirect:/login";
         }
 
-        boolean success = bookingService.cancelBooking(id, user);
+        CancelResult result = bookingService.cancelBooking(id, user);
 
-        if (success) {
-            ra.addFlashAttribute("message", "Hủy booking thành công!");
-        } else {
-            ra.addFlashAttribute("error", "Không thể hủy booking (đã hủy hoặc không tồn tại)");
+        switch (result) {
+            case SUCCESS:
+                ra.addFlashAttribute("message", "Hủy booking thành công! Yêu cầu hoàn tiền đã được gửi.");
+                break;
+            case NOT_FOUND:
+                ra.addFlashAttribute("error", "Không tìm thấy booking.");
+                break;
+            case ALREADY_CANCELLED:
+                ra.addFlashAttribute("error", "Booking đã được hủy trước đó.");
+                break;
+            case TOO_LATE:
+                ra.addFlashAttribute("error", "Không thể hủy booking trong vòng 24 giờ trước ngày nhận phòng.");
+                break;
+            default:
+                ra.addFlashAttribute("error", "Không thể hủy booking.");
         }
 
+        return "redirect:/booking/my";
+    }
+
+    @PostMapping("/{id}/confirm-refund")
+    public String confirmRefundReceived(
+            @PathVariable Long id,
+            HttpSession session,
+            RedirectAttributes ra
+    ) {
+        User user = (User) session.getAttribute("user");
+
+        if (user == null) {
+            ra.addFlashAttribute("error", "Vui lòng đăng nhập");
+            return "redirect:/login";
+        }
+
+        boolean ok = bookingService.userConfirmRefundReceived(id, user);
+        if (ok) {
+            ra.addFlashAttribute("message", "Cảm ơn! Bạn đã xác nhận đã nhận tiền hoàn trả.");
+        } else {
+            ra.addFlashAttribute("error", "Không thể xác nhận nhận tiền (kiểm tra trạng thái hoàn tiền).");
+        }
         return "redirect:/booking/my";
     }
 }
