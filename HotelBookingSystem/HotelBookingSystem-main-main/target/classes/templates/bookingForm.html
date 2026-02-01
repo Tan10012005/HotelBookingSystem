@@ -91,5 +91,7 @@
     function prevImage(){ currentIndex=(currentIndex-1+images.length)%images.length; document.getElementById("modalImage").src=images[currentIndex]; }
 </script>
 
+<div th:replace="~{fragments/chatbot :: chatbot}"></div>
+
 </body>
 </html>
