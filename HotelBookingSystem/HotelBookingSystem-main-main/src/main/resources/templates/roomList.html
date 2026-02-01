@@ -161,6 +161,130 @@
         </div>
     </div>
 </main>
+
+<!-- Modal overlay - IMPROVED -->
+<div class="overlay" id="roomOverlay" onclick="closeModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+        <button class="close-x" onclick="closeModal()">✕</button>
+        <div class="modal-body">
+            <div class="img" id="modalImg" style="background-image: url('/images/rooms/executiveRoom.webp')"></div>
+            <div class="content">
+                <h3 id="modalTitle">Room</h3>
+
+                <!-- HIGHLIGHT: Price & Capacity -->
+                <div class="info-highlight">
+                    <div class="price" id="modalPrice">500,000 VND/đêm</div>
+                    <div class="capacity" id="modalCapacity">Sức chứa: 2 khách</div>
+                </div>
+
+                <form id="modalForm" th:action="@{/booking/preview}" method="post">
+                    <input type="hidden" name="roomId" id="modalRoomId">
+
+                    <label for="checkIn">Check-in</label>
+                    <input type="date" name="checkIn" id="checkIn" required>
+
+                    <label for="checkOut">Check-out (ít nhất 1 đêm)</label>
+                    <input type="date" name="checkOut" id="checkOut" required>
+
+                    <label for="guests">Số khách (tối đa <span id="maxGuests">2</span>)</label>
+                    <input type="number" name="guests" id="guests" min="1" value="1" required>
+
+                    <div class="actions">
+                        <button type="button" class="btn-ghost" onclick="closeModal()">Hủy</button>
+                        <button type="submit" class="btn-primary">Tiếp tục đặt phòng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const typeImages = {
+        'STANDARD': ['/images/rooms/executiveRoom.webp','/images/rooms/executiveRoom1.webp'],
+        'DELUXE': ['/images/rooms/superiorCityView.webp','/images/rooms/superiorCityView1.webp'],
+        'SUITE': ['/images/rooms/suiteCityView.webp','/images/rooms/suiteCityView1.webp']
+    };
+
+    document.querySelectorAll('.open-modal-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const id = btn.dataset.id;
+            const number = btn.dataset.roomnumber;
+            const type = btn.dataset.type;
+            const capacity = parseInt(btn.dataset.capacity || '2', 10);
+            const price = parseFloat(btn.dataset.price || '0');
+
+            document.getElementById('modalRoomId').value = id;
+            document.getElementById('modalTitle').textContent = 'Phòng ' + number + ' — ' + (type || 'STANDARD');
+
+            // Update price & capacity in highlight box
+            document.getElementById('modalPrice').textContent = new Intl.NumberFormat('vi-VN').format(price) + ' VND/đêm';
+            document.getElementById('modalCapacity').textContent = 'Sức chứa: ' + capacity + ' khách';
+
+            document.getElementById('maxGuests').textContent = capacity;
+            const guestsInput = document.getElementById('guests');
+            guestsInput.max = capacity;
+            if (parseInt(guestsInput.value) > capacity) guestsInput.value = capacity;
+
+            const imgs = typeImages[type] || ['/images/rooms/executiveRoom.webp'];
+            document.getElementById('modalImg').style.backgroundImage = 'url(' + imgs[0] + ')';
+
+            const today = new Date().toISOString().split('T')[0];
+            const checkInInput = document.getElementById('checkIn');
+            const checkOutInput = document.getElementById('checkOut');
+
+            checkInInput.min = today;
+            checkInInput.value = '';
+            checkOutInput.value = '';
+            checkOutInput.min = today;
+
+            document.getElementById('roomOverlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    // VALIDATION: Check-out must be at least 1 day after check-in
+    document.getElementById('checkIn').addEventListener('change', function() {
+        const checkInDate = new Date(this.value);
+        if (!isNaN(checkInDate)) {
+            // Set check-out minimum to 1 day after check-in
+            const minCheckOut = new Date(checkInDate);
+            minCheckOut.setDate(minCheckOut.getDate() + 1);
+
+            const minCheckOutStr = minCheckOut.toISOString().split('T')[0];
+            document.getElementById('checkOut').min = minCheckOutStr;
+
+            // Clear check-out if it's before new minimum
+            const currentCheckOut = document.getElementById('checkOut').value;
+            if (currentCheckOut && currentCheckOut <= this.value) {
+                document.getElementById('checkOut').value = '';
+            }
+        }
+    });
+
+    // Additional validation on form submit
+    document.getElementById('modalForm').addEventListener('submit', function(e) {
+        const checkIn = new Date(document.getElementById('checkIn').value);
+        const checkOut = new Date(document.getElementById('checkOut').value);
+
+        if (checkOut <= checkIn) {
+            e.preventDefault();
+            alert('Ngày check-out phải sau ngày check-in ít nhất 1 ngày!');
+            return false;
+        }
+
+        return true;
+    });
+
+    function closeModal(){
+        document.getElementById('roomOverlay').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    /*]]>*/
+</script>
+
+<div th:replace="~{fragments/chatbot :: chatbot}"></div>
 <div th:insert="fragments/footer :: footer"></div>
 </body>
 </html>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3eb43d16-538d-4022-81cb-a68b7844f156" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/HotelBookingSystem.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/HotelBookingSystem.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/HotelBookingSystemApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/config/AuthInterceptor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/config/DataInitializer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/config/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/config/WebConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/controller/AdminController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/controller/AuthController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/controller/BookingController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/controller/ProfileController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/controller/RoomController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/entity/Admin.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/entity/Booking.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/entity/BookingStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/entity/Room.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/entity/RoomStatus.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/entity/RoomType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/entity/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/repository/AdminRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/repository/BookingRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/repository/RoomRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/repository/RoomTypeRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/repository/UserRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/service/AuthService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/service/AuthServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/service/BookingService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/service/BookingServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/service/RoomService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/service/RoomServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/service/UserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hotelbookingsystem/service/UserServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/backgrounds/nen.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/rooms/executiveRoom.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/rooms/executiveRoom1.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/rooms/executiveRoom2.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/rooms/suiteCityView.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/rooms/superiorCityView.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/rooms/superiorCityView1.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/images/rooms/superiorCityView2.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/admin/bookings.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/admin/dashboard.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/admin/roomForm.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/admin/rooms.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/admin/users.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/bookingConfirm.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/bookingForm.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/bookingList.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/bookingSuccess.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/fragments/header.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/fragments/headerLogin.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/profile.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/register.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/roomList.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/hotelbookingsystem/HotelBookingSystemApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/HotelBookingSystemApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/config/AuthInterceptor.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/config/DataInitializer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/config/SecurityConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/config/WebConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/controller/AdminController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/controller/AuthController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/controller/BookingController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/controller/ProfileController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/controller/RoomController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/Admin$AdminBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/Admin.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/Booking$BookingBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/Booking.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/BookingStatus.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/Room$RoomBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/Room.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/RoomStatus.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/RoomType$RoomTypeBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/RoomType.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/User$UserBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/entity/User.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/repository/AdminRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/repository/BookingRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/repository/RoomRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/repository/RoomTypeRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/repository/UserRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/service/AuthService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/service/AuthServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/service/BookingService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/service/BookingServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/service/RoomService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/service/RoomServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/service/UserService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/hotelbookingsystem/service/UserServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/backgrounds/nen.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/rooms/executiveRoom.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/rooms/executiveRoom1.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/rooms/executiveRoom2.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/rooms/suiteCityView.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/rooms/superiorCityView.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/rooms/superiorCityView1.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/static/images/rooms/superiorCityView2.webp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/admin/bookings.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/admin/dashboard.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/admin/roomForm.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/admin/rooms.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/admin/users.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/bookingConfirm.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/bookingForm.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/bookingList.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/bookingSuccess.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/fragments/header.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/fragments/headerLogin.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/profile.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/register.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/roomList.html" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;nguyensytuan0811&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Tan10012005/HotelBookingSystem&quot;,
+    &quot;accountId&quot;: &quot;ddd897de-d798-4c80-b856-b676c99cc670&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="38yLQqSIQcOamJULgT8HzlW3QnZ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.HotelBookingSystemApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="HotelBookingSystem-main-main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HotelBookingSystemApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="HotelBookingSystem" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.hotelbookingsystem.HotelBookingSystemApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.138" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.29346.138" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3eb43d16-538d-4022-81cb-a68b7844f156" name="Changes" comment="" />
+      <created>1769766852336</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1769766852336</updated>
+      <workItem from="1769766853937" duration="2219000" />
+      <workItem from="1769786071878" duration="509000" />
+      <workItem from="1769838169157" duration="1613000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
