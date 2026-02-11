@@ -146,4 +146,12 @@ Database:
     
 Base URL: http://localhost:8080
 ```
+## 👥 Team Members
 
+🅳 <b>Nguyễn Hữu Duy</b> — Team Leader<br>
+🆃 <b>Nguyễn Quốc Nhật Tân</b> — Co-Leader<br>
+🅿 <b>Phạm Mai Tâm Phúc</b> — Member<br>
+🆃 <b>Nguyễn Sỹ Tuấn</b> — Member<br>
+🅻 <b>Huỳnh Minh Lộc</b> — Member
+
+---
