@@ -1,8 +1,10 @@
 package com.hotelbookingsystem.controller;
 
+import com.hotelbookingsystem.entity.Booking;
 import com.hotelbookingsystem.entity.CancelResult;
 import com.hotelbookingsystem.entity.Room;
 import com.hotelbookingsystem.entity.User;
+import com.hotelbookingsystem.repository.BookingRepository;
 import com.hotelbookingsystem.service.BookingService;
 import com.hotelbookingsystem.service.RoomService;
 import jakarta.servlet.http.HttpSession;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/booking")
@@ -24,6 +27,9 @@ public class BookingController {
 
     @Autowired
     private RoomService roomService;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     /**
      * Bước 1: Xem trước thông tin đặt phòng (từ bookingForm.html chuyển sang)
@@ -124,7 +130,9 @@ public class BookingController {
     }
 
     /**
-     * Hủy đơn đặt phòng
+     * 🆕 Hủy đơn đặt phòng với logic hoàn tiền 50%/100%
+     * - Nếu huỷ trong vòng 24h trước check-in → 50% refund
+     * - Nếu huỷ trước 24h → 100% refund
      */
     @PostMapping("/{id}/cancel")
     public String cancelBooking(
@@ -143,7 +151,22 @@ public class BookingController {
 
         switch (result) {
             case SUCCESS:
-                ra.addFlashAttribute("message", "Hủy booking thành công! Yêu cầu hoàn tiền đã được gửi.");
+                // 🆕 UPDATED: Show refund amount based on new policy
+                Optional<Booking> booking = bookingRepository.findByIdAndUser(id, user);
+                if (booking.isPresent()) {
+                    Booking b = booking.get();
+                    Integer refundPercentage = b.getRefundPercentage();
+                    BigDecimal refundAmount = b.getRefundAmount();
+
+                    String message = String.format(
+                            "Hủy booking thành công! Hoàn tiền %d%% = %,.0f VND. Yêu cầu hoàn tiền đã được gửi.",
+                            refundPercentage,
+                            refundAmount.doubleValue()
+                    );
+                    ra.addFlashAttribute("message", message);
+                } else {
+                    ra.addFlashAttribute("message", "Hủy booking thành công! Yêu cầu hoàn tiền đã được gửi.");
+                }
                 break;
             case NOT_FOUND:
                 ra.addFlashAttribute("error", "Không tìm thấy booking.");
@@ -152,7 +175,7 @@ public class BookingController {
                 ra.addFlashAttribute("error", "Booking đã được hủy trước đó.");
                 break;
             case TOO_LATE:
-                ra.addFlashAttribute("error", "Không thể hủy booking trong vòng 24 giờ trước ngày nhận phòng.");
+                ra.addFlashAttribute("error", "Không thể hủy booking. Đã quá hạn hủy.");
                 break;
             default:
                 ra.addFlashAttribute("error", "Không thể hủy booking.");

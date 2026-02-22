@@ -4,7 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Booking của tôi - Hotel Booking System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Inter:wght@300;400;600&amp;display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap"
           rel="stylesheet"/>
 
     <style>
@@ -35,15 +35,9 @@
         }
 
         @keyframes gradientShift {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
@@ -108,59 +102,48 @@
 
         td:last-child {
             border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px
+            border-bottom-right-radius: 10px;
+            text-align: right;
         }
 
         .badge {
             display: inline-block;
-            padding: 8px 12px;
-            border-radius: 999px;
-            font-weight: 700;
-            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
         }
 
         .status-pending {
-            background: linear-gradient(90deg, #fff7e6, #fff2dc);
-            color: #b76a00;
-            animation: pulse 2.5s infinite;
+            background: #fef08a;
+            color: #92400e;
         }
 
         .status-confirmed {
-            background: linear-gradient(90deg, #e6ffef, #dff8f0);
-            color: #1f8b4a;
+            background: #d1fae5;
+            color: #065f46;
         }
 
         .status-cancelled {
-            background: linear-gradient(90deg, #ffecec, #fff0f0);
-            color: #c0392b;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1)
-            }
-            50% {
-                transform: scale(1.02)
-            }
-            100% {
-                transform: scale(1)
-            }
+            background: #fee2e2;
+            color: #7f1d1d;
         }
 
         .btn-cancel {
-            background: #e74c3c;
+            background: #dc2626;
             color: #fff;
             border: none;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 700;
-            transition: transform .12s, box-shadow .12s;
+            transition: all .2s ease;
         }
 
         .btn-cancel:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(199, 57, 43, 0.18);
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
         }
 
         .btn-refund {
@@ -171,7 +154,20 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 700;
-            margin-top: 6px;
+            transition: all .2s ease;
+        }
+
+        .btn-refund:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.25);
+        }
+
+        .refund-info {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+            display: block;
         }
 
         .empty-message {
@@ -199,14 +195,19 @@
             td {
                 padding: 8px 6px;
                 display: block;
-                text-align: left;
+                text-align: left
             }
 
-            td:before {
+            td:last-child {
+                text-align: left
+            }
+
+            td::before {
                 content: attr(data-label);
-                font-weight: bold;
+                font-weight: 700;
                 display: inline-block;
-                width: 120px;
+                width: 30%;
+                color: #666
             }
         }
     </style>
@@ -214,6 +215,7 @@
 
 <body>
 
+<!-- Header -->
 <div th:replace="~{fragments/header :: header}"></div>
 
 <div class="container">
@@ -242,20 +244,40 @@
                 <span th:text="${#numbers.formatDecimal(b.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
             </td>
 
+            <!-- BOOKING STATUS -->
             <td data-label="Trạng thái:">
                 <span th:if="${b.status.name() == 'PENDING_CONFIRM'}" class="badge status-pending">⏳ Đang chờ</span>
                 <span th:if="${b.status.name() == 'CONFIRMED'}" class="badge status-confirmed">✓ Đã xác nhận</span>
                 <span th:if="${b.status.name() == 'CANCELLED'}" class="badge status-cancelled">✗ Đã hủy</span>
             </td>
 
+            <!-- 🆕 REFUND STATUS with amount -->
             <td data-label="Hoàn tiền:">
                 <span th:if="${b.refundStatus.name() == 'NONE'}">—</span>
-                <span th:if="${b.refundStatus.name() == 'REQUESTED'}" class="badge status-pending">⏳ Đang xử lý</span>
-                <span th:if="${b.refundStatus.name() == 'TRANSFERRED'}"
-                      class="badge status-confirmed">💸 Đã chuyển</span>
-                <span th:if="${b.refundStatus.name() == 'RECEIVED'}" class="badge status-confirmed">✅ Đã nhận</span>
+                <span th:if="${b.refundStatus.name() == 'REQUESTED'}" class="badge status-pending">
+                    ⏳ Đang xử lý
+                    <span class="refund-info" th:if="${b.refundPercentage != null}">
+                        <span th:text="${b.refundPercentage} + '%'"></span>
+                        <span th:if="${b.refundAmount != null}">
+                            = <span th:text="${#numbers.formatDecimal(b.refundAmount, 0, 'COMMA', 0, 'POINT')}"></span> VND
+                        </span>
+                    </span>
+                </span>
+                <span th:if="${b.refundStatus.name() == 'TRANSFERRED'}" class="badge status-confirmed">
+                    💸 Đã chuyển
+                    <span class="refund-info" th:if="${b.refundAmount != null}">
+                        <span th:text="${#numbers.formatDecimal(b.refundAmount, 0, 'COMMA', 0, 'POINT')}"></span> VND
+                    </span>
+                </span>
+                <span th:if="${b.refundStatus.name() == 'RECEIVED'}" class="badge status-confirmed">
+                    ✅ Đã nhận
+                    <span class="refund-info" th:if="${b.refundAmount != null}">
+                        <span th:text="${#numbers.formatDecimal(b.refundAmount, 0, 'COMMA', 0, 'POINT')}"></span> VND
+                    </span>
+                </span>
             </td>
 
+            <!-- ACTIONS -->
             <td data-label="Hành động:">
                 <form th:if="${b.status.name() == 'PENDING_CONFIRM' or b.status.name() == 'CONFIRMED'}"
                       th:action="@{/booking/{id}/cancel(id=${b.id})}"
@@ -277,12 +299,13 @@
         </tbody>
     </table>
 
-    <p th:if="${bookings == null or #lists.isEmpty(bookings)}" class="empty-message">
-        📭 Bạn chưa có booking nào
-    </p>
+    <div class="empty-message" th:if="${bookings == null or #lists.isEmpty(bookings)}">
+        <p>Bạn chưa có booking nào. <a href="/rooms">👉 Đặt phòng ngay!</a></p>
+    </div>
 </div>
 
 <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+<div th:insert="fragments/footer :: footer"></div>
 
 </body>
 </html>
