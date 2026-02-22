@@ -46,17 +46,19 @@ public class Booking {
     @Column(nullable = false)
     private RefundStatus refundStatus;
 
-    // 🆕 NEW FIELD: Track refund percentage (100 = 100%, 50 = 50%)
     @Column(name = "refund_percentage", columnDefinition = "INT DEFAULT 100")
     private Integer refundPercentage = 100;
 
-    // 🆕 NEW FIELD: Track actual refund amount
     @Column(name = "refund_amount")
     private BigDecimal refundAmount;
 
-    // 🆕 NEW FIELD: Track cancellation time for business rule logic
     @Column(name = "cancelled_at")
     private LocalDateTime cancelledAt;
+
+    // 🆕 NEW FIELD: Track cancellation reason
+    @Enumerated(EnumType.STRING)
+    @Column(name = "cancellation_reason")
+    private CancellationReason cancellationReason;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -66,7 +68,7 @@ public class Booking {
         this.createdAt = LocalDateTime.now();
         this.status = BookingStatus.PENDING_CONFIRM;
         this.refundStatus = RefundStatus.NONE;
-        this.refundPercentage = 100; // Default 100%
+        this.refundPercentage = 100;
     }
 
     @PreUpdate

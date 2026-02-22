@@ -11,15 +11,22 @@
         :root {
             --card-bg: rgba(255, 255, 255, 0.96);
             --accent: #006340;
+            --danger: #dc2626;
+            --success: #27ae60;
+            --warning: #f59e0b;
             --muted: #6b7280;
             --radius: 18px;
             --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         html, body {
             height: 100%;
             margin: 0;
-            font-family: Inter, Arial, Helvetica, sans-serif;
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
             overflow-x: hidden;
         }
 
@@ -32,6 +39,7 @@
             #00f2fe 100%);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
+            background-attachment: fixed;
         }
 
         @keyframes gradientShift {
@@ -44,7 +52,7 @@
             max-width: 1200px;
             margin: 40px auto;
             background: var(--card-bg);
-            padding: 20px;
+            padding: 30px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             color: #1f2937;
@@ -54,38 +62,44 @@
         }
 
         h3.page-title {
-            margin: 0 0 18px 0;
-            font-size: 22px;
+            margin: 0 0 25px 0;
+            font-size: 26px;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 10px;
             color: #1f2937;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 15px;
         }
 
         table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 12px
+            border-spacing: 0 12px;
         }
 
         thead th {
             font-weight: 700;
-            padding: 10px 14px;
+            padding: 12px 16px;
             text-align: left;
             color: #374151;
             background: transparent;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         tbody tr {
             background: #fff;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
             border-radius: 10px;
-            transition: transform .15s ease, box-shadow .15s ease;
+            transition: all 0.2s ease;
         }
 
         tbody tr:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 22px 48px rgba(11, 24, 40, 0.16);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
         }
 
         td {
@@ -93,121 +107,324 @@
             background: transparent;
             border: none;
             vertical-align: middle;
+            font-size: 14px;
         }
 
         td:first-child {
             border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px
+            border-bottom-left-radius: 10px;
         }
 
         td:last-child {
             border-top-right-radius: 10px;
             border-bottom-right-radius: 10px;
-            text-align: right;
+            text-align: center;
         }
 
+        /* Badge styles */
         .badge {
             display: inline-block;
             padding: 6px 12px;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .status-pending {
             background: #fef08a;
             color: #92400e;
+            border-left: 3px solid #eab308;
         }
 
         .status-confirmed {
             background: #d1fae5;
             color: #065f46;
+            border-left: 3px solid #10b981;
         }
 
         .status-cancelled {
             background: #fee2e2;
             color: #7f1d1d;
+            border-left: 3px solid #ef4444;
         }
 
+        /* Button styles */
         .btn-cancel {
-            background: #dc2626;
+            background: linear-gradient(135deg, #dc2626, #991b1b);
             color: #fff;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 16px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 700;
-            transition: all .2s ease;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
         }
 
         .btn-cancel:hover {
-            background: #b91c1c;
+            background: linear-gradient(135deg, #b91c1c, #7f1d1d);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-cancel:active {
+            transform: translateY(0);
         }
 
         .btn-refund {
-            background: #27ae60;
+            background: linear-gradient(135deg, #27ae60, #1e8449);
             color: #fff;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 16px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 700;
-            transition: all .2s ease;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2);
         }
 
         .btn-refund:hover {
-            background: #229954;
+            background: linear-gradient(135deg, #1e8449, #145a32);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.25);
+            box-shadow: 0 6px 16px rgba(39, 174, 96, 0.3);
         }
 
+        .btn-refund:active {
+            transform: translateY(0);
+        }
+
+        .btn-ghost {
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-ghost:hover {
+            background: #e5e7eb;
+            border-color: #d1d5db;
+        }
+
+        /* Refund info */
         .refund-info {
             font-size: 12px;
             color: #6b7280;
             margin-top: 4px;
             display: block;
+            font-weight: 500;
+        }
+
+        .reason-badge {
+            display: inline-block;
+            background: #f0f9ff;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-top: 4px;
+            font-weight: 600;
+            border-left: 2px solid #0ea5e9;
         }
 
         .empty-message {
             text-align: center;
             color: var(--muted);
-            margin-top: 20px;
-            padding: 24px;
+            margin-top: 30px;
+            padding: 40px 20px;
+            background: #f9fafb;
+            border-radius: 10px;
+            font-size: 16px;
         }
 
+        .empty-message a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .empty-message a:hover {
+            color: #004d34;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            margin: 0 0 25px 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .reason-option {
+            margin-bottom: 12px;
+        }
+
+        .reason-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #fff;
+        }
+
+        .reason-label:hover {
+            border-color: var(--accent);
+            background: #f0fdf4;
+        }
+
+        .reason-label input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .reason-label input[type="radio"]:checked {
+            accent-color: var(--accent);
+        }
+
+        .reason-label.checked {
+            border-color: var(--accent);
+            background: #f0fdf4;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .modal-footer button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-footer .btn-cancel {
+            background: linear-gradient(135deg, #dc2626, #991b1b);
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+        }
+
+        .modal-footer .btn-ghost {
+            background: #f3f4f6;
+            color: #374151;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive */
         @media (max-width: 980px) {
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+
             table, thead, tbody, th, td, tr {
-                display: block
+                display: block;
             }
 
             thead {
-                display: none
+                display: none;
             }
 
             tbody tr {
-                margin-bottom: 12px;
-                padding: 12px;
-                border-radius: 12px
+                margin-bottom: 15px;
+                padding: 0;
             }
 
             td {
-                padding: 8px 6px;
+                padding: 10px 12px;
                 display: block;
-                text-align: left
+                text-align: left;
+                border: none !important;
+                border-radius: 0 !important;
+            }
+
+            td:first-child {
+                border-top-left-radius: 10px !important;
+                border-top-right-radius: 10px !important;
+                background: #f9fafb;
+                font-weight: 600;
+                color: #1f2937;
             }
 
             td:last-child {
-                text-align: left
+                border-bottom-left-radius: 10px !important;
+                border-bottom-right-radius: 10px !important;
+                text-align: left;
             }
 
             td::before {
                 content: attr(data-label);
                 font-weight: 700;
-                display: inline-block;
-                width: 30%;
-                color: #666
+                display: inline;
+                width: 120px;
+                color: #666;
+                margin-right: 10px;
+            }
+
+            h3.page-title {
+                font-size: 20px;
+            }
+
+            .modal-content {
+                padding: 24px;
+                max-width: 95%;
             }
         }
     </style>
@@ -251,7 +468,7 @@
                 <span th:if="${b.status.name() == 'CANCELLED'}" class="badge status-cancelled">✗ Đã hủy</span>
             </td>
 
-            <!-- 🆕 REFUND STATUS with amount -->
+            <!-- 🆕 REFUND STATUS with amount and reason -->
             <td data-label="Hoàn tiền:">
                 <span th:if="${b.refundStatus.name() == 'NONE'}">—</span>
                 <span th:if="${b.refundStatus.name() == 'REQUESTED'}" class="badge status-pending">
@@ -279,17 +496,24 @@
 
             <!-- ACTIONS -->
             <td data-label="Hành động:">
-                <form th:if="${b.status.name() == 'PENDING_CONFIRM' or b.status.name() == 'CONFIRMED'}"
-                      th:action="@{/booking/{id}/cancel(id=${b.id})}"
-                      method="post"
-                      onsubmit="return confirm('Bạn có chắc muốn hủy booking này?');">
-                    <button type="submit" class="btn-cancel">Hủy booking</button>
-                </form>
+                <!-- 🆕 Show cancellation reason if exists -->
+                <div th:if="${b.cancellationReason != null}" style="margin-bottom: 8px;">
+                    <span class="reason-badge" th:text="'📌 ' + ${b.cancellationReason.getLabel()}"></span>
+                </div>
+
+                <!-- Button mở Modal chọn lý do -->
+                <button th:if="${b.status.name() == 'PENDING_CONFIRM' or b.status.name() == 'CONFIRMED'}"
+                        type="button"
+                        class="btn-cancel"
+                        th:onclick="'openReasonModal(' + ${b.id} + ')'">
+                    Hủy booking
+                </button>
 
                 <form th:if="${b.status.name() == 'CANCELLED'
                              and b.refundStatus.name() == 'TRANSFERRED'}"
                       th:action="@{/booking/{id}/confirm-refund(id=${b.id})}"
-                      method="post">
+                      method="post"
+                      style="margin-top: 8px;">
                     <button type="submit" class="btn-refund">
                         Xác nhận đã nhận tiền
                     </button>
@@ -300,9 +524,125 @@
     </table>
 
     <div class="empty-message" th:if="${bookings == null or #lists.isEmpty(bookings)}">
-        <p>Bạn chưa có booking nào. <a href="/rooms">👉 Đặt phòng ngay!</a></p>
+        <p>📭 Bạn chưa có booking nào. <a href="/rooms">👉 Đặt phòng ngay!</a></p>
     </div>
 </div>
+
+<!-- 🆕 Modal chọn lý do hủy -->
+<div id="cancelReasonModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3 class="modal-header">🗂️ Lý do hủy booking</h3>
+
+        <form id="cancelReasonForm" method="post">
+            <div class="reason-option">
+                <label class="reason-label">
+                    <input type="radio" name="reason" value="PERSONAL_REASON" checked>
+                    <span>👤 Lý do cá nhân</span>
+                </label>
+            </div>
+
+            <div class="reason-option">
+                <label class="reason-label">
+                    <input type="radio" name="reason" value="PLAN_CHANGED">
+                    <span>📅 Kế hoạch thay đổi</span>
+                </label>
+            </div>
+
+            <div class="reason-option">
+                <label class="reason-label">
+                    <input type="radio" name="reason" value="FIND_BETTER_PRICE">
+                    <span>💰 Tìm được giá tốt hơn</span>
+                </label>
+            </div>
+
+            <div class="reason-option">
+                <label class="reason-label">
+                    <input type="radio" name="reason" value="HEALTH_ISSUE">
+                    <span>🏥 Vấn đề sức khỏe</span>
+                </label>
+            </div>
+
+            <div class="reason-option">
+                <label class="reason-label">
+                    <input type="radio" name="reason" value="WORK_EMERGENCY">
+                    <span>🚨 Công việc khẩn cấp</span>
+                </label>
+            </div>
+
+            <div class="reason-option">
+                <label class="reason-label">
+                    <input type="radio" name="reason" value="NO_REASON">
+                    <span>🤐 Không muốn nói</span>
+                </label>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-ghost" onclick="closeReasonModal()">
+                    Hủy
+                </button>
+                <button type="submit" class="btn-cancel">
+                    Xác nhận hủy
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    let currentBookingId = null;
+
+    // Open modal
+    function openReasonModal(bookingId) {
+        currentBookingId = bookingId;
+        const modal = document.getElementById('cancelReasonModal');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Close modal
+    function closeReasonModal() {
+        const modal = document.getElementById('cancelReasonModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        currentBookingId = null;
+    }
+
+    // Handle form submission
+    document.getElementById('cancelReasonForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const reason = document.querySelector('input[name="reason"]:checked').value;
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/booking/' + currentBookingId + '/cancel?reason=' + reason;
+        document.body.appendChild(form);
+        form.submit();
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('cancelReasonModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeReasonModal();
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('cancelReasonModal').classList.contains('active')) {
+            closeReasonModal();
+        }
+    });
+
+    // Update label on radio change
+    document.querySelectorAll('input[name="reason"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.querySelectorAll('.reason-label').forEach(label => label.classList.remove('checked'));
+            this.parentElement.classList.add('checked');
+        });
+    });
+
+    // Set initial checked state
+    document.querySelector('input[name="reason"]:checked').parentElement.classList.add('checked');
+</script>
 
 <div th:replace="~{fragments/chatbot :: chatbot}"></div>
 <div th:insert="fragments/footer :: footer"></div>

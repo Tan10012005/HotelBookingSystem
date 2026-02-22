@@ -1,7 +1,6 @@
 package com.hotelbookingsystem.service;
 
 import com.hotelbookingsystem.entity.*;
-import com.hotelbookingsystem.entity.CancelResult;
 import com.hotelbookingsystem.repository.BookingRepository;
 import com.hotelbookingsystem.repository.RoomRepository;
 import jakarta.transaction.Transactional;
@@ -23,7 +22,6 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     private RoomRepository roomRepo;
 
-    // 🆕 Constants for refund policy
     private static final int REFUND_WINDOW_HOURS = 24;
     private static final Integer FULL_REFUND_PERCENTAGE = 100;
     private static final Integer PARTIAL_REFUND_PERCENTAGE = 50;
@@ -45,7 +43,7 @@ public class BookingServiceImpl implements BookingService {
                 .totalPrice(total)
                 .status(BookingStatus.PENDING_CONFIRM)
                 .refundStatus(RefundStatus.NONE)
-                .refundPercentage(FULL_REFUND_PERCENTAGE) // Default 100%
+                .refundPercentage(FULL_REFUND_PERCENTAGE)
                 .build();
 
         bookingRepo.save(booking);
@@ -61,7 +59,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public CancelResult cancelBooking(Long bookingId, User user) {
+    // 🆕 UPDATED: Add cancellationReason parameter
+    public CancelResult cancelBooking(Long bookingId, User user, CancellationReason cancellationReason) {
         Optional<Booking> maybe = bookingRepo.findByIdAndUser(bookingId, user);
 
         if (maybe.isEmpty()) {
@@ -74,26 +73,24 @@ public class BookingServiceImpl implements BookingService {
             return CancelResult.ALREADY_CANCELLED;
         }
 
-        // ✅ UPDATED LOGIC: Calculate refund based on current time vs check-in time
+        // Calculate refund based on current time vs check-in time
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime checkInDateTime = booking.getCheckIn().atStartOfDay();
         LocalDateTime refundCutoffTime = checkInDateTime.minusHours(REFUND_WINDOW_HOURS);
 
-        // Determine refund percentage based on cancellation time
         if (now.isAfter(refundCutoffTime)) {
-            // Within 24 hours of check-in → 50% refund
             booking.setRefundPercentage(PARTIAL_REFUND_PERCENTAGE);
         } else {
-            // More than 24 hours before check-in → 100% refund
             booking.setRefundPercentage(FULL_REFUND_PERCENTAGE);
         }
 
-        // Calculate refund amount
         BigDecimal refundAmount = calculateRefundAmount(booking);
         booking.setRefundAmount(refundAmount);
         booking.setCancelledAt(now);
 
-        // Mark cancelled and request refund
+        // 🆕 NEW: Set cancellation reason
+        booking.setCancellationReason(cancellationReason);
+
         booking.setStatus(BookingStatus.CANCELLED);
         booking.setRefundStatus(RefundStatus.REQUESTED);
         bookingRepo.save(booking);
@@ -136,7 +133,6 @@ public class BookingServiceImpl implements BookingService {
         return true;
     }
 
-    // 🆕 NEW METHOD: Calculate refund amount based on refund percentage
     @Override
     public BigDecimal calculateRefundAmount(Booking booking) {
         if (booking.getTotalPrice() == null || booking.getRefundPercentage() == null) {
@@ -149,7 +145,6 @@ public class BookingServiceImpl implements BookingService {
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
     }
 
-    // 🆕 NEW METHOD: Get refund percentage
     @Override
     public Integer getRefundPercentage(Booking booking) {
         if (booking == null || booking.getRefundPercentage() == null) {

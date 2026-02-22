@@ -1,9 +1,6 @@
 package com.hotelbookingsystem.controller;
 
-import com.hotelbookingsystem.entity.Booking;
-import com.hotelbookingsystem.entity.CancelResult;
-import com.hotelbookingsystem.entity.Room;
-import com.hotelbookingsystem.entity.User;
+import com.hotelbookingsystem.entity.*;
 import com.hotelbookingsystem.repository.BookingRepository;
 import com.hotelbookingsystem.service.BookingService;
 import com.hotelbookingsystem.service.RoomService;
@@ -131,12 +128,12 @@ public class BookingController {
 
     /**
      * 🆕 Hủy đơn đặt phòng với logic hoàn tiền 50%/100%
-     * - Nếu huỷ trong vòng 24h trước check-in → 50% refund
-     * - Nếu huỷ trước 24h → 100% refund
+     * Nhận lý do hủy từ form
      */
     @PostMapping("/{id}/cancel")
     public String cancelBooking(
             @PathVariable Long id,
+            @RequestParam(required = false) String reason,  // 🆕 NEW: reason parameter
             HttpSession session,
             RedirectAttributes ra
     ) {
@@ -147,19 +144,37 @@ public class BookingController {
             return "redirect:/login";
         }
 
-        CancelResult result = bookingService.cancelBooking(id, user);
+        // 🆕 NEW: Parse cancellation reason
+        CancellationReason cancellationReason = CancellationReason.NO_REASON;
+        try {
+            if (reason != null && !reason.isEmpty()) {
+                cancellationReason = CancellationReason.valueOf(reason);
+            }
+        } catch (IllegalArgumentException e) {
+            cancellationReason = CancellationReason.NO_REASON;
+        }
+
+        // 🆕 UPDATED: Pass reason to service
+        CancelResult result = bookingService.cancelBooking(id, user, cancellationReason);
 
         switch (result) {
             case SUCCESS:
-                // 🆕 UPDATED: Show refund amount based on new policy
                 Optional<Booking> booking = bookingRepository.findByIdAndUser(id, user);
                 if (booking.isPresent()) {
                     Booking b = booking.get();
                     Integer refundPercentage = b.getRefundPercentage();
                     BigDecimal refundAmount = b.getRefundAmount();
+                    // 🆕 NEW: Include cancellation reason in message
+                    String reasonText = b.getCancellationReason() != null
+                            ? b.getCancellationReason().getLabel()
+                            : "Không xác định";
 
                     String message = String.format(
-                            "Hủy booking thành công! Hoàn tiền %d%% = %,.0f VND. Yêu cầu hoàn tiền đã được gửi.",
+                            "Hủy booking thành công!\n" +
+                                    "Lý do: %s\n" +
+                                    "Hoàn tiền: %d%% = %,.0f VND\n" +
+                                    "Yêu cầu hoàn tiền đã được gửi.",
+                            reasonText,
                             refundPercentage,
                             refundAmount.doubleValue()
                     );
