@@ -1,37 +1,308 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8"/>
-    <title>Form phòng</title></head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${room.id} != null ? 'Sửa phòng' : 'Thêm phòng'">Form phòng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap"
+          rel="stylesheet"/>
+    <style>
+        :root {
+            --primary: #006340;
+            --danger: #dc2626;
+            --success: #27ae60;
+            --muted: #6b7280;
+            --radius: 12px;
+            --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            background-attachment: fixed;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.96);
+            padding: 40px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #f3f4f6;
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            background: #e5e7eb;
+            transform: translateX(-2px);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            padding: 12px 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 99, 64, 0.1);
+        }
+
+        input[type="text"]::placeholder,
+        input[type="number"]::placeholder {
+            color: #9ca3af;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        button[type="submit"] {
+            flex: 1;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), #004d34);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 99, 64, 0.2);
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 99, 64, 0.3);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        .button-cancel {
+            flex: 1;
+            padding: 14px;
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button-cancel:hover {
+            background: #e5e7eb;
+            border-color: #d1d5db;
+        }
+
+        .info-box {
+            background: #f0fdf4;
+            border-left: 4px solid var(--success);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #065f46;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                margin: 20px;
+                padding: 24px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
 <body>
-<h2 th:text="${room.id} != null ? 'Sửa phòng' : 'Thêm phòng'">Form</h2>
 
-<form th:if="${room.id} == null" th:action="@{/admin/rooms}" method="post">
-    Số phòng: <input name="roomNumber"/><br/>
-    Loại phòng:
-    <select name="roomTypeId">
-        <option th:each="t : ${types}" th:value="${t.id}" th:text="${t.name}"></option>
-    </select><br/>
-    Giá / đêm: <input name="pricePerNight"/><br/>
-    <button type="submit">Tạo</button>
-</form>
+<div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2 th:text="${room.id} != null ? '✏️ Sửa phòng' : '➕ Thêm phòng'">Form</h2>
+        <a href="/admin/rooms" class="back-link">← Quay lại</a>
+    </div>
 
-<form th:if="${room.id} != null" th:action="@{/admin/rooms/{id}/update(id=${room.id})}" method="post">
-    Số phòng: <input name="roomNumber" th:value="${room.roomNumber}"/><br/>
-    Loại phòng:
-    <select name="roomTypeId">
-        <option th:each="t : ${types}" th:value="${t.id}" th:selected="${t.id == room.roomType.id}"
-                th:text="${t.name}"></option>
-    </select><br/>
-    Giá / đêm: <input name="pricePerNight" th:value="${room.pricePerNight}"/><br/>
-    Trạng thái:
-    <select name="status">
-        <option th:each="s : ${T(com.hotelbookingsystem.entity.RoomStatus).values()}" th:value="${s}" th:text="${s}"
-                th:selected="${s == room.status}"></option>
-    </select><br/>
-    <button type="submit">Cập nhật</button>
-</form>
+    <!-- Info Box -->
+    <div th:if="${room.id} == null" class="info-box">
+        ℹ️ Tạo phòng mới bằng cách điền thông tin bên dưới
+    </div>
 
-<p><a href="/admin/rooms">Back</a></p>
+    <!-- Add Room Form -->
+    <form th:if="${room.id} == null" th:action="@{/admin/rooms}" method="post">
+        <div class="form-group">
+            <label for="roomNumber_add">📍 Số phòng <span style="color: var(--danger);">*</span></label>
+            <input type="text" id="roomNumber_add" name="roomNumber" placeholder="VD: 101, A01..." required/>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="roomTypeId_add">🏨 Loại phòng <span style="color: var(--danger);">*</span></label>
+                <select id="roomTypeId_add" name="roomTypeId" required>
+                    <option value="">-- Chọn loại phòng --</option>
+                    <option th:each="t : ${types}" th:value="${t.id}" th:text="${t.name}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pricePerNight_add">💰 Giá / đêm (VND) <span style="color: var(--danger);">*</span></label>
+                <input type="number" id="pricePerNight_add" name="pricePerNight" placeholder="VD: 500000" min="0" step="10000" required/>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="/admin/rooms" class="button-cancel">Hủy</a>
+            <button type="submit">✓ Tạo phòng</button>
+        </div>
+    </form>
+
+    <!-- Edit Room Form -->
+    <form th:if="${room.id} != null" th:action="@{/admin/rooms/{id}/update(id=${room.id})}" method="post">
+        <div class="info-box">
+            ℹ️ Cập nhật thông tin phòng
+        </div>
+
+        <div class="form-group">
+            <label for="roomNumber_edit">📍 Số phòng <span style="color: var(--danger);">*</span></label>
+            <input type="text" id="roomNumber_edit" name="roomNumber" th:value="${room.roomNumber}" required/>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="roomTypeId_edit">🏨 Loại phòng <span style="color: var(--danger);">*</span></label>
+                <select id="roomTypeId_edit" name="roomTypeId" required>
+                    <option th:each="t : ${types}" th:value="${t.id}" th:selected="${t.id == room.roomType.id}"
+                            th:text="${t.name}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pricePerNight_edit">💰 Giá / đêm (VND) <span style="color: var(--danger);">*</span></label>
+                <input type="number" id="pricePerNight_edit" name="pricePerNight" th:value="${room.pricePerNight}" min="0" step="10000" required/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="status_edit">🔔 Trạng thái <span style="color: var(--danger);">*</span></label>
+            <select id="status_edit" name="status" required>
+                <option th:each="s : ${T(com.hotelbookingsystem.entity.RoomStatus).values()}" th:value="${s}" th:text="${s}"
+                        th:selected="${s == room.status}"></option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <a href="/admin/rooms" class="button-cancel">Hủy</a>
+            <button type="submit">✓ Cập nhật</button>
+        </div>
+    </form>
+</div>
+
 </body>
 </html>

@@ -55,7 +55,6 @@ public class Booking {
     @Column(name = "cancelled_at")
     private LocalDateTime cancelledAt;
 
-    // 🆕 NEW FIELD: Track cancellation reason
     @Enumerated(EnumType.STRING)
     @Column(name = "cancellation_reason")
     private CancellationReason cancellationReason;
@@ -63,12 +62,38 @@ public class Booking {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // ========== 🆕 THÊM CÁC TRƯỜNG CHO WORKFLOW 3 ==========
+
+    /** Mã QR code check-in (dạng string Base64) */
+    @Column(name = "qr_code", columnDefinition = "LONGTEXT")
+    private String qrCode;
+
+    /** Trạng thái check-in: PENDING (chưa check-in), CHECKED_IN (đã check-in), CHECKED_OUT */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "check_in_status", columnDefinition = "VARCHAR(50) DEFAULT 'PENDING'")
+    private CheckInStatus checkInStatus = CheckInStatus.PENDING;
+
+    /** Thời gian khách check-in thực tế */
+    @Column(name = "actual_check_in_time")
+    private LocalDateTime actualCheckInTime;
+
+    /** Thời gian khách check-out thực tế */
+    @Column(name = "actual_check_out_time")
+    private LocalDateTime actualCheckOutTime;
+
+    /** Lưu ý/ghi chú khi check-in */
+    @Column(name = "check_in_notes", columnDefinition = "TEXT")
+    private String checkInNotes;
+
+    // ========== END NEW FIELDS ==========
+
     @PrePersist
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.status = BookingStatus.PENDING_CONFIRM;
         this.refundStatus = RefundStatus.NONE;
         this.refundPercentage = 100;
+        this.checkInStatus = CheckInStatus.PENDING;
     }
 
     @PreUpdate

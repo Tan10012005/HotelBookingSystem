@@ -2,9 +2,192 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
 </head>
 <body>
-<header th:fragment="header" style="position:relative;">
+<header th:fragment="header" class="app-header" style="position:relative;">
+    <style>
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .app-header {
+            background: linear-gradient(135deg, rgba(0, 99, 64, 0.95) 0%, rgba(0, 77, 52, 0.9) 50%, rgba(14, 165, 233, 0.1) 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            animation: slideDown 0.6s ease;
+        }
+
+        header > div {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        a[th-href*="rooms"] > div {
+            animation: float 3s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        a[th-href*="rooms"] > div::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.3), rgba(16, 185, 129, 0.3));
+            border-radius: 12px;
+            z-index: -1;
+            opacity: 0;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        a[th-href*="rooms"] {
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        a[th-href*="rooms"]:hover > div {
+            transform: scale(1.05) rotate(2deg);
+            text-shadow: 0 0 20px rgba(14, 165, 233, 0.5), 0 6px 18px rgba(0, 0, 0, 0.45);
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            animation: slideDown 0.8s ease;
+        }
+
+        .nav-item {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+            font-weight: 700;
+            transition: transform 0.16s cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 0.16s ease,
+            background 0.12s ease,
+            color 0.12s ease,
+            border-color 0.12s ease;
+            display: inline-block;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-5px) rotate(-2deg) scale(1.05);
+            box-shadow: 0 18px 40px rgba(11, 24, 40, 0.16),
+            0 0 30px rgba(14, 165, 233, 0.3);
+            background: linear-gradient(180deg, rgba(14, 165, 233, 0.3), rgba(16, 185, 129, 0.2));
+            color: #ffffff;
+            border-color: rgba(14, 165, 233, 0.5);
+        }
+
+        .nav-item::before:hover {
+            width: 300px;
+            height: 300px;
+        }
+
+        .nav-item i {
+            display: inline-block;
+            margin-right: 6px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            filter 0.3s ease;
+            animation: slideDown 1s ease backwards;
+        }
+
+        .nav-item:hover i {
+            transform: rotate(20deg) scale(1.2);
+            filter: drop-shadow(0 4px 8px rgba(14, 165, 233, 0.4));
+        }
+
+        .nav-item:nth-child(1) { animation-delay: 0.1s; }
+        .nav-item:nth-child(2) { animation-delay: 0.15s; }
+        .nav-item:nth-child(3) { animation-delay: 0.2s; }
+        .nav-item:nth-child(4) { animation-delay: 0.25s; }
+        .nav-item:nth-child(5) { animation-delay: 0.3s; }
+        .nav-item:nth-child(6) { animation-delay: 0.35s; }
+
+        .nav-item:nth-child(1) i { animation: slideDown 1s ease 0.1s backwards; }
+        .nav-item:nth-child(2) i { animation: slideDown 1s ease 0.15s backwards; }
+        .nav-item:nth-child(3) i { animation: slideDown 1s ease 0.2s backwards; }
+        .nav-item:nth-child(4) i { animation: slideDown 1s ease 0.25s backwards; }
+        .nav-item:nth-child(5) i { animation: slideDown 1s ease 0.3s backwards; }
+        .nav-item:nth-child(6) i { animation: slideDown 1s ease 0.35s backwards; }
+
+        .nav-item:active {
+            transform: translateY(-2px) rotate(-2deg) scale(0.98);
+        }
+
+        @media (max-width: 720px) {
+            .nav-item {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+
+            .nav-item i {
+                margin-right: 4px;
+            }
+
+            nav {
+                gap: 6px;
+            }
+        }
+    </style>
+
     <div style="max-width:1200px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px">
         <a th:href="@{/rooms}" style="text-decoration:none;display:inline-block;">
             <div style="font-family: 'Playfair Display', serif; font-size:32px; font-weight:700; color:#fff; text-shadow:0 6px 18px rgba(0,0,0,0.45);">
@@ -13,40 +196,14 @@
         </a>
 
         <nav style="display:flex;gap:10px;align-items:center;">
-            <a th:href="@{/rooms}" class="nav-item">🏠 Trang chủ</a>
-            <a th:href="@{/profile}" class="nav-item">👤 Hồ sơ</a>
-            <a th:href="@{/booking/my}" class="nav-item">📋 Booking của tôi</a>
-            <a th:href="@{/about}" class="nav-item">📝 Về chúng tôi</a>
-            <a th:href="@{/logout}" class="nav-item">🚪 Logout</a>
+            <a th:href="@{/rooms}" class="nav-item"><i class="fas fa-home"></i>Trang chủ</a>
+            <a th:href="@{/profile}" class="nav-item"><i class="fas fa-user-circle"></i>Hồ sơ</a>
+            <a th:href="@{/booking/my}" class="nav-item"><i class="fas fa-bookmark"></i>Booking của tôi</a>
+            <a th:href="@{/checkin/online}" class="nav-item"><i class="fas fa-check-circle"></i>Check-in Online</a>
+            <a th:href="@{/about}" class="nav-item"><i class="fas fa-info-circle"></i>Về chúng tôi</a>
+            <a th:href="@{/logout}" class="nav-item"><i class="fas fa-sign-out-alt"></i>Logout</a>
         </nav>
     </div>
-
-    <style>
-        .nav-item {
-            color: #ffffff;
-            text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 12px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-            border: 1px solid rgba(255,255,255,0.06);
-            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-            font-weight:700;
-            transition: transform .16s ease, box-shadow .16s ease, background .12s ease, color .12s ease;
-            display:inline-block;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-        }
-
-        .nav-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 18px 40px rgba(11,24,40,0.16);
-            background: rgba(255,255,255,0.12);
-            color: #006340;
-        }
-
-        @media (max-width:720px){
-            .nav-item{ padding:8px 10px; font-size:14px }
-        }
-    </style>
 </header>
 </body>
 </html>

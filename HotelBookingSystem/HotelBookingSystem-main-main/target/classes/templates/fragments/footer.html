@@ -10,69 +10,156 @@
 
     <style>
         :root{
-            --accent-1:#29a14a;
-            --muted:#6b7280;
+            --footer-bg: #0f172a;
+            --footer-text: #cbd5e1;
+            --footer-muted: #94a3b8;
+            --footer-accent: #3b82f6;
         }
 
-        /* ===== FOOTER ===== */
         .site-footer{
             width: 100%;
-            padding: 18px 20px;
-            background: #ffffff;
-            box-shadow: 0 -4px 16px rgba(11, 24, 40, 0.06);
+            background: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 50px 8%;
+            margin-top: 80px;
+        }
 
+        .footer-container{
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 40px;
+        }
+
+        .footer-brand h3{
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .footer-brand p{
+            font-size: 14px;
+            color: var(--footer-muted);
+            line-height: 1.6;
+        }
+
+        .footer-section h4{
+            font-size: 15px;
+            margin-bottom: 14px;
+            color: #fff;
+        }
+
+        .footer-section ul{
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section li{
+            margin-bottom: 10px;
+        }
+
+        .footer-section a{
+            text-decoration: none;
+            color: var(--footer-muted);
+            font-size: 14px;
+            transition: 0.2s ease;
+        }
+
+        .footer-section a:hover{
+            color: var(--footer-accent);
+            padding-left: 4px;
+        }
+
+        .footer-bottom{
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 16px;
-
-            font-size: 14px;
-            color: var(--muted);
-        }
-
-        .site-footer a {
-            color: var(--accent-1);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .small {
             font-size: 13px;
-            color: var(--muted);
+            color: var(--footer-muted);
         }
 
-        /* Mobile */
-        @media (max-width: 760px) {
-            .site-footer{
-                flex-direction: column;
-                align-items: flex-start;
-                text-align: left;
+        .footer-social a{
+            margin-left: 12px;
+            color: var(--footer-muted);
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .footer-social a:hover{
+            color: var(--footer-accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px){
+            .footer-container{
+                grid-template-columns: 1fr;
             }
 
-            .footer-right {
-                text-align: left;
-                width: 100%;
+            .footer-bottom{
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+
+            .footer-social{
+                margin-top: 8px;
             }
         }
     </style>
 
     <footer class="site-footer" role="contentinfo">
-        <div>
-            <div style="font-weight:700;color:#0f172a">Hotel Booking</div>
-            <div class="small">
-                Địa chỉ: Lô E2a-7, Đường D1, Khu CNC, Long Thạnh Mỹ, Thủ Đức, HCM—
-                Email: <a href="mailto:support@hotel.com">support@hotel.com</a>
+        <div class="footer-container">
+
+            <!-- Brand -->
+            <div class="footer-brand">
+                <h3>Hotel Booking</h3>
+                <p>
+                    Nền tảng đặt phòng khách sạn hiện đại,
+                    nhanh chóng và tiện lợi. Trải nghiệm dịch vụ chuyên nghiệp,
+                    chuẩn production.
+                </p>
+                <p style="margin-top:12px;font-size:13px;color:#64748b;">
+                    Lô E2a-7, Đường D1, Khu CNC, Thủ Đức, TP.HCM
+                    <br>
+                    Email: support@hotel.com
+                </p>
             </div>
+
+            <!-- Quick Links -->
+            <div class="footer-section">
+                <h4>Liên kết</h4>
+                <ul>
+                    <li><a href="/rooms">Danh sách phòng</a></li>
+                    <li><a href="/about">Giới thiệu</a></li>
+                    <li><a href="/checkin">Check-in Online</a></li>
+                    <li><a href="#">Hỗ trợ</a></li>
+                </ul>
+            </div>
+
+            <!-- Policies -->
+            <div class="footer-section">
+                <h4>Chính sách</h4>
+                <ul>
+                    <li><a href="#">Điều khoản sử dụng</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Chính sách hoàn tiền</a></li>
+                </ul>
+            </div>
+
         </div>
 
-        <div class="footer-right" style="text-align:right">
-            <div class="small">
-                © <span th:text="${#dates.format(#dates.createNow(),'yyyy')}">2026</span>
-                Hotel Booking — All rights reserved
+        <div class="footer-bottom">
+            <div>
+                © <span th:text="${#dates.format(#dates.createNow(),'yyyy')}"></span>
+                Hotel Booking. All rights reserved.
             </div>
-            <div style="margin-top:6px">
-                <a href="#" style="margin-right:10px">Privacy</a>
-                <a href="#">Terms</a>
+
+            <div class="footer-social">
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">LinkedIn</a>
             </div>
         </div>
     </footer>
