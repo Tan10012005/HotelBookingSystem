@@ -13,6 +13,10 @@
           crossorigin="anonymous"/>
 
     <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         :root {
             --card-bg: rgba(255, 255, 255, 0.96);
             --accent: #006340;
@@ -24,6 +28,7 @@
 
         html, body {
             margin: 0;
+            padding: 0;
             font-family: Inter, sans-serif;
         }
 
@@ -58,9 +63,9 @@
         .container {
             width: 100%;
             max-width: 720px;
-            margin: 60px 20px;
+            margin: 40px auto;
             background: var(--card-bg);
-            padding: 40px;
+            padding: 40px 20px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             backdrop-filter: blur(12px);
@@ -196,8 +201,8 @@
 
         @media (max-width: 768px) {
             .container {
-                margin: 30px 15px;
-                padding: 28px;
+                margin: 20px auto;
+                padding: 20px 16px;
             }
         }
     </style>
