@@ -43,6 +43,8 @@
         }
 
         .app-header {
+            position: relative;
+            z-index: 9999;
             background: linear-gradient(135deg, rgba(0, 99, 64, 0.95) 0%, rgba(0, 77, 52, 0.9) 50%, rgba(14, 165, 233, 0.1) 100%);
             background-size: 200% 200%;
             animation: gradientShift 8s ease infinite;
@@ -123,7 +125,7 @@
             border-radius: 8px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             min-width: 180px;
-            z-index: 1000;
+            z-index: 10000;
             opacity: 0;
             visibility: hidden;
             transform: translateY(-10px);
@@ -534,7 +536,7 @@
                 <!-- Currency Dropdown -->
                 <div style="position: relative;">
                     <button class="dropdown-toggle" id="currencyBtn">
-                        <i class="fas fa-dollar-sign"></i>
+                        <span id="currencySymbol">₫</span>
                         <span id="currentCurrency">VND</span>
                         <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
                     </button>
@@ -583,6 +585,14 @@
     </div>
 
     <script>
+        const currencySymbolMap = {
+            'VND': '₫',
+            'USD': '$',
+            'EUR': '€',
+            'GBP': '£',
+            'JPY': '¥',
+            'CNY': '¥'
+        };
         // Language Dropdown
         const languageBtn = document.getElementById('languageBtn');
         const languageMenu = document.getElementById('languageMenu');
@@ -616,45 +626,56 @@
         // Change Language
         function changeLanguage(code, name, event) {
             event.preventDefault();
+
             document.getElementById('currentLang').textContent = name;
 
-            // Update active state
             document.querySelectorAll('#languageMenu a').forEach(el => {
                 el.classList.remove('active');
+                const icon = el.querySelector('i');
+                if (icon) icon.className = '';
             });
-            event.target.closest('a').classList.add('active');
 
-            // Save to localStorage
+            const selected = event.target.closest('a');
+            selected.classList.add('active');
+
+            let icon = selected.querySelector('i');
+            if (!icon) {
+                icon = document.createElement('i');
+                selected.prepend(icon);
+            }
+            icon.className = 'fas fa-check';
+
             localStorage.setItem('language', code);
+
             languageMenu.classList.remove('show');
             languageBtn.classList.remove('active');
-
-            // In thực tế, bạn sẽ gửi yêu cầu đến server để thay đổi ngôn ngữ
-            console.log('Ngôn ngữ được thay đổi thành:', code);
         }
 
         // Change Currency
         function changeCurrency(code, event) {
             event.preventDefault();
-            document.getElementById('currentCurrency').textContent = code;
 
-            // Update active state
+            document.getElementById('currentCurrency').textContent = code;
+            document.getElementById('currencySymbol').textContent = currencySymbolMap[code];
+
             document.querySelectorAll('#currencyMenu button').forEach(el => {
                 el.classList.remove('active');
+                el.querySelector('i').className = '';
             });
-            event.target.closest('button').classList.add('active');
 
-            // Save to localStorage
+            const selected = event.target.closest('button');
+            selected.classList.add('active');
+            selected.querySelector('i').className = 'fas fa-check';
+
             localStorage.setItem('currency', code);
+
             currencyMenu.classList.remove('show');
             currencyBtn.classList.remove('active');
-
-            // In thực tế, bạn sẽ gửi yêu cầu đến server để thay đổi tiền tệ
-            console.log('Tiền tệ được thay đổi thành:', code);
         }
 
         // Load saved preferences
         window.addEventListener('load', function () {
+
             const savedLang = localStorage.getItem('language') || 'vi';
             const savedCurrency = localStorage.getItem('currency') || 'VND';
 
@@ -666,8 +687,30 @@
                 'ko': '한국어'
             };
 
-            document.getElementById('currentLang').textContent = langMap[savedLang] || 'Tiếng Việt';
+            document.getElementById('currentLang').textContent = langMap[savedLang];
             document.getElementById('currentCurrency').textContent = savedCurrency;
+            document.getElementById('currencySymbol').textContent = currencySymbolMap[savedCurrency];
+
+            // set active language
+            document.querySelectorAll('#languageMenu a').forEach(a => {
+                if (a.textContent.includes(langMap[savedLang])) {
+                    a.classList.add('active');
+                } else {
+                    a.classList.remove('active');
+                }
+            });
+
+            // set active currency + check icon
+            document.querySelectorAll('#currencyMenu button').forEach(btn => {
+                if (btn.textContent.includes(savedCurrency)) {
+                    btn.classList.add('active');
+                    btn.querySelector('i').className = 'fas fa-check';
+                } else {
+                    btn.classList.remove('active');
+                    btn.querySelector('i').className = '';
+                }
+            });
+
         });
     </script>
 
