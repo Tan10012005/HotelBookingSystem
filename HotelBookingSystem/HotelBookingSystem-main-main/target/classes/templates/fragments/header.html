@@ -1,37 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          crossorigin="anonymous"/>
 </head>
 <body>
-<header th:fragment="header" class="app-header" style="position:relative;">
+<header th:fragment="header" class="app-header"
+        style="position:relative;margin:0;padding:0;width:100%;box-sizing:border-box;">
     <style>
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        /*@keyframes slideDown {*/
+        /*    from {*/
+        /*        opacity: 0;*/
+        /*        transform: translateY(-20px);*/
+        /*    }*/
+        /*    to {*/
+        /*        opacity: 1;*/
+        /*        transform: translateY(0);*/
+        /*    }*/
+        /*}*/
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
         }
 
         @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .app-header {
@@ -42,9 +50,187 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             animation: slideDown 0.6s ease;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        header > div {
+        .header-top {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-sizing: border-box;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+        }
+
+        .header-top-left {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-top-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .language-currency {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .dropdown-toggle {
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .dropdown-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .dropdown-toggle i {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-toggle.active i {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            min-width: 180px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu a,
+        .dropdown-menu button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px 16px;
+            border: none;
+            background: none;
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dropdown-menu a:last-child,
+        .dropdown-menu button:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-menu a:hover,
+        .dropdown-menu button:hover {
+            background: #f5f5f5;
+            padding-left: 20px;
+        }
+
+        .dropdown-menu a.active,
+        .dropdown-menu button.active {
+            background: #e8f5e9;
+            color: #006340;
+            font-weight: 600;
+        }
+
+        .help-icon {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .help-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-login, .btn-register {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-login {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-login:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-register {
+            background: #fff;
+            color: #006340;
+        }
+
+        .btn-register:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+        }
+
+        header > div:not(.header-top) {
             max-width: 1200px;
             margin: 0 auto;
             padding: 18px 20px;
@@ -52,6 +238,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
+            box-sizing: border-box;
         }
 
         a[th-href*="rooms"] > div {
@@ -72,8 +259,14 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
+            0%, 100% {
+                opacity: 0;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
         }
 
         a[th-href*="rooms"] {
@@ -91,7 +284,7 @@
             display: flex;
             gap: 10px;
             align-items: center;
-            animation: slideDown 0.8s ease;
+            /*animation: slideDown 0.8s ease;*/
         }
 
         .nav-item {
@@ -154,25 +347,97 @@
             filter: drop-shadow(0 4px 8px rgba(14, 165, 233, 0.4));
         }
 
-        .nav-item:nth-child(1) { animation-delay: 0.1s; }
-        .nav-item:nth-child(2) { animation-delay: 0.15s; }
-        .nav-item:nth-child(3) { animation-delay: 0.2s; }
-        .nav-item:nth-child(4) { animation-delay: 0.25s; }
-        .nav-item:nth-child(5) { animation-delay: 0.3s; }
-        .nav-item:nth-child(6) { animation-delay: 0.35s; }
+        .nav-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
 
-        .nav-item:nth-child(1) i { animation: slideDown 1s ease 0.1s backwards; }
-        .nav-item:nth-child(2) i { animation: slideDown 1s ease 0.15s backwards; }
-        .nav-item:nth-child(3) i { animation: slideDown 1s ease 0.2s backwards; }
-        .nav-item:nth-child(4) i { animation: slideDown 1s ease 0.25s backwards; }
-        .nav-item:nth-child(5) i { animation: slideDown 1s ease 0.3s backwards; }
-        .nav-item:nth-child(6) i { animation: slideDown 1s ease 0.35s backwards; }
+        .nav-item:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .nav-item:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .nav-item:nth-child(4) {
+            animation-delay: 0.25s;
+        }
+
+        .nav-item:nth-child(5) {
+            animation-delay: 0.3s;
+        }
+
+        .nav-item:nth-child(6) {
+            animation-delay: 0.35s;
+        }
+
+        .nav-item:nth-child(1) i {
+            animation: slideDown 1s ease 0.1s backwards;
+        }
+
+        .nav-item:nth-child(2) i {
+            animation: slideDown 1s ease 0.15s backwards;
+        }
+
+        .nav-item:nth-child(3) i {
+            animation: slideDown 1s ease 0.2s backwards;
+        }
+
+        .nav-item:nth-child(4) i {
+            animation: slideDown 1s ease 0.25s backwards;
+        }
+
+        .nav-item:nth-child(5) i {
+            animation: slideDown 1s ease 0.3s backwards;
+        }
+
+        .nav-item:nth-child(6) i {
+            animation: slideDown 1s ease 0.35s backwards;
+        }
 
         .nav-item:active {
             transform: translateY(-2px) rotate(-2deg) scale(0.98);
         }
 
-        @media (max-width: 720px) {
+        .divider {
+            width: 1px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 1024px) {
+            .header-top {
+                gap: 15px;
+                padding: 10px 20px;
+            }
+
+            .language-currency {
+                gap: 8px;
+            }
+
+            .user-actions {
+                gap: 8px;
+            }
+
+            .btn-login, .btn-register {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px 15px;
+            }
+
+            .header-top-left,
+            .header-top-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
             .nav-item {
                 padding: 8px 10px;
                 font-size: 14px;
@@ -184,16 +449,128 @@
 
             nav {
                 gap: 6px;
+                flex-wrap: wrap;
+            }
+
+            .divider {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-top {
+                padding: 10px 12px;
+            }
+
+            .dropdown-toggle {
+                padding: 4px 8px;
+                font-size: 12px;
+            }
+
+            .btn-login, .btn-register {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .header-top-left {
+                gap: 10px;
+            }
+
+            .header-top-right {
+                gap: 10px;
             }
         }
     </style>
 
-    <div style="max-width:1200px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px">
-        <a th:href="@{/rooms}" style="text-decoration:none;display:inline-block;">
-            <div style="font-family: 'Playfair Display', serif; font-size:32px; font-weight:700; color:#fff; text-shadow:0 6px 18px rgba(0,0,0,0.45);">
-                Hotel Booking
+    <!-- Header Top: Language, Currency, Help, Login -->
+    <div class="header-top">
+
+        <div class="header-top-left">
+            <a th:href="@{/rooms}" style="text-decoration:none;display:inline-block;">
+                <div style="font-family: 'Playfair Display', serif; font-size:32px; font-weight:700; color:#fff; text-shadow:0 6px 18px rgba(0,0,0,0.45);">
+                    Hotel Booking
+                </div>
+            </a>
+        </div>
+
+        <div class="header-top-right">
+            <div class="language-currency">
+                <!-- Language Dropdown -->
+                <div style="position: relative;">
+                    <button class="dropdown-toggle" id="languageBtn">
+                        <i class="fas fa-globe"></i>
+                        <span id="currentLang">Tiếng Việt</span>
+                        <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
+                    </button>
+                    <div class="dropdown-menu" id="languageMenu">
+                        <a href="#" onclick="changeLanguage('vi', 'Tiếng Việt', event)" class="active">
+                            <i class="fas fa-check"></i> Tiếng Việt
+                        </a>
+                        <a href="#" onclick="changeLanguage('en', 'English', event)">
+                            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/gb.svg"
+                                 style="width: 16px; height: 12px;">
+                            English
+                        </a>
+                        <a href="#" onclick="changeLanguage('zh', '中文', event)">
+                            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/cn.svg"
+                                 style="width: 16px; height: 12px;">
+                            中文
+                        </a>
+                        <a href="#" onclick="changeLanguage('ja', '日本語', event)">
+                            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/jp.svg"
+                                 style="width: 16px; height: 12px;">
+                            日本語
+                        </a>
+                        <a href="#" onclick="changeLanguage('ko', '한국어', event)">
+                            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/kr.svg"
+                                 style="width: 16px; height: 12px;">
+                            한국어
+                        </a>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Currency Dropdown -->
+                <div style="position: relative;">
+                    <button class="dropdown-toggle" id="currencyBtn">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span id="currentCurrency">VND</span>
+                        <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
+                    </button>
+                    <div class="dropdown-menu" id="currencyMenu">
+                        <button onclick="changeCurrency('VND', event)" class="active">
+                            <i class="fas fa-check"></i> VND - ₫ (Việt Nam)
+                        </button>
+                        <button onclick="changeCurrency('USD', event)">
+                            <i></i> USD - $ (Mỹ)
+                        </button>
+                        <button onclick="changeCurrency('EUR', event)">
+                            <i></i> EUR - € (EU)
+                        </button>
+                        <button onclick="changeCurrency('GBP', event)">
+                            <i></i> GBP - £ (Anh)
+                        </button>
+                        <button onclick="changeCurrency('JPY', event)">
+                            <i></i> JPY - ¥ (Nhật)
+                        </button>
+                        <button onclick="changeCurrency('CNY', event)">
+                            <i></i> CNY - ¥ (Trung Quốc)
+                        </button>
+                    </div>
+                </div>
+
+                <button class="help-icon" title="Trợ giúp">
+                    <i class="fas fa-question"></i>
+                </button>
             </div>
-        </a>
+        </div>
+
+    </div>
+
+    <!-- Header Main: Logo and Navigation -->
+    <div style="max-width:1200px;margin:0 auto;padding:18px 20px;display:flex;align-items:center;justify-content:center;gap:12px;box-sizing:border-box;">
+
 
         <nav style="display:flex;gap:10px;align-items:center;">
             <a th:href="@{/rooms}" class="nav-item"><i class="fas fa-home"></i>Trang chủ</a>
@@ -204,6 +581,96 @@
             <a th:href="@{/logout}" class="nav-item"><i class="fas fa-sign-out-alt"></i>Logout</a>
         </nav>
     </div>
+
+    <script>
+        // Language Dropdown
+        const languageBtn = document.getElementById('languageBtn');
+        const languageMenu = document.getElementById('languageMenu');
+        const currencyBtn = document.getElementById('currencyBtn');
+        const currencyMenu = document.getElementById('currencyMenu');
+
+        // Toggle Language Dropdown
+        languageBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            languageMenu.classList.toggle('show');
+            currencyMenu.classList.remove('show');
+            this.classList.toggle('active');
+        });
+
+        // Toggle Currency Dropdown
+        currencyBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            currencyMenu.classList.toggle('show');
+            languageMenu.classList.remove('show');
+            this.classList.toggle('active');
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function () {
+            languageMenu.classList.remove('show');
+            currencyMenu.classList.remove('show');
+            languageBtn.classList.remove('active');
+            currencyBtn.classList.remove('active');
+        });
+
+        // Change Language
+        function changeLanguage(code, name, event) {
+            event.preventDefault();
+            document.getElementById('currentLang').textContent = name;
+
+            // Update active state
+            document.querySelectorAll('#languageMenu a').forEach(el => {
+                el.classList.remove('active');
+            });
+            event.target.closest('a').classList.add('active');
+
+            // Save to localStorage
+            localStorage.setItem('language', code);
+            languageMenu.classList.remove('show');
+            languageBtn.classList.remove('active');
+
+            // In thực tế, bạn sẽ gửi yêu cầu đến server để thay đổi ngôn ngữ
+            console.log('Ngôn ngữ được thay đổi thành:', code);
+        }
+
+        // Change Currency
+        function changeCurrency(code, event) {
+            event.preventDefault();
+            document.getElementById('currentCurrency').textContent = code;
+
+            // Update active state
+            document.querySelectorAll('#currencyMenu button').forEach(el => {
+                el.classList.remove('active');
+            });
+            event.target.closest('button').classList.add('active');
+
+            // Save to localStorage
+            localStorage.setItem('currency', code);
+            currencyMenu.classList.remove('show');
+            currencyBtn.classList.remove('active');
+
+            // In thực tế, bạn sẽ gửi yêu cầu đến server để thay đổi tiền tệ
+            console.log('Tiền tệ được thay đổi thành:', code);
+        }
+
+        // Load saved preferences
+        window.addEventListener('load', function () {
+            const savedLang = localStorage.getItem('language') || 'vi';
+            const savedCurrency = localStorage.getItem('currency') || 'VND';
+
+            const langMap = {
+                'vi': 'Tiếng Việt',
+                'en': 'English',
+                'zh': '中文',
+                'ja': '日本語',
+                'ko': '한국어'
+            };
+
+            document.getElementById('currentLang').textContent = langMap[savedLang] || 'Tiếng Việt';
+            document.getElementById('currentCurrency').textContent = savedCurrency;
+        });
+    </script>
+
 </header>
 </body>
 </html>

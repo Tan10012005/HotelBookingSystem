@@ -20,11 +20,14 @@
             width: 100%;
             background: var(--footer-bg);
             color: var(--footer-text);
-            padding: 50px 8%;
-            margin-top: 80px;
+            padding: 50px 20px;
+            margin-top: auto;
+            box-sizing: border-box;
         }
 
         .footer-container{
+            max-width: 1200px;
+            margin: 0 auto;
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
             gap: 40px;
@@ -34,23 +37,27 @@
             font-size: 20px;
             margin-bottom: 12px;
             color: #fff;
+            margin-top: 0;
         }
 
         .footer-brand p{
             font-size: 14px;
             color: var(--footer-muted);
             line-height: 1.6;
+            margin: 0 0 12px 0;
         }
 
         .footer-section h4{
             font-size: 15px;
             margin-bottom: 14px;
             color: #fff;
+            margin-top: 0;
         }
 
         .footer-section ul{
             list-style: none;
             padding: 0;
+            margin: 0;
         }
 
         .footer-section li{
@@ -70,7 +77,8 @@
         }
 
         .footer-bottom{
-            margin-top: 40px;
+            max-width: 1200px;
+            margin: 40px auto 0;
             padding-top: 20px;
             border-top: 1px solid rgba(255,255,255,0.08);
             display: flex;
@@ -78,6 +86,7 @@
             align-items: center;
             font-size: 13px;
             color: var(--footer-muted);
+            box-sizing: border-box;
         }
 
         .footer-social a{
@@ -95,6 +104,7 @@
         @media (max-width: 900px){
             .footer-container{
                 grid-template-columns: 1fr;
+                gap: 30px;
             }
 
             .footer-bottom{
@@ -105,6 +115,32 @@
 
             .footer-social{
                 margin-top: 8px;
+            }
+
+            .site-footer {
+                padding: 40px 20px;
+            }
+        }
+
+        @media (max-width: 480px){
+            .site-footer {
+                padding: 30px 15px;
+            }
+
+            .footer-container{
+                gap: 20px;
+            }
+
+            .footer-brand h3{
+                font-size: 18px;
+            }
+
+            .footer-section h4{
+                font-size: 14px;
+            }
+
+            .footer-section a{
+                font-size: 13px;
             }
         }
     </style>
@@ -120,7 +156,7 @@
                     nhanh chóng và tiện lợi. Trải nghiệm dịch vụ chuyên nghiệp,
                     chuẩn production.
                 </p>
-                <p style="margin-top:12px;font-size:13px;color:#64748b;">
+                <p style="font-size:13px;color:#64748b;">
                     Lô E2a-7, Đường D1, Khu CNC, Thủ Đức, TP.HCM
                     <br>
                     Email: support@hotel.com
