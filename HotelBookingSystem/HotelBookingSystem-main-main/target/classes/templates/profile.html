@@ -4,8 +4,10 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Hồ sơ người dùng - Hotel Booking</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap"
           rel="stylesheet"/>
+
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
           crossorigin="anonymous"/>
@@ -14,20 +16,22 @@
         :root {
             --card-bg: rgba(255, 255, 255, 0.96);
             --accent: #006340;
+            --accent-light: #0d8a5f;
             --muted: #6b7280;
-            --radius: 18px;
-            --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
+            --radius: 20px;
+            --shadow: 0 15px 45px rgba(0, 0, 0, 0.12);
         }
 
         html, body {
-            height: 100%;
             margin: 0;
-            font-family: Inter, Arial, Helvetica, sans-serif;
-            overflow-x: hidden;
+            font-family: Inter, sans-serif;
         }
 
-        /* Gradient background */
         body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+
             background: linear-gradient(135deg,
             #667eea 0%,
             #764ba2 25%,
@@ -38,36 +42,46 @@
             animation: gradientShift 15s ease infinite;
         }
 
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
         @keyframes gradientShift {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
-            max-width: 700px;
-            margin: 40px auto;
+            width: 100%;
+            max-width: 720px;
+            margin: 60px 20px;
             background: var(--card-bg);
-            padding: 32px;
+            padding: 40px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            color: #1f2937;
-            position: relative;
-            z-index: 1;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            animation: fadeInUp .8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h2 {
-            margin: 0 0 8px 0;
+            margin-bottom: 6px;
             font-family: 'Playfair Display', serif;
             font-size: 32px;
-            color: #1f2937;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -75,47 +89,35 @@
 
         .subtitle {
             color: var(--muted);
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             font-size: 15px;
         }
 
-        /* Alert messages */
         .alert {
             padding: 14px 18px;
-            border-radius: 10px;
+            border-radius: 12px;
             margin-bottom: 20px;
             font-size: 14px;
             font-weight: 600;
         }
 
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 2px solid #fca5a5;
-        }
+        .alert-error { background: #fee2e2; color: #991b1b; }
+        .alert-success { background: #d1fae5; color: #065f46; }
 
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 2px solid #6ee7b7;
-        }
-
-        .alert-warning {
-            background: #fef3c7;
-            color: #92400e;
-            border: 2px solid #fcd34d;
-        }
-
-        /* Profile status card */
         .status-card {
             background: linear-gradient(135deg, #f0fdf4, #dcfce7);
             padding: 18px;
-            border-radius: 12px;
+            border-radius: 14px;
             border: 2px solid #86efac;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
+            transition: transform .3s;
+        }
+
+        .status-card:hover {
+            transform: scale(1.02);
         }
 
         .status-card.incomplete {
@@ -123,59 +125,44 @@
             border-color: #fbbf24;
         }
 
-        .status-icon {
-            font-size: 32px;
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(251,191,36,0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(251,191,36,0); }
+            100% { box-shadow: 0 0 0 0 rgba(251,191,36,0); }
         }
 
-        .status-text {
-            flex: 1;
-        }
-
-        .status-title {
-            font-weight: 700;
-            font-size: 16px;
-            margin-bottom: 4px;
-        }
-
-        .status-desc {
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        /* Form */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         label {
-            display: block;
             font-weight: 600;
-            margin-bottom: 8px;
-            color: #374151;
             font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        label .required {
-            color: #ef4444;
-            margin-left: 4px;
+        label i {
+            color: var(--accent-light);
         }
 
         input[type="text"],
         input[type="email"],
         input[type="tel"] {
             width: 100%;
-            padding: 12px 14px;
-            border-radius: 10px;
+            padding: 13px 14px;
+            border-radius: 12px;
             border: 2px solid #e5e7eb;
             font-size: 15px;
-            font-family: inherit;
-            transition: border-color .2s;
+            transition: all .25s ease;
         }
 
         input:focus {
-            outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(0, 99, 64, 0.1);
+            box-shadow: 0 0 0 4px rgba(0, 99, 64, 0.15);
+            transform: scale(1.01);
         }
 
         input:disabled {
@@ -193,24 +180,24 @@
             background: linear-gradient(90deg, var(--accent), #004f33);
             color: #fff;
             border: none;
-            padding: 14px 28px;
-            border-radius: 10px;
+            padding: 14px;
+            border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
             font-size: 16px;
-            transition: transform .2s;
             width: 100%;
+            transition: all .3s ease;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 99, 64, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 99, 64, 0.35);
         }
 
         @media (max-width: 768px) {
             .container {
-                margin: 20px;
-                padding: 24px;
+                margin: 30px 15px;
+                padding: 28px;
             }
         }
     </style>
@@ -218,92 +205,69 @@
 
 <body>
 
-<!-- Header -->
 <div th:replace="~{fragments/header :: header}"></div>
 
-<!-- Content -->
-<div class="container">
-    <h2>👤 Hồ sơ người dùng</h2>
-    <p class="subtitle">Cập nhật thông tin để đặt phòng khách sạn</p>
+<main>
+    <div class="container">
 
-    <!-- Alert messages -->
-    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
-    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <h2><i class="fa-solid fa-user-gear"></i> Hồ sơ người dùng</h2>
+        <p class="subtitle">Cập nhật thông tin để đặt phòng khách sạn</p>
 
-    <!-- Profile status -->
-    <div class="status-card" th:classappend="${user.isProfileComplete()} ? '' : 'incomplete'">
-        <div class="status-icon" th:text="${user.isProfileComplete()} ? '✅' : '⚠️'"></div>
-        <div class="status-text">
-            <div class="status-title"
-                 th:text="${user.isProfileComplete()} ? 'Hồ sơ đã hoàn thiện' : 'Hồ sơ chưa hoàn thiện'"></div>
-            <div class="status-desc"
-                 th:text="${user.isProfileComplete()} ? 'Bạn có thể đặt phòng ngay bây giờ' : 'Vui lòng cập nhật đầy đủ thông tin để đặt phòng'"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <div class="status-card"
+             th:classappend="${user.isProfileComplete()} ? '' : 'incomplete'">
+            <div>
+                <strong th:text="${user.isProfileComplete()} ? 'Hồ sơ đã hoàn thiện' : 'Hồ sơ chưa hoàn thiện'"></strong>
+                <div style="font-size:13px;color:#6b7280"
+                     th:text="${user.isProfileComplete()} ? 'Bạn có thể đặt phòng ngay bây giờ' : 'Vui lòng cập nhật đầy đủ thông tin để đặt phòng'"></div>
+            </div>
         </div>
+
+        <form th:action="@{/profile/update}" method="post">
+
+            <div class="form-group">
+                <label for="email"><i class="fa-solid fa-envelope"></i>Email đăng nhập</label>
+                <input type="email" id="email" th:value="${user.email}" disabled/>
+                <div class="input-hint">Email không thể thay đổi</div>
+            </div>
+
+            <div class="form-group">
+                <label for="fullName"><i class="fa-solid fa-user"></i>Họ và tên</label>
+                <input type="text" id="fullName" name="fullName"
+                       th:value="${user.fullName}"
+                       placeholder="Nguyễn Văn A" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="phoneNumber"><i class="fa-solid fa-phone"></i>Số điện thoại</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber"
+                       th:value="${user.phoneNumber}"
+                       placeholder="0901234567"
+                       pattern="^0[0-9]{9,10}$"
+                       required/>
+            </div>
+
+            <div class="form-group">
+                <label for="citizenId"><i class="fa-solid fa-id-card"></i>Số CCCD/CMND</label>
+                <input type="text" id="citizenId" name="citizenId"
+                       th:value="${user.citizenId}"
+                       placeholder="001234567890"
+                       pattern="^[0-9]{9,12}$"
+                       required/>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i> Lưu thông tin
+            </button>
+        </form>
+
     </div>
-
-    <!-- Profile form -->
-    <form th:action="@{/profile/update}" method="post">
-
-        <!-- Email (read-only) -->
-        <div class="form-group">
-            <label for="email">Email đăng nhập</label>
-            <input type="email" id="email" th:value="${user.email}" disabled/>
-            <div class="input-hint">Email không thể thay đổi</div>
-        </div>
-
-        <!-- Full name -->
-        <div class="form-group">
-            <label for="fullName">
-                Họ và tên
-                <span class="required">*</span>
-            </label>
-            <input type="text"
-                   id="fullName"
-                   name="fullName"
-                   th:value="${user.fullName}"
-                   placeholder="Nguyễn Văn A"
-                   required/>
-            <div class="input-hint">Nhập họ tên đầy đủ theo CCCD</div>
-        </div>
-
-        <!-- Phone number -->
-        <div class="form-group">
-            <label for="phoneNumber">
-                Số điện thoại
-                <span class="required">*</span>
-            </label>
-            <input type="tel"
-                   id="phoneNumber"
-                   name="phoneNumber"
-                   th:value="${user.phoneNumber}"
-                   placeholder="0901234567"
-                   pattern="^0[0-9]{9,10}$"
-                   required/>
-            <div class="input-hint">Số điện thoại bắt đầu bằng 0 và có 10-11 chữ số</div>
-        </div>
-
-        <!-- Citizen ID (CCCD) -->
-        <div class="form-group">
-            <label for="citizenId">
-                Số CCCD/CMND
-                <span class="required">*</span>
-            </label>
-            <input type="text"
-                   id="citizenId"
-                   name="citizenId"
-                   th:value="${user.citizenId}"
-                   placeholder="001234567890"
-                   pattern="^[0-9]{9,12}$"
-                   required/>
-            <div class="input-hint">Nhập 9-12 chữ số theo CCCD/CMND</div>
-        </div>
-
-        <!-- Submit button -->
-        <button type="submit" class="btn-primary">Lưu thông tin</button>
-    </form>
-</div>
+</main>
 
 <div th:replace="~{fragments/chatbot :: chatbot}"></div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

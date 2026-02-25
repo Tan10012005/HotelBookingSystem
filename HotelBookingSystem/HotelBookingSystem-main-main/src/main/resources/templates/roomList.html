@@ -165,43 +165,6 @@
     </div>
 </main>
 
-<!--&lt;!&ndash; Modal overlay - IMPROVED &ndash;&gt;-->
-<!--<div class="overlay" id="roomOverlay" onclick="closeModal()">-->
-<!--    <div class="modal" onclick="event.stopPropagation()">-->
-<!--        <button class="close-x" onclick="closeModal()">✕</button>-->
-<!--        <div class="modal-body">-->
-<!--            <div class="img" id="modalImg" style="background-image: url('/images/rooms/executiveRoom.webp')"></div>-->
-<!--            <div class="content">-->
-<!--                <h3 id="modalTitle">Room</h3>-->
-
-<!--                &lt;!&ndash; HIGHLIGHT: Price & Capacity &ndash;&gt;-->
-<!--                <div class="info-highlight">-->
-<!--                    <div class="price" id="modalPrice">500,000 VND/đêm</div>-->
-<!--                    <div class="capacity" id="modalCapacity">Sức chứa: 2 khách</div>-->
-<!--                </div>-->
-
-<!--                <form id="modalForm" th:action="@{/booking/preview}" method="post">-->
-<!--                    <input type="hidden" name="roomId" id="modalRoomId">-->
-
-<!--                    <label for="checkIn">Check-in</label>-->
-<!--                    <input type="date" name="checkIn" id="checkIn" required>-->
-
-<!--                    <label for="checkOut">Check-out (ít nhất 1 đêm)</label>-->
-<!--                    <input type="date" name="checkOut" id="checkOut" required>-->
-
-<!--                    <label for="guests">Số khách (tối đa <span id="maxGuests">2</span>)</label>-->
-<!--                    <input type="number" name="guests" id="guests" min="1" value="1" required>-->
-
-<!--                    <div class="actions">-->
-<!--                        <button type="button" class="btn-ghost" onclick="closeModal()">Hủy</button>-->
-<!--                        <button type="submit" class="btn-primary">Tiếp tục đặt phòng</button>-->
-<!--                    </div>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
 <script th:inline="javascript">
     /*<![CDATA[*/
     const typeImages = {
