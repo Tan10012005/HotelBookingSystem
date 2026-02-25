@@ -4,13 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Check-in Online - Khách Sạn</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
     :root {
-      --card-bg: rgba(255,255,255,0.96);
-      --accent: #006340;
+      --card-bg: rgba(255,255,255,0.9);
+      --radius: 24px;
+      --shadow: 0 20px 60px rgba(0,0,0,0.15);
       --muted: #6b7280;
-      --radius: 18px;
-      --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
     }
 
     * {
@@ -20,15 +27,14 @@
     }
 
     body {
-      font-family: Inter, Arial, sans-serif;
+      font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg,
-      #667eea 0%,
-      #764ba2 25%,
-      #f093fb 50%,
-      #4facfe 75%,
-      #00f2fe 100%);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
+      #667eea,
+      #764ba2,
+      #4facfe,
+      #00f2fe);
+      background-size: 300% 300%;
+      animation: gradientShift 12s ease infinite;
       min-height: 100vh;
     }
 
@@ -40,91 +46,125 @@
 
     .container {
       max-width: 1200px;
-      margin: 40px auto;
+      margin: 60px auto;
       background: var(--card-bg);
-      padding: 30px;
+      padding: 40px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(20px);
+      animation: fadeInUp .8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .page-header {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     .page-header h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      margin-bottom: 8px;
+      font-size: 34px;
+      margin-bottom: 10px;
     }
 
     .page-header p {
       color: var(--muted);
+      font-size: 15px;
     }
 
     .alert {
       padding: 14px 18px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      background: #fee;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      background: #fee2e2;
       border-left: 4px solid #dc2626;
       color: #b91c1c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .booking-list {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 24px;
+      gap: 30px;
     }
 
     .booking-card {
       background: #fff;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 8px 30px rgba(11, 24, 40, 0.06);
-      transition: all .25s ease;
+      padding: 24px;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.05);
+      transition: all .3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .booking-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 4px;
+      width: 100%;
+      background: linear-gradient(90deg,#2563eb,#1d4ed8);
     }
 
     .booking-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 40px rgba(11, 24, 40, 0.12);
+      transform: translateY(-8px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
     }
 
     .booking-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 15px;
+      font-weight: 600;
     }
 
     .status-badge {
-      padding: 4px 10px;
+      padding: 6px 14px;
       border-radius: 999px;
-      font-size: 13px;
-      background: #d1fae5;
-      color: #065f46;
-      font-weight: 600;
+      font-size: 12px;
+      background: linear-gradient(135deg,#10b981,#059669);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .room-number {
-      background: #f3f4f6;
-      padding: 10px;
-      border-radius: 10px;
+      background: linear-gradient(135deg,#f1f5f9,#e2e8f0);
+      padding: 14px;
+      border-radius: 14px;
       text-align: center;
-      font-weight: 600;
-      margin: 10px 0 16px;
+      font-weight: 700;
+      margin: 15px 0 20px;
     }
 
     .info-row {
       display: flex;
       justify-content: space-between;
-      margin: 6px 0;
+      margin: 8px 0;
       font-size: 14px;
     }
 
     .info-label {
       font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .info-value {
@@ -134,104 +174,151 @@
 
     .action-btn {
       width: 100%;
-      padding: 12px;
-      margin-top: 15px;
+      padding: 14px;
+      margin-top: 18px;
       border: none;
       border-radius: 999px;
       font-weight: 600;
       cursor: pointer;
       background: linear-gradient(135deg, #2563eb, #1d4ed8);
       color: #fff;
-      transition: all .25s ease;
+      transition: all .3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .action-btn::after {
+      content: "";
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,.2);
+      top: 0;
+      left: -100%;
+      transition: .4s;
+    }
+
+    .action-btn:hover::after {
+      left: 100%;
     }
 
     .action-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 28px rgba(37,99,235,.4);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(37,99,235,.4);
     }
 
     .empty-state {
       text-align: center;
-      padding: 60px 20px;
+      padding: 80px 20px;
       color: var(--muted);
+    }
+
+    .empty-state i {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+
+    .back-link {
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .back-link a {
+      text-decoration: none;
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 
 <body>
-<!-- Header -->
+
 <div th:replace="~{fragments/header :: header}"></div>
 
 <div class="container">
   <div class="page-header">
-    <h1>✅ CHECK-IN ONLINE</h1>
+    <h1><i class="fa-solid fa-clipboard-check"></i> CHECK-IN ONLINE</h1>
     <p>Xem danh sách booking sắp tới và check-in ngay</p>
   </div>
 
-  <div th:if="${error}" class="alert alert-error">
-    <span>⚠️</span>
+  <div th:if="${error}" class="alert">
+    <i class="fa-solid fa-triangle-exclamation"></i>
     <span th:text="${error}"></span>
   </div>
 
   <div th:if="${bookings != null and bookings.size() > 0}" class="booking-list">
+
     <div th:each="booking : ${bookings}" class="booking-card">
+
       <div class="booking-header">
-        <span class="booking-id">#<span th:text="${booking.id}"></span></span>
-        <span class="status-badge status-confirmed">✓ Xác nhận</span>
+        <span><i class="fa-solid fa-hashtag"></i> <span th:text="${booking.id}"></span></span>
+        <span class="status-badge">
+          <i class="fa-solid fa-circle-check"></i> Xác nhận
+        </span>
       </div>
 
       <div class="room-number">
-        🏨 Phòng <span th:text="${booking.room.roomNumber}"></span>
+        <i class="fa-solid fa-hotel"></i>
+        Phòng <span th:text="${booking.room.roomNumber}"></span>
       </div>
 
-      <div class="booking-info">
-        <div class="info-row">
-          <span class="info-label">Loại phòng:</span>
-          <span class="info-value" th:text="${booking.room.roomType.name}"></span>
-        </div>
+      <div class="info-row">
+        <span class="info-label"><i class="fa-regular fa-calendar"></i> Check-in:</span>
+        <span class="info-value" th:text="${#temporals.format(booking.checkIn, 'dd/MM/yyyy')}"></span>
+      </div>
 
-        <div class="info-row">
-          <span class="info-label">Check-in:</span>
-          <!-- ✅ FIXED: Dùng #temporals thay vì #dates -->
-          <span class="info-value" th:text="${#temporals.format(booking.checkIn, 'dd/MM/yyyy')}"></span>
-        </div>
+      <div class="info-row">
+        <span class="info-label"><i class="fa-regular fa-calendar"></i> Check-out:</span>
+        <span class="info-value" th:text="${#temporals.format(booking.checkOut, 'dd/MM/yyyy')}"></span>
+      </div>
 
-        <div class="info-row">
-          <span class="info-label">Check-out:</span>
-          <!-- ✅ FIXED: Dùng #temporals thay vì #dates -->
-          <span class="info-value" th:text="${#temporals.format(booking.checkOut, 'dd/MM/yyyy')}"></span>
-        </div>
+      <div class="info-row">
+        <span class="info-label"><i class="fa-solid fa-users"></i> Khách:</span>
+        <span class="info-value"><span th:text="${booking.guests}"></span> người</span>
+      </div>
 
-        <div class="info-row">
-          <span class="info-label">Khách:</span>
-          <span class="info-value"><span th:text="${booking.guests}"></span> người</span>
-        </div>
-
-        <div class="info-row">
-          <span class="info-label">Giá:</span>
-          <span class="info-value" th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
-        </div>
+      <div class="info-row">
+        <span class="info-label"><i class="fa-solid fa-money-bill-wave"></i> Giá:</span>
+        <span class="info-value"
+              th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
       </div>
 
       <form th:action="@{/checkin/form/{id}(id=${booking.id})}" method="get">
         <button type="submit" class="action-btn btn-checkin">
-          🚀 Check-in Ngay
+          <i class="fa-solid fa-rocket"></i> Check-in Ngay
         </button>
       </form>
+
     </div>
+
   </div>
 
   <div th:if="${bookings == null or bookings.size() == 0}" class="empty-state">
-    <div class="empty-state-icon">📭</div>
+    <i class="fa-solid fa-box-open"></i>
     <h2>Không có booking nào</h2>
-    <p>Bạn hiện chưa có booking nào sắp tới trong 7 ngày. Vui lòng đặt phòng để check-in!</p>
+    <p>Bạn hiện chưa có booking sắp tới trong 7 ngày.</p>
   </div>
 
   <div class="back-link">
-    <a href="/rooms">⬅️ Quay lại trang chủ</a>
+    <a href="/rooms"><i class="fa-solid fa-arrow-left"></i> Quay lại trang chủ</a>
   </div>
+
 </div>
 
 <div th:insert="fragments/footer :: footer"></div>
+
+<script>
+  document.querySelectorAll(".btn-checkin").forEach(btn => {
+    btn.closest("form").addEventListener("submit", function() {
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang chuyển hướng...';
+      btn.style.pointerEvents = "none";
+    });
+  });
+</script>
+
 </body>
 </html>

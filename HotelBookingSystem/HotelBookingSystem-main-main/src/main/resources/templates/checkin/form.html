@@ -2,247 +2,174 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xác Nhận Check-in - Khách Sạn</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        body{
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg,#4f8cff,#7b5cff);
+            min-height:100vh;
+            display:flex;
+            flex-direction:column;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+        .main-wrapper{
+            flex:1;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:40px 15px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 500px;
-            margin: 80px auto;
+        .checkin-card{
+            width:100%;
+            max-width:600px;
+            background:rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-radius:20px;
+            box-shadow:0 25px 60px rgba(0,0,0,0.15);
+            padding:40px;
+            animation:fadeIn .4s ease;
         }
 
-        .form-card {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        @keyframes fadeIn{
+            from{opacity:0; transform:translateY(10px)}
+            to{opacity:1; transform:translateY(0)}
         }
 
-        .form-header {
-            text-align: center;
-            margin-bottom: 30px;
+        .title{
+            font-size:26px;
+            font-weight:700;
         }
 
-        .form-header h1 {
-            color: #333;
-            font-size: 1.8em;
-            margin-bottom: 10px;
+        .sub-title{
+            font-size:14px;
+            color:#6c757d;
         }
 
-        .form-header p {
-            color: #999;
-            font-size: 0.95em;
+        .booking-box{
+            background:#f8f9fa;
+            border-left:5px solid #198754;
+            border-radius:12px;
+            padding:20px;
         }
 
-        .booking-details {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            border-left: 4px solid #667eea;
+        .form-control{
+            border-radius:12px;
+            padding:12px;
         }
 
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-            font-size: 0.95em;
+        .form-control:focus{
+            border-color:#198754;
+            box-shadow:0 0 0 0.2rem rgba(25,135,84,0.15);
         }
 
-        .detail-label {
-            font-weight: bold;
-            color: #555;
+        .btn-confirm{
+            background: linear-gradient(45deg,#198754,#157347);
+            border:none;
+            border-radius:12px;
+            padding:14px;
+            font-weight:600;
+            transition:0.3s;
         }
 
-        .detail-value {
-            color: #667eea;
-            font-weight: 600;
+        .btn-confirm:hover{
+            transform:translateY(-2px);
+            box-shadow:0 10px 20px rgba(0,0,0,0.15);
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #333;
-            font-size: 0.95em;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .form-info {
-            background: #e7f3ff;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            color: #0066cc;
-            font-size: 0.9em;
-            border-left: 3px solid #0066cc;
-        }
-
-        .form-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 25px;
-        }
-
-        .btn {
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .btn-submit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            grid-column: span 2;
-        }
-
-        .btn-submit:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-back {
-            background: #f0f0f0;
-            color: #333;
-            text-decoration: none;
-        }
-
-        .btn-back:hover {
-            background: #e0e0e0;
-        }
-
-        .alert {
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.95em;
-        }
-
-        .alert-warning {
-            background: #fff3cd;
-            color: #856404;
-            border-left: 3px solid #ff9800;
-        }
-
-        small {
-            display: block;
-            color: #999;
-            margin-top: 5px;
-        }
     </style>
 </head>
 <body>
 
-<!-- Header -->
+<!-- HEADER -->
 <div th:replace="~{fragments/header :: header}"></div>
 
-<div class="container">
-    <div class="form-card">
-        <div class="form-header">
-            <h1>📋 Xác Nhận Check-in</h1>
-            <p>Vui lòng xác nhận thông tin CCCD</p>
+<div class="main-wrapper">
+
+    <div class="checkin-card">
+
+        <div class="text-center mb-4">
+            <div class="title">
+                <i class="fa-solid fa-id-card me-2 text-success"></i>
+                Xác Nhận Check-in
+            </div>
+            <div class="sub-title">Vui lòng xác nhận thông tin CCCD</div>
         </div>
 
-        <div class="booking-details">
-            <div class="detail-row">
-                <span class="detail-label">Booking #<span th:text="${booking.id}"></span></span>
-                <span class="detail-value">Phòng <span th:text="${booking.room.roomNumber}"></span></span>
+        <!-- Booking Info -->
+        <div class="booking-box mb-4">
+            <div><strong>Booking #<span th:text="${booking.id}"></span></strong></div>
+            <div>Check-in:
+                <span class="text-primary fw-semibold"
+                      th:text="${#temporals.format(booking.checkIn, 'dd/MM/yyyy')}"></span>
             </div>
-            <div class="detail-row">
-                <span class="detail-label">Check-in:</span>
-                <!-- ✅ FIXED: Dùng #temporals thay vì #dates -->
-                <span class="detail-value" th:text="${#temporals.format(booking.checkIn, 'dd/MM/yyyy')}"></span>
-            </div>
-            <div class="detail-row">
-                <span class="detail-label">Check-out:</span>
-                <!-- ✅ FIXED: Dùng #temporals thay vì #dates -->
-                <span class="detail-value" th:text="${#temporals.format(booking.checkOut, 'dd/MM/yyyy')}"></span>
+
+            <div>Check-out:
+                <span class="text-primary fw-semibold"
+                      th:text="${#temporals.format(booking.checkOut, 'dd/MM/yyyy')}"></span>
             </div>
         </div>
 
-        <div class="alert alert-warning">
-            ⚠️ Vui lòng nhập chính xác CCCD để xác nhận
+        <!-- Warning -->
+        <div class="alert alert-warning rounded-3">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            Vui lòng nhập chính xác CCCD để xác nhận
         </div>
 
+        <!-- Form -->
         <form th:action="@{/checkin/confirm}" method="post">
-            <input type="hidden" name="bookingId" th:value="${booking.id}">
 
-            <div class="form-group">
-                <label for="citizenId">🆔 Số CCCD / Hộ chiếu</label>
-                <input type="text" id="citizenId" name="citizenId" required
-                       placeholder="Nhập số CCCD/Hộ chiếu" pattern="^\d{9,12}$">
-<!--                <small>* CCCD phải đúng 12 ký tự số</small>-->
+            <input type="hidden" name="bookingId" th:value="${booking.id}"/>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="fa-solid fa-id-badge me-1 text-success"></i>
+                    Số CCCD / Hộ chiếu
+                </label>
+                <input type="text"
+                       name="citizenId"
+                       class="form-control"
+                       placeholder="Nhập số CCCD/Hộ chiếu"
+                       required>
             </div>
 
-            <div class="form-group">
-                <label for="notes">📝 Ghi chú (Tùy chọn)</label>
-                <textarea id="notes" name="notes" placeholder="Ví dụ: Tôi có nhu cầu đặc biệt..."></textarea>
+            <div class="mb-4">
+                <label class="form-label fw-semibold">
+                    <i class="fa-solid fa-note-sticky me-1 text-success"></i>
+                    Ghi chú (Tùy chọn)
+                </label>
+                <textarea name="notes"
+                          class="form-control"
+                          rows="3"
+                          placeholder="Ví dụ: Tôi có nhu cầu đặc biệt..."></textarea>
             </div>
 
-            <div class="form-info">
-                ℹ️ Thông tin CCCD của bạn: <strong th:text="${user.citizenId}"></strong>
-            </div>
+            <button type="submit" class="btn btn-confirm w-100 text-white">
+                <i class="fa-solid fa-check me-2"></i>
+                Xác Nhận Check-in
+            </button>
 
-            <div class="form-actions">
-                <a href="/checkin/online" class="btn btn-back">⬅️ Quay lại</a>
-                <button type="submit" class="btn btn-submit">✅ Xác Nhận Check-in</button>
-            </div>
         </form>
+
     </div>
+
 </div>
 
-<div th:insert="fragments/footer :: footer"></div>
+<!-- FOOTER -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
 </body>
 </html>
