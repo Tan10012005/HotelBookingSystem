@@ -107,7 +107,7 @@ Một hệ thống đặt phòng khách sạn hiện đại, được xây dựn
 Đăng nhập / Đăng ký → Tìm kiếm phòng → Chọn phòng → Xác nhận thông tin → Xác nhận booking → Thanh toán VietQR → Hoàn tất booking
 
 
-### 🧩 Mô Tả
+### 🧩 Mô Tả:
 - Người dùng đăng nhập hoặc tạo tài khoản
 - Tìm phòng theo ngày, loại phòng hoặc giá
 - Kiểm tra thông tin trước khi xác nhận
@@ -120,13 +120,23 @@ Một hệ thống đặt phòng khách sạn hiện đại, được xây dựn
 Đăng nhập → Xem danh sách booking → Chọn booking cần hủy → Xác nhận hủy booking → Xác nhận hoàn tiền → Hoàn tất hủy booking
 
 
-### 🧩 Mô Tả
+### 🧩 Mô Tả:
 - Người dùng vào lịch sử booking
 - Chọn booking hợp lệ để hủy
 - Hệ thống kiểm tra chính sách hoàn tiền
 - Cập nhật trạng thái booking và payment
 
 ---
+
+## 🔄 Workflow 3: Quy Trình Check-in Online Đăng nhập → Xem booking sắp tới → Check-in online → Xác nhận thông tin CCCD → Nhận QR check-in → Hoàn tất 
+
+
+### 🧩 Mô tả: 
+- User vào booking sắp đến ngày nhận phòng 
+- Xác nhận lại thông tin cá nhân 
+- Update CCCD (nếu cần) 
+- Hệ thống generate QR code 
+- Lúc tới khách sạn chỉ cần quét QR
 
 ## ⚙️ Hướng Dẫn Cài Đặt
 
