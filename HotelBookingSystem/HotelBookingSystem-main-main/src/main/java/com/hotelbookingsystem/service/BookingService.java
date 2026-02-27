@@ -1,8 +1,8 @@
 package com.hotelbookingsystem.service;
 
 import com.hotelbookingsystem.entity.Booking;
-import com.hotelbookingsystem.entity.CancelResult;
-import com.hotelbookingsystem.entity.CancellationReason;
+import com.hotelbookingsystem.enums.CancelResult;
+import com.hotelbookingsystem.enums.CancellationReason;
 import com.hotelbookingsystem.entity.Room;
 import com.hotelbookingsystem.entity.User;
 

@@ -1,10 +1,11 @@
 package com.hotelbookingsystem.entity;
 
 import java.math.BigDecimal;
+
+import com.hotelbookingsystem.enums.RoomStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity

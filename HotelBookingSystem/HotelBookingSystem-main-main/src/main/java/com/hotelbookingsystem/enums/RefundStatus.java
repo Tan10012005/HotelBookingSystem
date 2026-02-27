@@ -1,4 +1,4 @@
-package com.hotelbookingsystem.entity;
+package com.hotelbookingsystem.enums;
 
 public enum RefundStatus {
     NONE,

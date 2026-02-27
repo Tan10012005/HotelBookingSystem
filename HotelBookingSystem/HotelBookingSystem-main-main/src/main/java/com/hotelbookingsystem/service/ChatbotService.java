@@ -3,7 +3,7 @@ package com.hotelbookingsystem.service;
 import tools.jackson.databind.JsonNode;
 import com.hotelbookingsystem.entity.Booking;
 import com.hotelbookingsystem.entity.Room;
-import com.hotelbookingsystem.entity.RoomStatus;
+import com.hotelbookingsystem.enums.RoomStatus;
 import com.hotelbookingsystem.entity.User;
 import com.hotelbookingsystem.repository.BookingRepository;
 import com.hotelbookingsystem.repository.RoomRepository;

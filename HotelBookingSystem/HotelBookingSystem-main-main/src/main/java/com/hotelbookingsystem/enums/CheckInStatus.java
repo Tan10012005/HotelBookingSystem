@@ -1,4 +1,4 @@
-package com.hotelbookingsystem.entity;
+package com.hotelbookingsystem.enums;
 
 /**
  * Trạng thái check-in của booking

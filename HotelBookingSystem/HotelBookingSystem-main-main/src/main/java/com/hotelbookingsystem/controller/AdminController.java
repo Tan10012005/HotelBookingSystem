@@ -1,6 +1,8 @@
 package com.hotelbookingsystem.controller;
 
 import com.hotelbookingsystem.entity.*;
+import com.hotelbookingsystem.enums.BookingStatus;
+import com.hotelbookingsystem.enums.RoomStatus;
 import com.hotelbookingsystem.repository.BookingRepository;
 import com.hotelbookingsystem.repository.RoomRepository;
 import com.hotelbookingsystem.repository.RoomTypeRepository;

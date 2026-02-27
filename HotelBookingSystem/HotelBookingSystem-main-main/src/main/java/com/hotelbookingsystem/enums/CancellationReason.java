@@ -1,4 +1,4 @@
-package com.hotelbookingsystem.entity;
+package com.hotelbookingsystem.enums;
 
 /**
  * 🆕 Enum định nghĩa 6 lý do hủy booking

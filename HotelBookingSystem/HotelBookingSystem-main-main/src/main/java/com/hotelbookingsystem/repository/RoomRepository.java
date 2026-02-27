@@ -1,7 +1,7 @@
 package com.hotelbookingsystem.repository;
 
 import com.hotelbookingsystem.entity.Room;
-import com.hotelbookingsystem.entity.RoomStatus;
+import com.hotelbookingsystem.enums.RoomStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

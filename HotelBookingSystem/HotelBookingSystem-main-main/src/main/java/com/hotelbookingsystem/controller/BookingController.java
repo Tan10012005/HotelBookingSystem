@@ -1,6 +1,8 @@
 package com.hotelbookingsystem.controller;
 
 import com.hotelbookingsystem.entity.*;
+import com.hotelbookingsystem.enums.CancelResult;
+import com.hotelbookingsystem.enums.CancellationReason;
 import com.hotelbookingsystem.repository.BookingRepository;
 import com.hotelbookingsystem.service.BookingService;
 import com.hotelbookingsystem.service.RoomService;

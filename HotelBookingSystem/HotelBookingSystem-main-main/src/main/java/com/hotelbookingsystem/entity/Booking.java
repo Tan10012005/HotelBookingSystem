@@ -3,6 +3,11 @@ package com.hotelbookingsystem.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.hotelbookingsystem.enums.BookingStatus;
+import com.hotelbookingsystem.enums.CancellationReason;
+import com.hotelbookingsystem.enums.CheckInStatus;
+import com.hotelbookingsystem.enums.RefundStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

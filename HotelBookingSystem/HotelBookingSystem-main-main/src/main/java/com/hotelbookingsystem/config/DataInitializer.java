@@ -1,6 +1,8 @@
 package com.hotelbookingsystem.config;
 
 import com.hotelbookingsystem.entity.*;
+import com.hotelbookingsystem.enums.BookingStatus;
+import com.hotelbookingsystem.enums.RoomStatus;
 import com.hotelbookingsystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;

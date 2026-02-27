@@ -1,6 +1,7 @@
 package com.hotelbookingsystem.service;
 
 import com.hotelbookingsystem.entity.*;
+import com.hotelbookingsystem.enums.*;
 import com.hotelbookingsystem.repository.BookingRepository;
 import com.hotelbookingsystem.repository.RoomRepository;
 import jakarta.transaction.Transactional;

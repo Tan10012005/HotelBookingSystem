@@ -1,8 +1,9 @@
 package com.hotelbookingsystem.service;
 
 import com.hotelbookingsystem.entity.*;
+import com.hotelbookingsystem.enums.BookingStatus;
 import com.hotelbookingsystem.repository.BookingRepository;
-import com.hotelbookingsystem.entity.CheckInStatus;
+import com.hotelbookingsystem.enums.CheckInStatus;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.common.BitMatrix;

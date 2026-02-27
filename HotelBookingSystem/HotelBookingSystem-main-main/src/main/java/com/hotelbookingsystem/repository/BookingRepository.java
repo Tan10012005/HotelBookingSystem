@@ -1,6 +1,8 @@
 package com.hotelbookingsystem.repository;
 
 import com.hotelbookingsystem.entity.*;
+import com.hotelbookingsystem.enums.BookingStatus;
+import com.hotelbookingsystem.enums.CheckInStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import java.time.LocalDate;
