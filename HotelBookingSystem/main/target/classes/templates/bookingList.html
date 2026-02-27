@@ -152,6 +152,33 @@
             border-left: 3px solid #ef4444;
         }
 
+        /* 🆕 Check-in Status Badge Styles */
+        .status-checkin-pending {
+            background: #f3f4f6;
+            color: #6b7280;
+            border-left: 3px solid #d1d5db;
+        }
+
+        .status-checkin {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 3px solid #10b981;
+        }
+
+        .status-checkout {
+            background: #e0e7ff;
+            color: #3730a3;
+            border-left: 3px solid #6366f1;
+        }
+
+        .checkin-time {
+            display: block;
+            font-size: 11px;
+            margin-top: 4px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
         /* Button styles */
         .btn-cancel {
             background: linear-gradient(135deg, #dc2626, #991b1b);
@@ -450,6 +477,7 @@
             <th>Số khách</th>
             <th>Tổng tiền</th>
             <th>Trạng thái</th>
+            <th>Check-in Status</th>
             <th>Hoàn tiền</th>
             <th>Hành động</th>
         </tr>
@@ -471,7 +499,31 @@
                 <span th:if="${b.status.name() == 'CANCELLED'}" class="badge status-cancelled">✗ Đã hủy</span>
             </td>
 
-            <!-- 🆕 REFUND STATUS with amount and reason -->
+            <!-- 🆕 CHECK-IN STATUS -->
+            <td data-label="Check-in Status:">
+                <!-- PENDING: Chưa check-in -->
+                <span th:if="${b.checkInStatus.name() == 'PENDING'}" class="badge status-checkin-pending">
+                    ⏱️ Chưa check-in
+                </span>
+
+                <!-- CHECKED_IN: Đã check-in ✅ -->
+                <span th:if="${b.checkInStatus.name() == 'CHECKED_IN'}" class="badge status-checkin">
+                    Đã check-in
+                    <span class="checkin-time" th:if="${b.checkInTime != null}">
+                        <span th:text="${#temporals.format(b.checkInTime, 'HH:mm dd/MM/yyyy')}"></span>
+                    </span>
+                </span>
+
+                <!-- CHECKED_OUT: Đã check-out 🏁 -->
+                <span th:if="${b.checkInStatus.name() == 'CHECKED_OUT'}" class="badge status-checkout">
+                    🏁 Đã check-out
+                    <span class="checkin-time" th:if="${b.checkOutTime != null}">
+                        <span th:text="${#temporals.format(b.checkOutTime, 'HH:mm dd/MM/yyyy')}"></span>
+                    </span>
+                </span>
+            </td>
+
+            <!-- REFUND STATUS with amount and reason -->
             <td data-label="Hoàn tiền:">
                 <span th:if="${b.refundStatus.name() == 'NONE'}">—</span>
                 <span th:if="${b.refundStatus.name() == 'REQUESTED'}" class="badge status-pending">
@@ -499,7 +551,7 @@
 
             <!-- ACTIONS -->
             <td data-label="Hành động:">
-                <!-- 🆕 Show cancellation reason if exists -->
+                <!-- Show cancellation reason if exists -->
                 <div th:if="${b.cancellationReason != null}" style="margin-bottom: 8px;">
                     <span class="reason-badge" th:text="'📌 ' + ${b.cancellationReason.getLabel()}"></span>
                 </div>
@@ -531,7 +583,7 @@
     </div>
 </div>
 
-<!-- 🆕 Modal chọn lý do hủy -->
+<!-- Modal chọn lý do hủy -->
 <div id="cancelReasonModal" class="modal-overlay">
     <div class="modal-content">
         <h3 class="modal-header">🗂️ Lý do hủy booking</h3>

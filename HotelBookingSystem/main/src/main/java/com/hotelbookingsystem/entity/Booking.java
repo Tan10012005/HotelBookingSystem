@@ -87,7 +87,7 @@ public class Booking {
     private LocalDateTime actualCheckOutTime;
 
     /** Lưu ý/ghi chú khi check-in */
-    @Column(name = "check_in_notes", columnDefinition = "TEXT")
+    @Column(name = "check_in_notes", columnDefinition = "TEXT", length = 500)
     private String checkInNotes;
 
     // ========== END NEW FIELDS ==========
@@ -105,4 +105,15 @@ public class Booking {
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    // 🔧 THÊM VÀO phần khai báo các trường check-in
+
+    /** Thời gian khách check-in thực tế */
+    @Column(name = "check_in_time")
+    private LocalDateTime checkInTime;
+
+    /** Thời gian khách check-out thực tế */
+    @Column(name = "check_out_time")
+    private LocalDateTime checkOutTime;
+
 }

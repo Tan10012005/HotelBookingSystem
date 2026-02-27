@@ -110,11 +110,13 @@ public class CheckInServiceImpl implements CheckInService {
         }
     }
 
+    // 🔧 THAY ĐỔI LỌC: performOnlineCheckIn() method
+
     /**
      * Thực hiện check-in online:
      * - Xác nhận thông tin CCCD
      * - Tạo QR code
-     * - Lưu vào database
+     * - ⭐ CẬP NHẬT TRẠNG THÁI SANG "Đã check-in"
      */
     @Override
     public Optional<Booking> performOnlineCheckIn(Long bookingId, User user, String citizenId, String notes) {
@@ -144,9 +146,10 @@ public class CheckInServiceImpl implements CheckInService {
 
         // Cập nhật booking
         booking.setQrCode(qrCode);
-        booking.setCheckInStatus(CheckInStatus.CHECKED_IN);
+        booking.setCheckInStatus(CheckInStatus.CHECKED_IN);  // ⭐ Đặt trạng thái check-in
         booking.setCheckInNotes(notes);
         booking.setStatus(BookingStatus.CONFIRMED);
+        booking.setCheckInTime(LocalDateTime.now());  // 🆕 Lưu thời gian check-in
 
         bookingRepository.save(booking);
 
