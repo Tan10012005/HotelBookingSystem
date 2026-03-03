@@ -563,7 +563,8 @@
                         <i class="fa-solid fa-arrow-right" style="font-size:10px;"></i>
                         <span class="arrow" style="background:#059669;" th:text="${req.newRoom.roomNumber}"></span>
                     </div>
-                    <a href="/roomchange/my" class="btn-change-room" style="background: linear-gradient(135deg,#059669,#047857);">
+                    <a href="/roomchange/my" class="btn-change-room"
+                       style="background: linear-gradient(135deg,#059669,#047857);">
                         <i class="fa-solid fa-eye"></i> Xem yêu cầu
                     </a>
                 </div>
@@ -583,9 +584,12 @@
                 </button>
 
                 <!-- Nút đổi phòng (chỉ hiện nếu CONFIRMED, chưa check-in, không có pending request) -->
-                <a th:if="${b.status.name() == 'CONFIRMED'
-                            and b.checkInStatus.name() == 'PENDING'
-                            and (pendingChangeMap == null or !pendingChangeMap.containsKey(b.id))}"
+                <a th:if="${b.status != null
+        and b.status.name() == 'CONFIRMED'
+        and b.checkInStatus != null
+        and b.checkInStatus.name() == 'PENDING'
+        and (pendingChangeMap == null
+             or !pendingChangeMap.containsKey(b.id))}"
                    href="/roomchange/select"
                    class="btn-change-room" style="margin-top: 6px; display: inline-block;">
                     <i class="fa-solid fa-arrows-rotate"></i> Đổi phòng
