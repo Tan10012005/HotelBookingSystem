@@ -5,6 +5,9 @@ import com.hotelbookingsystem.enums.CancelResult;
 import com.hotelbookingsystem.enums.CancellationReason;
 import com.hotelbookingsystem.repository.BookingRepository;
 import com.hotelbookingsystem.service.BookingService;
+import com.hotelbookingsystem.entity.RoomChangeRequest;
+import com.hotelbookingsystem.enums.RoomChangeStatus;
+import com.hotelbookingsystem.repository.RoomChangeRequestRepository;
 import com.hotelbookingsystem.service.RoomService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +18,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/booking")
 public class BookingController {
+
+    @Autowired
+    private RoomChangeRequestRepository roomChangeRequestRepository;
 
     @Autowired
     private BookingService bookingService;
@@ -124,7 +131,17 @@ public class BookingController {
             return "redirect:/login";
         }
 
-        model.addAttribute("bookings", bookingService.getBookingsByUser(user));
+        List<Booking> bookings = bookingService.getBookingsByUser(user);
+
+        // Lấy tất cả yêu cầu đổi phòng PENDING của user
+        // Tạo Map<bookingId, RoomChangeRequest> để Thymeleaf tra cứu nhanh
+        java.util.Map<Long, RoomChangeRequest> pendingChangeMap = new java.util.HashMap<>();
+        roomChangeRequestRepository.findByUser(user).stream()
+                .filter(r -> r.getStatus() == RoomChangeStatus.PENDING)
+                .forEach(r -> pendingChangeMap.put(r.getBooking().getId(), r));
+
+        model.addAttribute("bookings", bookings);
+        model.addAttribute("pendingChangeMap", pendingChangeMap);
         return "bookingList";
     }
 

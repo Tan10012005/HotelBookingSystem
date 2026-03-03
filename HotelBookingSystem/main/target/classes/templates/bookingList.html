@@ -46,9 +46,15 @@
         }
 
         @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .container {
@@ -430,6 +436,54 @@
                 max-width: 95%;
             }
         }
+
+
+        /* Room change pending badge */
+        .room-change-pending {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #faf5ff, #ede9fe);
+            color: #7c3aed;
+            border: 1px solid #c4b5fd;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            width: 100%;
+        }
+
+        .room-change-pending .arrow {
+            font-weight: 700;
+            background: #7c3aed;
+            color: white;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .btn-change-room {
+            background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 10px rgba(124, 58, 237, 0.2);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 6px;
+        }
+
+        .btn-change-room:hover {
+            background: linear-gradient(135deg, #6d28d9, #5b21b6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(124, 58, 237, 0.3);
+        }
     </style>
 </head>
 
@@ -499,19 +553,45 @@
 
             <!-- ACTIONS -->
             <td data-label="Hành động:">
-                <!-- 🆕 Show cancellation reason if exists -->
+
+                <!-- 🔴 Nếu đang có yêu cầu đổi phòng PENDING -->
+                <div th:if="${pendingChangeMap != null and pendingChangeMap.containsKey(b.id)}">
+                    <div th:with="req=${pendingChangeMap.get(b.id)}" class="room-change-pending">
+                        <i class="fa-solid fa-arrows-rotate fa-spin" style="font-size:11px;"></i>
+                        <span>Đang chờ đổi:</span>
+                        <span class="arrow" th:text="${req.oldRoom.roomNumber}"></span>
+                        <i class="fa-solid fa-arrow-right" style="font-size:10px;"></i>
+                        <span class="arrow" style="background:#059669;" th:text="${req.newRoom.roomNumber}"></span>
+                    </div>
+                    <a href="/roomchange/my" class="btn-change-room" style="background: linear-gradient(135deg,#059669,#047857);">
+                        <i class="fa-solid fa-eye"></i> Xem yêu cầu
+                    </a>
+                </div>
+
+                <!-- Show cancellation reason if exists -->
                 <div th:if="${b.cancellationReason != null}" style="margin-bottom: 8px;">
                     <span class="reason-badge" th:text="'📌 ' + ${b.cancellationReason.getLabel()}"></span>
                 </div>
 
-                <!-- Button mở Modal chọn lý do -->
-                <button th:if="${b.status.name() == 'PENDING_CONFIRM' or b.status.name() == 'CONFIRMED'}"
+                <!-- Nút hủy booking (chỉ hiện nếu không có pending room change) -->
+                <button th:if="${(b.status.name() == 'PENDING_CONFIRM' or b.status.name() == 'CONFIRMED')
+                                and (pendingChangeMap == null or !pendingChangeMap.containsKey(b.id))}"
                         type="button"
                         class="btn-cancel"
                         th:onclick="'openReasonModal(' + ${b.id} + ')'">
                     Hủy booking
                 </button>
 
+                <!-- Nút đổi phòng (chỉ hiện nếu CONFIRMED, chưa check-in, không có pending request) -->
+                <a th:if="${b.status.name() == 'CONFIRMED'
+                            and b.checkInStatus.name() == 'PENDING'
+                            and (pendingChangeMap == null or !pendingChangeMap.containsKey(b.id))}"
+                   href="/roomchange/select"
+                   class="btn-change-room" style="margin-top: 6px; display: inline-block;">
+                    <i class="fa-solid fa-arrows-rotate"></i> Đổi phòng
+                </a>
+
+                <!-- Xác nhận đã nhận tiền hoàn -->
                 <form th:if="${b.status.name() == 'CANCELLED'
                              and b.refundStatus.name() == 'TRANSFERRED'}"
                       th:action="@{/booking/{id}/confirm-refund(id=${b.id})}"
@@ -521,6 +601,7 @@
                         Xác nhận đã nhận tiền
                     </button>
                 </form>
+
             </td>
         </tr>
         </tbody>
@@ -611,7 +692,7 @@
     }
 
     // Handle form submission
-    document.getElementById('cancelReasonForm').addEventListener('submit', function(e) {
+    document.getElementById('cancelReasonForm').addEventListener('submit', function (e) {
         e.preventDefault();
         const reason = document.querySelector('input[name="reason"]:checked').value;
         const form = document.createElement('form');
@@ -622,14 +703,14 @@
     });
 
     // Close modal when clicking outside
-    document.getElementById('cancelReasonModal').addEventListener('click', function(e) {
+    document.getElementById('cancelReasonModal').addEventListener('click', function (e) {
         if (e.target === this) {
             closeReasonModal();
         }
     });
 
     // Close modal with Escape key
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && document.getElementById('cancelReasonModal').classList.contains('active')) {
             closeReasonModal();
         }
@@ -637,7 +718,7 @@
 
     // Update label on radio change
     document.querySelectorAll('input[name="reason"]').forEach(radio => {
-        radio.addEventListener('change', function() {
+        radio.addEventListener('change', function () {
             document.querySelectorAll('.reason-label').forEach(label => label.classList.remove('checked'));
             this.parentElement.classList.add('checked');
         });

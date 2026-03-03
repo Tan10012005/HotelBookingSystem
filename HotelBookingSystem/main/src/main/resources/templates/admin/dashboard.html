@@ -17,9 +17,7 @@
             --shadow: 0 10px 30px rgba(11, 24, 40, 0.08);
         }
 
-        * {
-            box-sizing: border-box
-        }
+        * { box-sizing: border-box }
 
         body {
             font-family: Inter, system-ui, Arial;
@@ -29,10 +27,7 @@
             padding: 28px
         }
 
-        .wrap {
-            max-width: 1100px;
-            margin: 0 auto
-        }
+        .wrap { max-width: 1100px; margin: 0 auto }
 
         .header {
             display: flex;
@@ -50,7 +45,7 @@
 
         .card-grid {
             display: grid;
-            grid-template-columns:repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 16px;
             margin-bottom: 26px
         }
@@ -65,20 +60,13 @@
             gap: 6px
         }
 
-        .stat-label {
-            font-size: 13px;
-            color: var(--muted)
-        }
+        .stat-label { font-size: 13px; color: var(--muted) }
 
-        .stat-value {
-            font-size: 22px;
-            font-weight: 700;
-            color: #0f172a
-        }
+        .stat-value { font-size: 22px; font-weight: 700; color: #0f172a }
 
         .menu {
             display: grid;
-            grid-template-columns:repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 14px
         }
 
@@ -92,21 +80,32 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            align-items: flex-start
+            align-items: flex-start;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
         }
 
-        .menu-icon {
-            font-size: 22px
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+            border-color: #e5e7eb;
         }
 
-        .menu-title {
-            font-weight: 700
+        /* Card đổi phòng nổi bật hơn */
+        .menu-card.highlight {
+            background: linear-gradient(135deg, #faf5ff, #ede9fe);
+            border: 2px solid #ddd6fe;
+        }
+        .menu-card.highlight:hover {
+            border-color: #7c3aed;
+            box-shadow: 0 16px 40px rgba(124,58,237,0.15);
         }
 
-        .menu-desc {
-            color: var(--muted);
-            font-size: 13px
-        }
+        .menu-icon { font-size: 22px }
+
+        .menu-title { font-weight: 700 }
+
+        .menu-desc { color: var(--muted); font-size: 13px }
 
         .section {
             margin-top: 26px;
@@ -132,15 +131,25 @@
             font-weight: 700
         }
 
-        .small {
-            color: var(--muted);
-            font-size: 13px
+        .small { color: var(--muted); font-size: 13px }
+
+        /* Badge số lượng yêu cầu chờ duyệt */
+        .badge-count {
+            display: inline-block;
+            background: #7c3aed;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+            margin-top: 2px;
         }
 
         @media (max-width: 900px) {
-            .card-grid, .menu {
-                grid-template-columns:1fr
-            }
+            .card-grid, .menu { grid-template-columns: 1fr 1fr }
+        }
+        @media (max-width: 600px) {
+            .card-grid, .menu { grid-template-columns: 1fr }
         }
     </style>
 </head>
@@ -157,23 +166,28 @@
         </div>
     </div>
 
+    <!-- Stats: thêm stat đổi phòng -->
     <div class="card-grid">
         <div class="stat-card">
-            <div class="stat-label">Tổng số người dùng</div>
+            <div class="stat-label">👥 Tổng người dùng</div>
             <div class="stat-value" th:text="${totalUsers}">0</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Tổng số phòng</div>
+            <div class="stat-label">🏨 Tổng số phòng</div>
             <div class="stat-value" th:text="${totalRooms}">0</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Tổng số booking</div>
+            <div class="stat-label">📋 Tổng booking</div>
             <div class="stat-value" th:text="${totalBookings}">0</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #7c3aed;">
+            <div class="stat-label">🔄 Đổi phòng chờ duyệt</div>
+            <div class="stat-value" style="color:#7c3aed;" th:text="${totalPendingRoomChanges}">0</div>
         </div>
     </div>
 
     <div class="section">
-        <h3 style="margin:0 0 10px 0">TRUNG TÂM QUẢN LÝ</h3>
+        <h3 style="margin:0 0 14px 0">TRUNG TÂM QUẢN LÝ</h3>
         <div class="menu">
             <a th:href="@{/admin/users}" class="menu-card">
                 <div class="menu-icon">👥</div>
@@ -191,6 +205,17 @@
                 <div class="menu-icon">📋</div>
                 <div class="menu-title">Quản Lý Lượt Booking</div>
                 <div class="menu-desc">Accept/Deny booking</div>
+            </a>
+
+            <!-- 🆕 Card Quản Lý Đổi Phòng -->
+            <a th:href="@{/admin/roomchanges}" class="menu-card highlight">
+                <div class="menu-icon">🔄</div>
+                <div class="menu-title">Quản Lý Đổi Phòng</div>
+                <div class="menu-desc">Duyệt yêu cầu đổi - nâng hạng phòng</div>
+                <span th:if="${totalPendingRoomChanges > 0}"
+                      class="badge-count"
+                      th:text="${totalPendingRoomChanges} + ' chờ duyệt'">
+                </span>
             </a>
         </div>
     </div>
