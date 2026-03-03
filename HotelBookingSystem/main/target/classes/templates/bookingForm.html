@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>Chi tiết đặt phòng — Hotel Booking</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
           crossorigin="anonymous"/>
@@ -11,7 +12,7 @@
         :root {
             --accent: #006340;
             --radius: 20px;
-            --shadow: 0 15px 45px rgba(0,0,0,0.15);
+            --shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
         }
 
         html, body {
@@ -37,7 +38,7 @@
             position: fixed;
             inset: 0;
             z-index: -1;
-            background: linear-gradient(180deg, rgba(0,0,0,0.14), rgba(255,255,255,0.02));
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.14), rgba(255, 255, 255, 0.02));
             pointer-events: none;
         }
 
@@ -81,7 +82,7 @@
             transform: translateX(-50%);
             display: flex;
             gap: 10px;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             padding: 8px;
             border-radius: 12px;
             backdrop-filter: blur(4px);
@@ -194,14 +195,28 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         @media (max-width: 900px) {
-            .booking-card { flex-direction: column; }
-            .gallery-side, .form-side { width: 100%; }
-            .gallery-side { min-height: 300px; }
+            .booking-card {
+                flex-direction: column;
+            }
+
+            .gallery-side, .form-side {
+                width: 100%;
+            }
+
+            .gallery-side {
+                min-height: 300px;
+            }
         }
     </style>
 </head>
@@ -218,19 +233,26 @@
 
             <div class="thumb-nav">
                 <th:block th:if="${room.roomNumber.startsWith('1')}">
-                    <img class="thumb active" th:src="@{/images/rooms/executiveRoom.webp}" onclick="changeImg(this.src, this)">
-                    <img class="thumb" th:src="@{/images/rooms/executiveRoom1.webp}" onclick="changeImg(this.src, this)">
-                    <img class="thumb" th:src="@{/images/rooms/executiveRoom2.webp}" onclick="changeImg(this.src, this)">
+                    <img class="thumb active" th:src="@{/images/rooms/executiveRoom.webp}"
+                         onclick="changeImg(this.src, this)">
+                    <img class="thumb" th:src="@{/images/rooms/executiveRoom1.webp}"
+                         onclick="changeImg(this.src, this)">
+                    <img class="thumb" th:src="@{/images/rooms/executiveRoom2.webp}"
+                         onclick="changeImg(this.src, this)">
                 </th:block>
 
                 <th:block th:if="${room.roomNumber.startsWith('2')}">
-                    <img class="thumb active" th:src="@{/images/rooms/superiorCityView.webp}" onclick="changeImg(this.src, this)">
-                    <img class="thumb" th:src="@{/images/rooms/superiorCityView1.webp}" onclick="changeImg(this.src, this)">
-                    <img class="thumb" th:src="@{/images/rooms/superiorCityView2.webp}" onclick="changeImg(this.src, this)">
+                    <img class="thumb active" th:src="@{/images/rooms/superiorCityView.webp}"
+                         onclick="changeImg(this.src, this)">
+                    <img class="thumb" th:src="@{/images/rooms/superiorCityView1.webp}"
+                         onclick="changeImg(this.src, this)">
+                    <img class="thumb" th:src="@{/images/rooms/superiorCityView2.webp}"
+                         onclick="changeImg(this.src, this)">
                 </th:block>
 
                 <th:block th:if="${room.roomNumber.startsWith('3')}">
-                    <img class="thumb active" th:src="@{/images/rooms/suiteCityView.webp}" onclick="changeImg(this.src, this)">
+                    <img class="thumb active" th:src="@{/images/rooms/suiteCityView.webp}"
+                         onclick="changeImg(this.src, this)">
                 </th:block>
             </div>
         </div>
@@ -238,7 +260,8 @@
         <div class="form-side">
             <div class="room-type-tag" th:text="${room.roomType.name}">Standard</div>
             <h2 th:text="'Phòng ' + ${room.roomNumber}">Phòng 101</h2>
-            <div class="price-tag" th:text="${#numbers.formatDecimal(room.pricePerNight, 0, 'COMMA', 0, 'POINT')} + ' VND/đêm'"></div>
+            <div class="price-tag"
+                 th:text="${#numbers.formatDecimal(room.pricePerNight, 0, 'COMMA', 0, 'POINT')} + ' VND/đêm'"></div>
 
             <form th:action="@{/booking/preview}" method="post">
                 <input type="hidden" name="roomId" th:value="${room.id}">

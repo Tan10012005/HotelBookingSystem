@@ -4,67 +4,191 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Yêu Cầu Đã Gửi - Hotel Booking System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap"
+          rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          crossorigin="anonymous"/>
     <style>
-        :root { --accent: #7c3aed; --green: #10b981; --card-bg: rgba(255,255,255,0.96); }
-        * { box-sizing: border-box; }
-        body { margin: 0; font-family: 'Inter', sans-serif;
+        :root {
+            --accent: #7c3aed;
+            --green: #10b981;
+            --card-bg: rgba(255, 255, 255, 0.96);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #4facfe 100%);
-            background-size: 400% 400%; animation: gs 15s ease infinite; min-height: 100vh;
+            background-size: 400% 400%;
+            animation: gs 15s ease infinite;
+            min-height: 100vh;
         }
-        @keyframes gs { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+        @keyframes gs {
+            0% {
+                background-position: 0% 50%
+            }
+            50% {
+                background-position: 100% 50%
+            }
+            100% {
+                background-position: 0% 50%
+            }
+        }
+
         .container {
-            max-width: 560px; margin: 60px auto; background: var(--card-bg);
-            padding: 50px 40px; border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.15); text-align: center;
+            max-width: 560px;
+            margin: 60px auto;
+            background: var(--card-bg);
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            text-align: center;
         }
+
         .success-icon {
-            width: 90px; height: 90px; border-radius: 50%;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
             background: linear-gradient(135deg, var(--accent), #6d28d9);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 24px; animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .success-icon i { font-size: 40px; color: white; }
+
+        .success-icon i {
+            font-size: 40px;
+            color: white;
+        }
+
         @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
-        h1 { font-family: 'Playfair Display', serif; font-size: 28px; color: #1f2937; margin-bottom: 12px; }
-        .desc { color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 32px; }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .desc {
+            color: #6b7280;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
         .info-badge {
-            background: #faf5ff; border: 2px solid #ddd6fe;
-            border-radius: 14px; padding: 18px 24px; margin-bottom: 28px; text-align: left;
+            background: #faf5ff;
+            border: 2px solid #ddd6fe;
+            border-radius: 14px;
+            padding: 18px 24px;
+            margin-bottom: 28px;
+            text-align: left;
         }
-        .info-badge .badge-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
-        .info-badge .badge-row .key { color: #6b7280; }
-        .info-badge .badge-row .val { font-weight: 600; color: var(--accent); }
+
+        .info-badge .badge-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+
+        .info-badge .badge-row .key {
+            color: #6b7280;
+        }
+
+        .info-badge .badge-row .val {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
         .steps-done {
-            display: flex; align-items: center; justify-content: center;
-            gap: 8px; flex-wrap: wrap; margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
         }
+
         .step-done-item {
-            display: flex; align-items: center; gap: 6px;
-            background: #d1fae5; color: #065f46;
-            padding: 8px 14px; border-radius: 999px; font-size: 13px; font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #d1fae5;
+            color: #065f46;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
         }
-        .action-buttons { display: flex; flex-direction: column; gap: 12px; }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
         .btn-primary {
-            padding: 14px; background: linear-gradient(135deg, var(--accent), #6d28d9);
-            color: white; text-decoration: none; border-radius: 999px;
-            font-weight: 700; font-size: 15px; display: flex; align-items: center;
-            justify-content: center; gap: 8px; transition: all 0.3s;
-            box-shadow: 0 6px 20px rgba(124,58,237,0.3);
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent), #6d28d9);
+            color: white;
+            text-decoration: none;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(124,58,237,0.4); }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(124, 58, 237, 0.4);
+        }
+
         .btn-secondary {
-            padding: 12px; background: #f3f4f6; color: #374151;
-            text-decoration: none; border-radius: 999px; font-weight: 600;
-            font-size: 14px; display: flex; align-items: center;
-            justify-content: center; gap: 8px; transition: all 0.2s;
+            padding: 12px;
+            background: #f3f4f6;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
         }
-        .btn-secondary:hover { background: #e5e7eb; }
-        .note { font-size: 12px; color: #9ca3af; margin-top: 20px; }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #9ca3af;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
