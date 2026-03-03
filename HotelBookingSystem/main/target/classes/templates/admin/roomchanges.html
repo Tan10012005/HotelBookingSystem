@@ -120,19 +120,19 @@
         <div class="stat-card pending">
             <div class="stat-label">⏳ Chờ duyệt</div>
             <div class="stat-value"
-                 th:text="${requests != null ? #lists.size(requests.stream().filter(r -> r.status.name() == 'PENDING').toList()) : 0}">
+                 th:text="${requests != null ? #lists.size(requests.?[status.name() == 'PENDING']) : 0}">
             </div>
         </div>
         <div class="stat-card approved">
             <div class="stat-label">✅ Đã duyệt</div>
             <div class="stat-value"
-                 th:text="${requests != null ? #lists.size(requests.stream().filter(r -> r.status.name() == 'APPROVED').toList()) : 0}">
+                 th:text="${requests != null ? #lists.size(requests.?[status.name() == 'APPROVED']) : 0}">
             </div>
         </div>
         <div class="stat-card rejected">
             <div class="stat-label">❌ Từ chối</div>
             <div class="stat-value"
-                 th:text="${requests != null ? #lists.size(requests.stream().filter(r -> r.status.name() == 'REJECTED').toList()) : 0}">
+                 th:text="${requests != null ? #lists.size(requests.?[status.name() == 'REJECTED']) : 0}">
             </div>
         </div>
     </div>

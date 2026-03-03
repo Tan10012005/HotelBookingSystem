@@ -292,7 +292,7 @@
         <div class="form-group">
             <label for="status_edit">🔔 Trạng thái <span style="color: var(--danger);">*</span></label>
             <select id="status_edit" name="status" required>
-                <option th:each="s : ${T(com.hotelbookingsystem.entity.RoomStatus).values()}" th:value="${s}" th:text="${s}"
+                <option th:each="s : ${T(com.hotelbookingsystem.enums.RoomStatus).values()}" th:value="${s}" th:text="${s}"
                         th:selected="${s == room.status}"></option>
             </select>
         </div>

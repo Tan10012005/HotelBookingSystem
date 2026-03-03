@@ -180,9 +180,9 @@
             <div class="stat-label">📋 Tổng booking</div>
             <div class="stat-value" th:text="${totalBookings}">0</div>
         </div>
-        <div class="stat-card" style="border-left: 4px solid #7c3aed;">
+        <div class="stat-card">
             <div class="stat-label">🔄 Đổi phòng chờ duyệt</div>
-            <div class="stat-value" style="color:#7c3aed;" th:text="${totalPendingRoomChanges}">0</div>
+            <div class="stat-value" th:text="${totalPendingRoomChanges}">0</div>
         </div>
     </div>
 
@@ -208,7 +208,7 @@
             </a>
 
             <!-- 🆕 Card Quản Lý Đổi Phòng -->
-            <a th:href="@{/admin/roomchanges}" class="menu-card highlight">
+            <a th:href="@{/admin/roomchanges}" class="menu-card">
                 <div class="menu-icon">🔄</div>
                 <div class="menu-title">Quản Lý Đổi Phòng</div>
                 <div class="menu-desc">Duyệt yêu cầu đổi - nâng hạng phòng</div>
