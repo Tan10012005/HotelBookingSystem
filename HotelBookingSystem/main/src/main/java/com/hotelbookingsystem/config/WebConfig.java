@@ -15,8 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // Chỉ áp dụng cho các route cần kiểm tra user session
         registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/rooms/**", "/booking/**", "/profile/**", "/orders/**", "/some-other-user-routes/**");
+                .addPathPatterns("/rooms/**", "/booking/**", "/profile/**", "/orders/**", "/roomchange/**");
     }
 }

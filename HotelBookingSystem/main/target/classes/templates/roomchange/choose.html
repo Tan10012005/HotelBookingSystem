@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Chọn Phòng Mới - Hotel Booking System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
+    <style>
+        :root {
+            --accent: #7c3aed;
+            --accent-light: #ede9fe;
+            --card-bg: rgba(255,255,255,0.96);
+            --radius: 20px;
+            --shadow: 0 12px 40px rgba(11,24,40,0.12);
+            --muted: #6b7280;
+        }
+        * { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container {
+            max-width: 1200px; margin: 40px auto;
+            background: var(--card-bg); padding: 36px;
+            border-radius: var(--radius); box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+        .page-header { text-align: center; margin-bottom: 30px; }
+        .page-header h1 { font-family: 'Playfair Display', serif; font-size: 30px; color: #1f2937; margin-bottom: 6px; }
+        .page-header p { color: var(--muted); font-size: 14px; }
+
+        .steps { display: flex; justify-content: center; gap: 0; margin-bottom: 32px; flex-wrap: wrap; }
+        .step { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 999px; font-size: 13px; font-weight: 600; color: #9ca3af; }
+        .step.active { background: var(--accent-light); color: var(--accent); }
+        .step.done { background: #d1fae5; color: #065f46; }
+        .step-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; background: #e5e7eb; color: #9ca3af; }
+        .step.active .step-num { background: var(--accent); color: white; }
+        .step.done .step-num { background: #10b981; color: white; }
+        .step-divider { align-self: center; width: 40px; height: 2px; background: #e5e7eb; }
+
+        /* Current booking summary */
+        .current-booking {
+            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+            border: 2px solid #ddd6fe;
+            border-radius: 16px; padding: 20px;
+            margin-bottom: 32px; display: flex;
+            align-items: center; gap: 20px; flex-wrap: wrap;
+        }
+        .current-booking .label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+        .current-booking .value { font-weight: 700; color: #1f2937; font-size: 15px; }
+        .current-info { flex: 1; min-width: 140px; }
+        .current-room-badge {
+            background: var(--accent); color: white;
+            padding: 12px 20px; border-radius: 12px; text-align: center;
+        }
+        .current-room-badge .num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; }
+        .current-room-badge .type { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+
+        /* Rooms grid */
+        .section-title {
+            font-size: 18px; font-weight: 700; color: #1f2937;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+        }
+        .room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .room-card {
+            background: #fff; border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            overflow: hidden; transition: all 0.3s ease;
+            border: 2px solid transparent; cursor: pointer;
+            position: relative;
+        }
+        .room-card:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgba(124,58,237,0.15); border-color: var(--accent); }
+        .room-card.selected { border-color: var(--accent); background: #faf5ff; }
+        .room-card.selected::before {
+            content: "✓"; position: absolute; top: 12px; right: 12px;
+            width: 28px; height: 28px; background: var(--accent); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px;
+        }
+        .room-card-header {
+            padding: 18px 20px 14px;
+            background: linear-gradient(135deg, #faf5ff, #ede9fe);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .room-number-big { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--accent); }
+        .room-type-tag {
+            background: var(--accent); color: white;
+            padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;
+        }
+        .room-details { padding: 14px 20px; }
+        .room-detail-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; border-bottom: 1px solid #f3f4f6; }
+        .room-detail-row:last-child { border-bottom: none; }
+        .room-detail-label { color: var(--muted); }
+        .room-detail-value { font-weight: 600; color: #1f2937; }
+        .price-diff-badge {
+            margin: 0 20px 14px;
+            padding: 8px 12px; border-radius: 8px;
+            text-align: center; font-size: 13px; font-weight: 600;
+        }
+        .price-diff-badge.upgrade { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+        .price-diff-badge.same { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .room-card-footer { padding: 0 20px 18px; }
+        .btn-select-room {
+            width: 100%; padding: 11px; border: none;
+            background: linear-gradient(135deg, var(--accent), #6d28d9);
+            color: white; border-radius: 999px; font-weight: 600;
+            font-size: 13px; cursor: pointer; transition: all 0.3s;
+        }
+        .btn-select-room:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(124,58,237,0.3); }
+
+        .back-link { text-align: center; margin-top: 28px; }
+        .back-link a { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 14px; }
+
+        /* Hidden form */
+        #previewForm { display: none; }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container">
+    <div class="page-header">
+        <h1>🔄 Chọn Phòng Mới</h1>
+        <p>Chọn phòng bạn muốn chuyển sang (chỉ hiển thị phòng trống cùng hạng hoặc cao hơn)</p>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps">
+        <div class="step done"><div class="step-num">✓</div> Chọn booking</div>
+        <div class="step-divider"></div>
+        <div class="step active"><div class="step-num">2</div> Chọn phòng mới</div>
+        <div class="step-divider"></div>
+        <div class="step"><div class="step-num">3</div> Xác nhận & Thanh toán</div>
+        <div class="step-divider"></div>
+        <div class="step"><div class="step-num">4</div> Hoàn tất</div>
+    </div>
+
+    <!-- Current booking info -->
+    <div class="current-booking">
+        <div class="current-room-badge">
+            <div class="num" th:text="${booking.room.roomNumber}"></div>
+            <div class="type">Phòng hiện tại</div>
+        </div>
+        <div class="current-info">
+            <div class="label">Booking</div>
+            <div class="value">#<span th:text="${booking.id}"></span></div>
+        </div>
+        <div class="current-info">
+            <div class="label">Loại phòng</div>
+            <div class="value" th:text="${booking.room.roomType.name}"></div>
+        </div>
+        <div class="current-info">
+            <div class="label">Giá / đêm</div>
+            <div class="value" th:text="${#numbers.formatDecimal(booking.room.pricePerNight, 0, 'COMMA', 0, 'POINT')} + ' VND'"></div>
+        </div>
+        <div class="current-info">
+            <div class="label">Check-in</div>
+            <div class="value" th:text="${#temporals.format(booking.checkIn, 'dd/MM/yyyy')}"></div>
+        </div>
+        <div class="current-info">
+            <div class="label">Check-out</div>
+            <div class="value" th:text="${#temporals.format(booking.checkOut, 'dd/MM/yyyy')}"></div>
+        </div>
+    </div>
+
+    <!-- Danh sách phòng có thể đổi -->
+    <div class="section-title">
+        <i class="fa-solid fa-door-open"></i>
+        Phòng có thể đổi sang (<span th:text="${#lists.size(availableRooms)}"></span> phòng)
+    </div>
+
+    <div class="room-grid">
+        <div th:each="room : ${availableRooms}" class="room-card"
+             th:onclick="'selectRoom(' + ${room.id} + ', ' + ${booking.id} + ')'">
+
+            <div class="room-card-header">
+                <span class="room-number-big">Phòng <span th:text="${room.roomNumber}"></span></span>
+                <span class="room-type-tag" th:text="${room.roomType.name}"></span>
+            </div>
+
+            <div class="room-details">
+                <div class="room-detail-row">
+                    <span class="room-detail-label"><i class="fa-solid fa-users"></i> Sức chứa</span>
+                    <span class="room-detail-value" th:text="${room.roomType.capacity} + ' người'"></span>
+                </div>
+                <div class="room-detail-row">
+                    <span class="room-detail-label"><i class="fa-solid fa-moon"></i> Giá / đêm</span>
+                    <span class="room-detail-value" style="color: var(--accent);"
+                          th:text="${#numbers.formatDecimal(room.pricePerNight, 0, 'COMMA', 0, 'POINT')} + ' VND'">
+                    </span>
+                </div>
+            </div>
+
+            <!-- Hiển thị chênh lệch -->
+            <div th:if="${room.pricePerNight.compareTo(booking.room.pricePerNight) > 0}"
+                 class="price-diff-badge upgrade">
+                <i class="fa-solid fa-arrow-up"></i>
+                Nâng hạng · +<span
+                    th:text="${#numbers.formatDecimal(room.pricePerNight.subtract(booking.room.pricePerNight), 0, 'COMMA', 0, 'POINT')}">
+                </span> VND/đêm
+            </div>
+            <div th:if="${room.pricePerNight.compareTo(booking.room.pricePerNight) == 0}"
+                 class="price-diff-badge same">
+                <i class="fa-solid fa-equals"></i> Ngang hạng · Không phụ thu thêm
+            </div>
+
+            <div class="room-card-footer">
+                <button class="btn-select-room">
+                    <i class="fa-solid fa-check"></i> Chọn phòng này
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden form để submit -->
+    <form id="previewForm" th:action="@{/roomchange/preview}" method="post">
+        <input type="hidden" id="hiddenBookingId" name="bookingId"/>
+        <input type="hidden" id="hiddenNewRoomId" name="newRoomId"/>
+    </form>
+
+    <div class="back-link">
+        <a href="/roomchange/select"><i class="fa-solid fa-arrow-left"></i> Quay lại chọn booking</a>
+    </div>
+</div>
+
+<script>
+    function selectRoom(roomId, bookingId) {
+        document.querySelectorAll('.room-card').forEach(c => c.classList.remove('selected'));
+        event.currentTarget.classList.add('selected');
+
+        document.getElementById('hiddenBookingId').value = bookingId;
+        document.getElementById('hiddenNewRoomId').value = roomId;
+
+        setTimeout(() => document.getElementById('previewForm').submit(), 300);
+    }
+</script>
+
+<div th:replace="~{fragments/chatbot :: chatbot}"></div>
+<div th:insert="fragments/footer :: footer"></div>
+</body>
+</html>

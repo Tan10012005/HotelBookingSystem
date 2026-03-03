@@ -8,6 +8,8 @@ import com.hotelbookingsystem.repository.RoomRepository;
 import com.hotelbookingsystem.repository.RoomTypeRepository;
 import com.hotelbookingsystem.repository.UserRepository;
 import com.hotelbookingsystem.service.BookingService;
+import com.hotelbookingsystem.entity.RoomChangeRequest;
+import com.hotelbookingsystem.service.RoomChangeService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,9 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
+    @Autowired
+    private RoomChangeService roomChangeService;
 
     @Autowired
     private UserRepository userRepo;
@@ -274,6 +279,43 @@ public class AdminController {
             return false;
         }
         return true;
+    }
+
+    /* ===== ROOM CHANGE MANAGEMENT ===== */
+
+    @GetMapping("/roomchanges")
+    public String listRoomChanges(HttpSession session, Model model, RedirectAttributes ra) {
+        if (!isAdminSession(session, ra)) return "redirect:/login";
+        model.addAttribute("requests", roomChangeService.getAllRequests());
+        return "admin/roomchanges";
+    }
+
+    @PostMapping("/roomchanges/{id}/approve")
+    public String approveRoomChange(@PathVariable Long id, HttpSession session, RedirectAttributes ra) {
+        if (!isAdminSession(session, ra)) return "redirect:/login";
+        boolean ok = roomChangeService.approveRequest(id);
+        if (ok) {
+            ra.addFlashAttribute("message", "Đã duyệt yêu cầu đổi phòng #" + id + ". Booking đã được cập nhật!");
+        } else {
+            ra.addFlashAttribute("error", "Không thể duyệt. Phòng mới có thể đã bị đặt hoặc yêu cầu không còn ở trạng thái chờ.");
+        }
+        return "redirect:/admin/roomchanges";
+    }
+
+    @PostMapping("/roomchanges/{id}/reject")
+    public String rejectRoomChange(
+            @PathVariable Long id,
+            @RequestParam(required = false) String adminNote,
+            HttpSession session,
+            RedirectAttributes ra) {
+        if (!isAdminSession(session, ra)) return "redirect:/login";
+        boolean ok = roomChangeService.rejectRequest(id, adminNote);
+        if (ok) {
+            ra.addFlashAttribute("message", "Đã từ chối yêu cầu đổi phòng #" + id);
+        } else {
+            ra.addFlashAttribute("error", "Không thể từ chối yêu cầu này.");
+        }
+        return "redirect:/admin/roomchanges";
     }
 
 }
