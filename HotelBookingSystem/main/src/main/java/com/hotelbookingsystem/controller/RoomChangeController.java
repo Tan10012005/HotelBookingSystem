@@ -1,6 +1,9 @@
 package com.hotelbookingsystem.controller;
 
-import com.hotelbookingsystem.entity.*;
+import com.hotelbookingsystem.entity.Booking;
+import com.hotelbookingsystem.entity.Room;
+import com.hotelbookingsystem.entity.RoomChangeRequest;
+import com.hotelbookingsystem.entity.User;
 import com.hotelbookingsystem.repository.BookingRepository;
 import com.hotelbookingsystem.repository.RoomRepository;
 import com.hotelbookingsystem.service.RoomChangeService;

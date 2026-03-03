@@ -2,15 +2,10 @@ package com.hotelbookingsystem.controller;
 
 import com.hotelbookingsystem.entity.*;
 import com.hotelbookingsystem.enums.BookingStatus;
-import com.hotelbookingsystem.enums.RoomStatus;
-import com.hotelbookingsystem.repository.BookingRepository;
-import com.hotelbookingsystem.repository.RoomRepository;
-import com.hotelbookingsystem.repository.RoomTypeRepository;
-import com.hotelbookingsystem.repository.UserRepository;
-import com.hotelbookingsystem.service.BookingService;
-import com.hotelbookingsystem.entity.RoomChangeRequest;
 import com.hotelbookingsystem.enums.RoomChangeStatus;
-import com.hotelbookingsystem.repository.RoomChangeRequestRepository;
+import com.hotelbookingsystem.enums.RoomStatus;
+import com.hotelbookingsystem.repository.*;
+import com.hotelbookingsystem.service.BookingService;
 import com.hotelbookingsystem.service.RoomChangeService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
