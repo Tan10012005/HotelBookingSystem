@@ -39,6 +39,9 @@ public class User {
     @Builder.Default
     private Boolean isActive = true; // true = active, false = banned
 
+    @Column(length = 20)
+    private String authProvider;  // "LOCAL" hoặc "GOOGLE"
+
     private LocalDateTime createdAt;
 
     public boolean isProfileComplete() {

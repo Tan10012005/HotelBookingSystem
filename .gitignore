@@ -1,0 +1,37 @@
+# ===============================
+# 🔒 SECRET FILES
+# ===============================
+**/application-secret.properties
+**/application-secret.yml
+.env
+*.env
+
+# ===============================
+# ☕ JAVA / MAVEN BUILD
+# ===============================
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# ===============================
+# 💻 IDE
+# ===============================
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.project
+.classpath
+*.swp
+*~
+
+# ===============================
+# 🖥️ OS
+# ===============================
+.DS_Store
+Thumbs.db
+desktop.ini

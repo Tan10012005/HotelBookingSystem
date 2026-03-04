@@ -48,6 +48,7 @@ public class AuthServiceImpl implements AuthService {
                 .email(email)
                 .password(password)
                 .role("USER")
+                .authProvider("LOCAL")
                 .createdAt(LocalDateTime.now())
                 .build();
 

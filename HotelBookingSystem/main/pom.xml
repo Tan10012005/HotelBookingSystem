@@ -49,6 +49,12 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <!-- OAuth2 Client (Google Login) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
+
         <!-- ✅ MS SQL SERVER DRIVER (THAY THẾ POSTGRESQL) -->
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
@@ -92,6 +98,8 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
+
+
 
     </dependencies>
 
