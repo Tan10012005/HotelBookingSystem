@@ -139,6 +139,7 @@ Một hệ thống đặt phòng khách sạn hiện đại, được xây dựn
 
 Đăng nhập
 - Xem booking đang sắp tới
+- Để đổi phòng, booking phải được xác nhận và ngày check-in phải còn ít nhất 1 ngày
 - Yêu cầu đổi phòng (Nâng hạng phòng hoặc ngang cấp)
 - Hệ thống kiểm tra phòng trống
 - Tính chênh lệch giá
