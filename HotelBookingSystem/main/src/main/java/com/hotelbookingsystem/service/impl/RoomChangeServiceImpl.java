@@ -1,4 +1,4 @@
-package com.hotelbookingsystem.service;
+package com.hotelbookingsystem.service.impl;
 
 import com.hotelbookingsystem.entity.*;
 import com.hotelbookingsystem.enums.BookingStatus;
@@ -6,6 +6,7 @@ import com.hotelbookingsystem.enums.CheckInStatus;
 import com.hotelbookingsystem.enums.RoomChangeStatus;
 import com.hotelbookingsystem.enums.RoomStatus;
 import com.hotelbookingsystem.repository.*;
+import com.hotelbookingsystem.service.RoomChangeService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

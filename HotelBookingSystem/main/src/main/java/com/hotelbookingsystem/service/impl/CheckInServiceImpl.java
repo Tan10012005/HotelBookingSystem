@@ -1,4 +1,4 @@
-package com.hotelbookingsystem.service;
+package com.hotelbookingsystem.service.impl;
 
 import com.hotelbookingsystem.entity.*;
 import com.hotelbookingsystem.enums.BookingStatus;
@@ -7,6 +7,7 @@ import com.hotelbookingsystem.enums.CheckInStatus;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.common.BitMatrix;
+import com.hotelbookingsystem.service.CheckInService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;

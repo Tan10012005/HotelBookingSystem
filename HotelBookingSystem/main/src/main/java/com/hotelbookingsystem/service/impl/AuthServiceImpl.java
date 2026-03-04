@@ -1,9 +1,10 @@
-package com.hotelbookingsystem.service;
+package com.hotelbookingsystem.service.impl;
 
 import com.hotelbookingsystem.entity.Admin;
 import com.hotelbookingsystem.entity.User;
 import com.hotelbookingsystem.repository.AdminRepository;
 import com.hotelbookingsystem.repository.UserRepository;
+import com.hotelbookingsystem.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

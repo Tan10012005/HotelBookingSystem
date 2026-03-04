@@ -1,8 +1,9 @@
-package com.hotelbookingsystem.service;
+package com.hotelbookingsystem.service.impl;
 
 import com.hotelbookingsystem.entity.Room;
 import com.hotelbookingsystem.enums.RoomStatus;
 import com.hotelbookingsystem.repository.RoomRepository;
+import com.hotelbookingsystem.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
