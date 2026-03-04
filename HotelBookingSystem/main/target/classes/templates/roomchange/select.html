@@ -4,30 +4,50 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Đổi Phòng - Hotel Booking System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap"
+          rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          crossorigin="anonymous"/>
     <style>
         :root {
             --accent: #7c3aed;
             --accent-light: #ede9fe;
-            --card-bg: rgba(255,255,255,0.96);
+            --card-bg: rgba(255, 255, 255, 0.96);
             --radius: 20px;
-            --shadow: 0 12px 40px rgba(11,24,40,0.12);
+            --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
             --muted: #6b7280;
         }
-        * { box-sizing: border-box; }
-        html, body { height: 100%; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 60%, #4facfe 100%);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             background-attachment: fixed;
         }
+
         @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
+
         .container {
             max-width: 1100px;
             margin: 40px auto;
@@ -37,112 +57,260 @@
             box-shadow: var(--shadow);
             backdrop-filter: blur(10px);
         }
-        .page-header { text-align: center; margin-bottom: 36px; }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
         .page-header h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 32px; margin-bottom: 8px; color: #1f2937;
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: #1f2937;
         }
-        .page-header p { color: var(--muted); font-size: 15px; }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
         .steps {
-            display: flex; justify-content: center; gap: 0;
-            margin-bottom: 36px; flex-wrap: wrap;
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 36px;
+            flex-wrap: wrap;
         }
+
         .step {
-            display: flex; align-items: center; gap: 8px;
-            padding: 10px 20px; border-radius: 999px;
-            font-size: 13px; font-weight: 600; color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #9ca3af;
         }
+
         .step.active {
-            background: var(--accent-light); color: var(--accent);
+            background: var(--accent-light);
+            color: var(--accent);
         }
+
         .step-num {
-            width: 26px; height: 26px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px; font-weight: 700;
-            background: #e5e7eb; color: #9ca3af;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            background: #e5e7eb;
+            color: #9ca3af;
         }
-        .step.active .step-num { background: var(--accent); color: white; }
-        .step-divider { align-self: center; width: 40px; height: 2px; background: #e5e7eb; }
+
+        .step.active .step-num {
+            background: var(--accent);
+            color: white;
+        }
+
+        .step-divider {
+            align-self: center;
+            width: 40px;
+            height: 2px;
+            background: #e5e7eb;
+        }
 
         .alert {
-            padding: 14px 18px; border-radius: 12px; margin-bottom: 24px;
-            background: #fee2e2; border-left: 4px solid #dc2626; color: #b91c1c;
-            display: flex; align-items: center; gap: 10px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            background: #fee2e2;
+            border-left: 4px solid #dc2626;
+            color: #b91c1c;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
         .booking-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 24px;
         }
+
         .booking-card {
-            background: #fff; border-radius: 16px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-            overflow: hidden; transition: all 0.3s ease;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            transition: all 0.3s ease;
             border: 2px solid transparent;
         }
+
         .booking-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 16px 40px rgba(124,58,237,0.15);
+            box-shadow: 0 16px 40px rgba(124, 58, 237, 0.15);
             border-color: var(--accent);
         }
+
         .card-top {
             padding: 20px 20px 0;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .booking-id { font-weight: 700; font-size: 15px; color: #374151; }
+
+        .booking-id {
+            font-weight: 700;
+            font-size: 15px;
+            color: #374151;
+        }
+
         .badge-confirmed {
-            background: #d1fae5; color: #065f46;
-            padding: 4px 12px; border-radius: 999px;
-            font-size: 12px; font-weight: 600;
+            background: #d1fae5;
+            color: #065f46;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
         }
+
         .room-badge {
             margin: 14px 20px;
             background: linear-gradient(135deg, var(--accent-light), #ddd6fe);
-            padding: 14px; border-radius: 12px;
+            padding: 14px;
+            border-radius: 12px;
             text-align: center;
         }
+
         .room-badge .room-no {
             font-family: 'Playfair Display', serif;
-            font-size: 24px; font-weight: 700; color: var(--accent);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
         }
-        .room-badge .room-type { font-size: 12px; color: #7c3aed; font-weight: 600; margin-top: 2px; }
-        .card-info { padding: 0 20px; }
+
+        .room-badge .room-type {
+            font-size: 12px;
+            color: #7c3aed;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .card-info {
+            padding: 0 20px;
+        }
+
         .info-row {
-            display: flex; justify-content: space-between;
-            padding: 8px 0; font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
             border-bottom: 1px solid #f3f4f6;
         }
-        .info-row:last-child { border-bottom: none; }
-        .info-label { color: var(--muted); display: flex; align-items: center; gap: 6px; }
-        .info-value { font-weight: 600; color: #1f2937; }
-        .card-footer { padding: 16px 20px; }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .card-footer {
+            padding: 16px 20px;
+        }
+
         .btn-choose {
-            width: 100%; padding: 13px;
+            width: 100%;
+            padding: 13px;
             background: linear-gradient(135deg, var(--accent), #6d28d9);
-            color: white; border: none; border-radius: 999px;
-            font-weight: 600; font-size: 14px; cursor: pointer;
-            transition: all 0.3s ease; position: relative; overflow: hidden;
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
+
         .btn-choose::after {
-            content: ""; position: absolute;
-            width: 100%; height: 100%;
-            background: rgba(255,255,255,0.15);
-            top: 0; left: -100%; transition: 0.4s;
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            top: 0;
+            left: -100%;
+            transition: 0.4s;
         }
-        .btn-choose:hover::after { left: 100%; }
-        .btn-choose:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(124,58,237,0.4); }
+
+        .btn-choose:hover::after {
+            left: 100%;
+        }
+
+        .btn-choose:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(124, 58, 237, 0.4);
+        }
 
         .empty-state {
-            text-align: center; padding: 60px 20px; color: var(--muted);
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
         }
-        .empty-state .icon { font-size: 52px; margin-bottom: 16px; color: #d1d5db; }
-        .empty-state h3 { font-size: 20px; color: #374151; margin-bottom: 8px; }
-        .empty-state p { font-size: 14px; }
-        .empty-state a { color: var(--accent); text-decoration: none; font-weight: 600; }
 
-        .back-link { text-align: center; margin-top: 32px; }
-        .back-link a { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 14px; }
-        .back-link a:hover { text-decoration: underline; }
+        .empty-state .icon {
+            font-size: 52px;
+            margin-bottom: 16px;
+            color: #d1d5db;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        .empty-state a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .back-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -186,7 +354,8 @@
     <div th:if="${bookings != null and !#lists.isEmpty(bookings)}" class="booking-grid">
         <div th:each="b : ${bookings}" class="booking-card">
             <div class="card-top">
-                <span class="booking-id"><i class="fa-solid fa-hashtag"></i> Booking #<span th:text="${b.id}"></span></span>
+                <span class="booking-id"><i class="fa-solid fa-hashtag"></i> Booking #<span
+                        th:text="${b.id}"></span></span>
                 <span class="badge-confirmed">✓ Đã xác nhận</span>
             </div>
 

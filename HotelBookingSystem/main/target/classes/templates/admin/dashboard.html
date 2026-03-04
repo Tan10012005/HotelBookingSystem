@@ -6,28 +6,86 @@
     <title>Admin Dashboard — Hotel Booking</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap"
           rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          crossorigin="anonymous"/>
     <style>
         :root {
+            --accent: #7c3aed;
+            --sidebar: #1e1b4b;
             --accent-1: #29a14a;
             --accent-2: #178e3a;
             --muted: #6b7280;
             --card: #ffffff;
-            --bg: #f6f8fb;
+            --bg: #f5f3ff;
             --radius: 12px;
             --shadow: 0 10px 30px rgba(11, 24, 40, 0.08);
         }
 
-        * { box-sizing: border-box }
+        * {
+            box-sizing: border-box
+        }
 
         body {
             font-family: Inter, system-ui, Arial;
             color: #0f172a;
             margin: 0;
             background: var(--bg);
-            padding: 28px
         }
 
-        .wrap { max-width: 1100px; margin: 0 auto }
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 240px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            background: var(--sidebar);
+            padding: 28px 0;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            padding: 0 24px 28px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            margin: 20px 0 0;
+            padding: 0;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border-left: 3px solid var(--accent);
+            padding-left: 21px;
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(124, 58, 237, 0.25);
+        }
+
+        /* ===== MAIN ===== */
+        .main {
+            margin-left: 240px;
+            padding: 32px;
+        }
 
         .header {
             display: flex;
@@ -60,9 +118,16 @@
             gap: 6px
         }
 
-        .stat-label { font-size: 13px; color: var(--muted) }
+        .stat-label {
+            font-size: 13px;
+            color: var(--muted)
+        }
 
-        .stat-value { font-size: 22px; font-weight: 700; color: #0f172a }
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a
+        }
 
         .menu {
             display: grid;
@@ -87,25 +152,32 @@
 
         .menu-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
             border-color: #e5e7eb;
         }
 
-        /* Card đổi phòng nổi bật hơn */
         .menu-card.highlight {
             background: linear-gradient(135deg, #faf5ff, #ede9fe);
             border: 2px solid #ddd6fe;
         }
+
         .menu-card.highlight:hover {
             border-color: #7c3aed;
-            box-shadow: 0 16px 40px rgba(124,58,237,0.15);
+            box-shadow: 0 16px 40px rgba(124, 58, 237, 0.15);
         }
 
-        .menu-icon { font-size: 22px }
+        .menu-icon {
+            font-size: 22px
+        }
 
-        .menu-title { font-weight: 700 }
+        .menu-title {
+            font-weight: 700
+        }
 
-        .menu-desc { color: var(--muted); font-size: 13px }
+        .menu-desc {
+            color: var(--muted);
+            font-size: 13px
+        }
 
         .section {
             margin-top: 26px;
@@ -115,25 +187,11 @@
             box-shadow: var(--shadow)
         }
 
-        .link-row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap
+        .small {
+            color: var(--muted);
+            font-size: 13px
         }
 
-        a.btn {
-            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-            color: white;
-            padding: 8px 12px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 700
-        }
-
-        .small { color: var(--muted); font-size: 13px }
-
-        /* Badge số lượng yêu cầu chờ duyệt */
         .badge-count {
             display: inline-block;
             background: #7c3aed;
@@ -146,27 +204,43 @@
         }
 
         @media (max-width: 900px) {
-            .card-grid, .menu { grid-template-columns: 1fr 1fr }
+            .card-grid, .menu {
+                grid-template-columns: 1fr 1fr
+            }
         }
+
         @media (max-width: 600px) {
-            .card-grid, .menu { grid-template-columns: 1fr }
+            .card-grid, .menu {
+                grid-template-columns: 1fr
+            }
         }
     </style>
 </head>
 <body>
-<div class="wrap">
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-logo">🏨 Hotel Admin</div>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/admin/dashboard}" class="active"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+        <li><a th:href="@{/admin/users}"><i class="fa-solid fa-users"></i> Người dùng</a></li>
+        <li><a th:href="@{/admin/rooms}"><i class="fa-solid fa-door-open"></i> Phòng</a></li>
+        <li><a th:href="@{/admin/bookings}"><i class="fa-solid fa-calendar-check"></i> Booking</a></li>
+        <li><a th:href="@{/admin/roomchanges}"><i class="fa-solid fa-arrows-rotate"></i> Đổi phòng</a></li>
+        <li><a th:href="@{/admin/logout}"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
+    </ul>
+</div>
+
+<!-- Main -->
+<div class="main">
     <div class="header">
         <div>
             <div class="title">⚙️ Admin Dashboard</div>
             <div class="small">Quản trị hệ thống — Xin chào, <span th:text="${admin.fullName}">Admin</span></div>
         </div>
-        <div class="link-row">
-            <a th:href="@{/admin/logout}" class="btn" style="background:#ef4444">Logout</a>
-            <a th:href="@{/}" class="btn" style="background:#6b7280">Site</a>
-        </div>
     </div>
 
-    <!-- Stats: thêm stat đổi phòng -->
+    <!-- Stats -->
     <div class="card-grid">
         <div class="stat-card">
             <div class="stat-label">👥 Tổng người dùng</div>
@@ -207,7 +281,6 @@
                 <div class="menu-desc">Accept/Deny booking</div>
             </a>
 
-            <!-- 🆕 Card Quản Lý Đổi Phòng -->
             <a th:href="@{/admin/roomchanges}" class="menu-card">
                 <div class="menu-icon">🔄</div>
                 <div class="menu-title">Quản Lý Đổi Phòng</div>

@@ -5,28 +5,41 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>Quản lý phòng — Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
     <style>
         :root {
+            --accent: #7c3aed;
+            --sidebar: #1e1b4b;
             --accent-1: #29a14a;
             --muted: #6b7280;
             --card: #fff;
-            --bg: #f6f8fb;
+            --bg: #f5f3ff;
             --radius: 12px;
             --shadow: 0 8px 24px rgba(11, 24, 40, 0.06)
         }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: Inter, system-ui;
             margin: 0;
             background: var(--bg);
-            padding: 28px;
             color: #0f172a
         }
 
-        .wrap {
-            max-width: 1100px;
-            margin: 0 auto
-        }
+        /* ===== SIDEBAR ===== */
+        .sidebar { width: 240px; position: fixed; top: 0; left: 0; height: 100vh; background: var(--sidebar); padding: 28px 0; z-index: 100; }
+        .sidebar-logo { color: white; font-size: 17px; font-weight: 700; padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-menu { list-style: none; margin: 20px 0 0; padding: 0; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255,255,255,0.12); color: white; border-left: 3px solid var(--accent); padding-left: 21px; }
+        .sidebar-menu a.active { background: rgba(124,58,237,0.25); }
+
+        /* ===== MAIN ===== */
+        .main { margin-left: 240px; padding: 32px; }
+
+        .page-title { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+        .page-subtitle { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
 
         .head {
             display: flex;
@@ -84,14 +97,35 @@
             padding: 8px 10px;
             border-radius: 8px;
             text-decoration: none;
-            font-weight: 700
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, var(--accent), #6d28d9);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(124,58,237,0.3);
         }
 
         .btn-ghost {
             background: transparent;
             border: 1px solid #e6eef3;
             padding: 6px 10px;
-            border-radius: 8px
+            border-radius: 8px;
+            text-decoration: none;
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 13px;
         }
 
         .actions form {
@@ -108,15 +142,29 @@
     </style>
 </head>
 <body>
-<div class="wrap">
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-logo">🏨 Hotel Admin</div>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/admin/dashboard}"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+        <li><a th:href="@{/admin/users}"><i class="fa-solid fa-users"></i> Người dùng</a></li>
+        <li><a th:href="@{/admin/rooms}" class="active"><i class="fa-solid fa-door-open"></i> Phòng</a></li>
+        <li><a th:href="@{/admin/bookings}"><i class="fa-solid fa-calendar-check"></i> Booking</a></li>
+        <li><a th:href="@{/admin/roomchanges}"><i class="fa-solid fa-arrows-rotate"></i> Đổi phòng</a></li>
+        <li><a th:href="@{/admin/logout}"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
+    </ul>
+</div>
+
+<!-- Main -->
+<div class="main">
     <div class="head">
         <div>
-            <h2 style="margin:0">🏨 Quản lý phòng</h2>
-            <div class="small" style="color:#6b7280">Thêm/sửa/xóa phòng</div>
+            <div class="page-title">🏨 Quản lý phòng</div>
+            <div class="page-subtitle">Thêm/sửa/xóa phòng</div>
         </div>
         <div>
-            <a th:href="@{/admin/rooms/new}" class="btn">+ Thêm phòng</a>
-            <a th:href="@{/admin/dashboard}" class="btn-ghost" style="margin-left:8px">Quay lại</a>
+            <a th:href="@{/admin/rooms/new}" class="btn-add">+ Thêm phòng</a>
         </div>
     </div>
 
