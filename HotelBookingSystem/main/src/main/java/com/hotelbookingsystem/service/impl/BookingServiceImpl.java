@@ -3,6 +3,7 @@ package com.hotelbookingsystem.service.impl;
 import com.hotelbookingsystem.entity.*;
 import com.hotelbookingsystem.enums.*;
 import com.hotelbookingsystem.repository.BookingRepository;
+import com.hotelbookingsystem.repository.RefundTransactionRepository;
 import com.hotelbookingsystem.repository.RoomRepository;
 import com.hotelbookingsystem.service.BookingService;
 import jakarta.transaction.Transactional;
@@ -13,6 +14,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,9 +27,18 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     private RoomRepository roomRepo;
 
-    private static final int REFUND_WINDOW_HOURS = 24;
-    private static final Integer FULL_REFUND_PERCENTAGE = 100;
-    private static final Integer PARTIAL_REFUND_PERCENTAGE = 50;
+    @Autowired
+    private RefundTransactionRepository refundTransactionRepo;
+
+    /**
+     * Business Rule mới:
+     * - Hủy >= 5 ngày trước check-in → hoàn 50%
+     * - Hủy < 5 ngày trước check-in → không hoàn tiền (0%)
+     */
+    private static final int REFUND_CUTOFF_DAYS = 5;
+    private static final Integer PARTIAL_REFUND_PERCENTAGE = 50;   // >= 5 ngày → 50%
+    private static final Integer NO_REFUND_PERCENTAGE = 0;          // < 5 ngày → 0%
+    private static final Integer FULL_REFUND_PERCENTAGE = 100;      // Giữ lại cho getRefundPercentage default
 
     @Override
     public void createBooking(User user, Room room,
@@ -61,8 +73,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    // 🆕 UPDATED: Add cancellationReason parameter
-    public CancelResult cancelBooking(Long bookingId, User user, CancellationReason cancellationReason) {
+    public CancelResult cancelBooking(Long bookingId, User user,
+                                      CancellationReason cancellationReason,
+                                      String bankName, String accountNumber, String accountHolderName) {
         Optional<Booking> maybe = bookingRepo.findByIdAndUser(bookingId, user);
 
         if (maybe.isEmpty()) {
@@ -75,28 +88,52 @@ public class BookingServiceImpl implements BookingService {
             return CancelResult.ALREADY_CANCELLED;
         }
 
-        // Calculate refund based on current time vs check-in time
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime checkInDateTime = booking.getCheckIn().atStartOfDay();
-        LocalDateTime refundCutoffTime = checkInDateTime.minusHours(REFUND_WINDOW_HOURS);
+        // ========== BUSINESS RULE MỚI ==========
+        // Tính số ngày từ bây giờ đến ngày check-in
+        LocalDate today = LocalDate.now();
+        LocalDate checkInDate = booking.getCheckIn();
+        long daysUntilCheckIn = ChronoUnit.DAYS.between(today, checkInDate);
 
-        if (now.isAfter(refundCutoffTime)) {
+        if (daysUntilCheckIn >= REFUND_CUTOFF_DAYS) {
+            // Hủy trước >= 5 ngày → hoàn 50%
             booking.setRefundPercentage(PARTIAL_REFUND_PERCENTAGE);
         } else {
-            booking.setRefundPercentage(FULL_REFUND_PERCENTAGE);
+            // Hủy < 5 ngày trước check-in → KHÔNG hoàn tiền
+            booking.setRefundPercentage(NO_REFUND_PERCENTAGE);
         }
 
+        LocalDateTime now = LocalDateTime.now();
         BigDecimal refundAmount = calculateRefundAmount(booking);
         booking.setRefundAmount(refundAmount);
         booking.setCancelledAt(now);
-
-        // 🆕 NEW: Set cancellation reason
         booking.setCancellationReason(cancellationReason);
-
         booking.setStatus(BookingStatus.CANCELLED);
-        booking.setRefundStatus(RefundStatus.REQUESTED);
+
+        // Chỉ tạo yêu cầu hoàn tiền nếu có tiền hoàn (> 0)
+        if (refundAmount.compareTo(BigDecimal.ZERO) > 0) {
+            booking.setRefundStatus(RefundStatus.REQUESTED);
+
+            // Tạo RefundTransaction với thông tin chuyển khoản
+            RefundTransaction transaction = RefundTransaction.builder()
+                    .booking(booking)
+                    .user(user)
+                    .bankName(bankName)
+                    .accountNumber(accountNumber)
+                    .accountHolderName(accountHolderName)
+                    .refundAmount(refundAmount)
+                    .refundPercentage(booking.getRefundPercentage())
+                    .status(RefundTransactionStatus.PENDING)
+                    .refundDeadline(now.plusHours(24))  // Hoàn trong 24h
+                    .build();
+            refundTransactionRepo.save(transaction);
+        } else {
+            // Không hoàn tiền
+            booking.setRefundStatus(RefundStatus.NONE);
+        }
+
         bookingRepo.save(booking);
 
+        // Giải phóng phòng
         Room room = booking.getRoom();
         if (room != null && room.getStatus() == RoomStatus.BOOKED) {
             room.setStatus(RoomStatus.AVAILABLE);
@@ -118,6 +155,31 @@ public class BookingServiceImpl implements BookingService {
 
         b.setRefundStatus(RefundStatus.TRANSFERRED);
         bookingRepo.save(b);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean adminProcessRefundTransaction(Long transactionId, String adminNote) {
+        Optional<RefundTransaction> maybe = refundTransactionRepo.findById(transactionId);
+        if (maybe.isEmpty()) return false;
+
+        RefundTransaction tx = maybe.get();
+
+        // Chỉ xử lý transaction đang PENDING
+        if (tx.getStatus() != RefundTransactionStatus.PENDING) return false;
+
+        // Cập nhật transaction
+        tx.setStatus(RefundTransactionStatus.COMPLETED);
+        tx.setAdminNote(adminNote);
+        tx.setProcessedAt(LocalDateTime.now());
+        refundTransactionRepo.save(tx);
+
+        // Cập nhật booking refund status
+        Booking booking = tx.getBooking();
+        booking.setRefundStatus(RefundStatus.TRANSFERRED);
+        bookingRepo.save(booking);
+
         return true;
     }
 
@@ -153,5 +215,15 @@ public class BookingServiceImpl implements BookingService {
             return FULL_REFUND_PERCENTAGE;
         }
         return booking.getRefundPercentage();
+    }
+
+    @Override
+    public List<RefundTransaction> getPendingRefundTransactions() {
+        return refundTransactionRepo.findByStatus(RefundTransactionStatus.PENDING);
+    }
+
+    @Override
+    public List<RefundTransaction> getAllRefundTransactions() {
+        return refundTransactionRepo.findAll();
     }
 }

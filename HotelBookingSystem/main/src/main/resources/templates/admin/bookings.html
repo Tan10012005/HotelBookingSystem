@@ -27,7 +27,6 @@
             color: #0f172a
         }
 
-        /* ===== SIDEBAR ===== */
         .sidebar { width: 240px; position: fixed; top: 0; left: 0; height: 100vh; background: var(--sidebar); padding: 28px 0; z-index: 100; }
         .sidebar-logo { color: white; font-size: 17px; font-weight: 700; padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .sidebar-menu { list-style: none; margin: 20px 0 0; padding: 0; }
@@ -35,7 +34,6 @@
         .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255,255,255,0.12); color: white; border-left: 3px solid var(--accent); padding-left: 21px; }
         .sidebar-menu a.active { background: rgba(124,58,237,0.25); }
 
-        /* ===== MAIN ===== */
         .main { margin-left: 240px; padding: 32px; }
 
         .page-title { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
@@ -56,11 +54,7 @@
             overflow-x: auto;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px
-        }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px }
 
         th, td {
             padding: 12px 10px;
@@ -70,58 +64,22 @@
             white-space: nowrap;
         }
 
-        th {
-            color: var(--muted);
-            font-weight: 700;
-            font-size: 13px
-        }
+        th { color: var(--muted); font-weight: 700; font-size: 13px }
 
-        .badge {
-            padding: 6px 8px;
-            border-radius: 999px;
-            font-weight: 700;
-            font-size: 12px
-        }
-
-        .status-pending {
-            background: #fff7ed;
-            color: #92400e
-        }
-
-        .status-confirmed {
-            background: #ecfdf5;
-            color: #065f46
-        }
-
-        .status-cancelled {
-            background: #fff1f2;
-            color: #b91c1c
-        }
-
-        .refund-none { color: #9ca3af; }
-        .refund-requested { color: #d97706; font-weight: 600; }
-        .refund-transferred { color: #2563eb; font-weight: 600; }
-        .refund-received { color: #059669; font-weight: 600; }
+        .badge { padding: 6px 8px; border-radius: 999px; font-weight: 700; font-size: 12px }
+        .status-pending { background: #fff7ed; color: #92400e }
+        .status-confirmed { background: #ecfdf5; color: #065f46 }
+        .status-cancelled { background: #fff1f2; color: #b91c1c }
 
         .btn {
             background: linear-gradient(90deg, var(--accent-1), #178e3a);
-            color: white;
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 13px;
+            color: white; padding: 8px 10px; border-radius: 8px;
+            border: none; cursor: pointer; font-weight: 700; font-size: 13px;
         }
 
-        .btn-danger {
-            background: #ef4444
-        }
+        .btn-danger { background: #ef4444 }
 
-        .actions form {
-            display: inline-block;
-            margin-right: 6px
-        }
+        .actions form { display: inline-block; margin-right: 6px }
     </style>
 </head>
 
@@ -135,6 +93,7 @@
         <li><a th:href="@{/admin/users}"><i class="fa-solid fa-users"></i> Người dùng</a></li>
         <li><a th:href="@{/admin/rooms}"><i class="fa-solid fa-door-open"></i> Phòng</a></li>
         <li><a th:href="@{/admin/bookings}" class="active"><i class="fa-solid fa-calendar-check"></i> Booking</a></li>
+        <li><a th:href="@{/admin/refunds}"><i class="fa-solid fa-money-bill-transfer"></i> Hoàn tiền</a></li>
         <li><a th:href="@{/admin/roomchanges}"><i class="fa-solid fa-arrows-rotate"></i> Đổi phòng</a></li>
         <li><a th:href="@{/admin/logout}"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
     </ul>

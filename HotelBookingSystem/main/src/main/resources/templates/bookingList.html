@@ -35,11 +35,7 @@
 
         body {
             background: linear-gradient(135deg,
-            #667eea 0%,
-            #764ba2 25%,
-            #f093fb 50%,
-            #4facfe 75%,
-            #00f2fe 100%);
+            #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
             background-attachment: fixed;
@@ -130,7 +126,6 @@
             text-align: center;
         }
 
-        /* Badge styles */
         .badge {
             display: inline-block;
             padding: 6px 12px;
@@ -158,7 +153,6 @@
             border-left: 3px solid #ef4444;
         }
 
-        /* Button styles */
         .btn-cancel {
             background: linear-gradient(135deg, #dc2626, #991b1b);
             color: #fff;
@@ -176,10 +170,6 @@
             background: linear-gradient(135deg, #b91c1c, #7f1d1d);
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
-        }
-
-        .btn-cancel:active {
-            transform: translateY(0);
         }
 
         .btn-refund {
@@ -201,10 +191,6 @@
             box-shadow: 0 6px 16px rgba(39, 174, 96, 0.3);
         }
 
-        .btn-refund:active {
-            transform: translateY(0);
-        }
-
         .btn-ghost {
             background: #f3f4f6;
             color: #374151;
@@ -222,7 +208,6 @@
             border-color: #d1d5db;
         }
 
-        /* Refund info */
         .refund-info {
             font-size: 12px;
             color: #6b7280;
@@ -257,7 +242,6 @@
             color: var(--accent);
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.2s ease;
         }
 
         .empty-message a:hover {
@@ -287,10 +271,12 @@
             background: white;
             padding: 30px;
             border-radius: 12px;
-            max-width: 420px;
+            max-width: 520px;
             width: 90%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         @keyframes slideUp {
@@ -305,20 +291,20 @@
         }
 
         .modal-header {
-            margin: 0 0 25px 0;
+            margin: 0 0 20px 0;
             font-size: 22px;
             font-weight: 700;
             color: #1f2937;
         }
 
         .reason-option {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .reason-label {
             display: flex;
             align-items: center;
-            padding: 12px 14px;
+            padding: 10px 14px;
             border-radius: 8px;
             border: 2px solid #e5e7eb;
             cursor: pointer;
@@ -337,19 +323,80 @@
             accent-color: var(--accent);
         }
 
-        .reason-label input[type="radio"]:checked {
-            accent-color: var(--accent);
-        }
-
         .reason-label.checked {
             border-color: var(--accent);
             background: #f0fdf4;
         }
 
+        /* Bank info section */
+        .bank-info-section {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 1px solid #bbf7d0;
+        }
+
+        .bank-info-section h4 {
+            margin: 0 0 12px 0;
+            font-size: 15px;
+            color: #065f46;
+        }
+
+        .bank-info-section .form-group {
+            margin-bottom: 12px;
+        }
+
+        .bank-info-section label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .bank-info-section input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .bank-info-section input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 99, 64, 0.1);
+        }
+
+        .bank-info-section .note {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 8px;
+            padding: 8px;
+            background: #fff;
+            border-radius: 6px;
+            border-left: 3px solid #10b981;
+        }
+
+        /* No refund warning */
+        .no-refund-warning {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
         .modal-footer {
             display: flex;
             gap: 12px;
-            margin-top: 25px;
+            margin-top: 20px;
         }
 
         .modal-footer button {
@@ -437,8 +484,6 @@
             }
         }
 
-
-        /* Room change pending badge */
         .room-change-pending {
             display: inline-flex;
             align-items: center;
@@ -495,6 +540,14 @@
 <div class="container">
     <h3 class="page-title">📄 Booking của tôi</h3>
 
+    <!-- Chính sách hoàn tiền -->
+    <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 14px; margin-bottom: 20px; font-size: 13px;">
+        <strong>📌 Chính sách hủy phòng:</strong><br/>
+        ✅ Hủy trước ngày check-in <strong>≥ 5 ngày</strong>: Hoàn <strong>50%</strong> tổng tiền<br/>
+        ❌ Hủy trước ngày check-in <strong>&lt; 5 ngày</strong>: <strong>Không hoàn tiền</strong><br/>
+        💰 Tiền hoàn sẽ được chuyển vào tài khoản của bạn trong vòng <strong>24 giờ</strong> sau khi hủy.
+    </div>
+
     <table th:if="${bookings != null and !#lists.isEmpty(bookings)}">
         <thead>
         <tr>
@@ -525,7 +578,7 @@
                 <span th:if="${b.status.name() == 'CANCELLED'}" class="badge status-cancelled">✗ Đã hủy</span>
             </td>
 
-            <!-- 🆕 REFUND STATUS with amount and reason -->
+            <!-- REFUND STATUS -->
             <td data-label="Hoàn tiền:">
                 <span th:if="${b.refundStatus.name() == 'NONE'}">—</span>
                 <span th:if="${b.refundStatus.name() == 'REQUESTED'}" class="badge status-pending">
@@ -554,7 +607,7 @@
             <!-- ACTIONS -->
             <td data-label="Hành động:">
 
-                <!-- 🔴 Nếu đang có yêu cầu đổi phòng PENDING -->
+                <!-- Pending room change -->
                 <div th:if="${pendingChangeMap != null and pendingChangeMap.containsKey(b.id)}">
                     <div th:with="req=${pendingChangeMap.get(b.id)}" class="room-change-pending">
                         <i class="fa-solid fa-arrows-rotate fa-spin" style="font-size:11px;"></i>
@@ -574,22 +627,24 @@
                     <span class="reason-badge" th:text="'📌 ' + ${b.cancellationReason.getLabel()}"></span>
                 </div>
 
-                <!-- Nút hủy booking (chỉ hiện nếu không có pending room change) -->
+
+                <!-- Nút hủy booking -->
                 <button th:if="${(b.status.name() == 'PENDING_CONFIRM' or b.status.name() == 'CONFIRMED')
-                                and (pendingChangeMap == null or !pendingChangeMap.containsKey(b.id))}"
+                and (pendingChangeMap == null or !pendingChangeMap.containsKey(b.id))}"
                         type="button"
-                        class="btn-cancel"
-                        th:onclick="'openReasonModal(' + ${b.id} + ')'">
+                        class="btn-cancel cancel-btn-trigger"
+                        th:data-booking-id="${b.id}"
+                        th:data-check-in="${#temporals.format(b.checkIn, 'yyyy-MM-dd')}">
                     Hủy booking
                 </button>
 
-                <!-- Nút đổi phòng (chỉ hiện nếu CONFIRMED, chưa check-in, không có pending request) -->
+                <!-- Nút đổi phòng -->
                 <a th:if="${b.status != null
-        and b.status.name() == 'CONFIRMED'
-        and b.checkInStatus != null
-        and b.checkInStatus.name() == 'PENDING'
-        and (pendingChangeMap == null
-             or !pendingChangeMap.containsKey(b.id))}"
+                    and b.status.name() == 'CONFIRMED'
+                    and b.checkInStatus != null
+                    and b.checkInStatus.name() == 'PENDING'
+                    and (pendingChangeMap == null
+                         or !pendingChangeMap.containsKey(b.id))}"
                    href="/roomchange/select"
                    class="btn-change-room" style="margin-top: 6px; display: inline-block;">
                     <i class="fa-solid fa-arrows-rotate"></i> Đổi phòng
@@ -616,47 +671,46 @@
     </div>
 </div>
 
-<!-- 🆕 Modal chọn lý do hủy -->
+<!-- Modal hủy booking + nhập thông tin chuyển khoản -->
 <div id="cancelReasonModal" class="modal-overlay">
     <div class="modal-content">
-        <h3 class="modal-header">🗂️ Lý do hủy booking</h3>
+        <h3 class="modal-header">🗂️ Hủy booking</h3>
 
         <form id="cancelReasonForm" method="post">
+
+            <!-- Phần chọn lý do hủy -->
+            <p style="font-weight:600; margin-bottom:10px; color:#374151;">Lý do hủy:</p>
+
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="PERSONAL_REASON" checked>
                     <span>👤 Lý do cá nhân</span>
                 </label>
             </div>
-
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="PLAN_CHANGED">
                     <span>📅 Kế hoạch thay đổi</span>
                 </label>
             </div>
-
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="FIND_BETTER_PRICE">
                     <span>💰 Tìm được giá tốt hơn</span>
                 </label>
             </div>
-
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="HEALTH_ISSUE">
                     <span>🏥 Vấn đề sức khỏe</span>
                 </label>
             </div>
-
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="WORK_EMERGENCY">
                     <span>🚨 Công việc khẩn cấp</span>
                 </label>
             </div>
-
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="NO_REASON">
@@ -664,56 +718,137 @@
                 </label>
             </div>
 
+            <!-- Phần nhập thông tin chuyển khoản (chỉ hiện khi >= 5 ngày) -->
+            <div id="bankInfoSection" class="bank-info-section">
+                <h4>🏦 Thông tin nhận hoàn tiền</h4>
+                <div class="form-group">
+                    <label for="bankName">Tên ngân hàng *</label>
+                    <input type="text" id="bankName" name="bankName"
+                           placeholder="VD: Vietcombank, MB Bank, Techcombank..." required>
+                </div>
+                <div class="form-group">
+                    <label for="accountNumber">Số tài khoản *</label>
+                    <input type="text" id="accountNumber" name="accountNumber"
+                           placeholder="Nhập số tài khoản ngân hàng" required>
+                </div>
+                <div class="form-group">
+                    <label for="accountHolderName">Tên chủ tài khoản *</label>
+                    <input type="text" id="accountHolderName" name="accountHolderName"
+                           placeholder="NGUYEN VAN A" style="text-transform: uppercase;" required>
+                </div>
+                <div class="note">
+                    💡 <strong>Hoàn 50%</strong> tổng tiền booking. Tiền sẽ được chuyển vào tài khoản của bạn
+                    trong vòng <strong>24 giờ</strong> sau khi hủy. Admin sẽ xử lý giao dịch.
+                </div>
+            </div>
+
+            <!-- Cảnh báo không hoàn tiền (chỉ hiện khi < 5 ngày) -->
+            <div id="noRefundWarning" class="no-refund-warning" style="display:none;">
+                ⚠️ <strong>Lưu ý:</strong> Bạn đang hủy dưới 5 ngày trước ngày check-in.
+                Theo chính sách, bạn sẽ <strong>KHÔNG được hoàn tiền</strong>.
+            </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn-ghost" onclick="closeReasonModal()">
-                    Hủy
+                    Hủy bỏ
                 </button>
                 <button type="submit" class="btn-cancel">
-                    Xác nhận hủy
+                    Xác nhận hủy booking
                 </button>
             </div>
         </form>
     </div>
 </div>
 
-<script th:inline="javascript">
+<script>
     let currentBookingId = null;
+    let currentCheckIn = null;
 
-    // Open modal
-    function openReasonModal(bookingId) {
+    // Dùng event delegation thay vì th:onclick
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.cancel-btn-trigger');
+        if (btn) {
+            const bookingId = btn.getAttribute('data-booking-id');
+            const checkIn = btn.getAttribute('data-check-in');
+            openReasonModal(bookingId, checkIn);
+        }
+    });
+
+    function openReasonModal(bookingId, checkInDate) {
         currentBookingId = bookingId;
+        currentCheckIn = checkInDate;
         const modal = document.getElementById('cancelReasonModal');
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+
+        // Tính số ngày từ hôm nay đến check-in
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const checkIn = new Date(checkInDate);
+        checkIn.setHours(0, 0, 0, 0);
+        const diffTime = checkIn.getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        const bankSection = document.getElementById('bankInfoSection');
+        const noRefundWarning = document.getElementById('noRefundWarning');
+
+        if (diffDays >= 5) {
+            // >= 5 ngày: hiện form nhập thông tin CK, hoàn 50%
+            bankSection.style.display = 'block';
+            noRefundWarning.style.display = 'none';
+            document.getElementById('bankName').required = true;
+            document.getElementById('accountNumber').required = true;
+            document.getElementById('accountHolderName').required = true;
+        } else {
+            // < 5 ngày: không hoàn tiền, ẩn form CK
+            bankSection.style.display = 'none';
+            noRefundWarning.style.display = 'block';
+            document.getElementById('bankName').required = false;
+            document.getElementById('accountNumber').required = false;
+            document.getElementById('accountHolderName').required = false;
+        }
     }
 
-    // Close modal
     function closeReasonModal() {
         const modal = document.getElementById('cancelReasonModal');
         modal.classList.remove('active');
         document.body.style.overflow = 'auto';
         currentBookingId = null;
+        currentCheckIn = null;
+
+        // Reset form
+        document.getElementById('bankName').value = '';
+        document.getElementById('accountNumber').value = '';
+        document.getElementById('accountHolderName').value = '';
     }
 
     // Handle form submission
     document.getElementById('cancelReasonForm').addEventListener('submit', function (e) {
         e.preventDefault();
         const reason = document.querySelector('input[name="reason"]:checked').value;
+        const bankName = document.getElementById('bankName').value;
+        const accountNumber = document.getElementById('accountNumber').value;
+        const accountHolderName = document.getElementById('accountHolderName').value;
+
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = '/booking/' + currentBookingId + '/cancel?reason=' + reason;
+
+        let actionUrl = '/booking/' + currentBookingId + '/cancel?reason=' + encodeURIComponent(reason);
+        if (bankName) actionUrl += '&bankName=' + encodeURIComponent(bankName);
+        if (accountNumber) actionUrl += '&accountNumber=' + encodeURIComponent(accountNumber);
+        if (accountHolderName) actionUrl += '&accountHolderName=' + encodeURIComponent(accountHolderName);
+
+        form.action = actionUrl;
         document.body.appendChild(form);
         form.submit();
     });
 
     // Close modal when clicking outside
     document.getElementById('cancelReasonModal').addEventListener('click', function (e) {
-        if (e.target === this) {
-            closeReasonModal();
-        }
+        if (e.target === this) closeReasonModal();
     });
 
-    // Close modal with Escape key
+    // Close with Escape key
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && document.getElementById('cancelReasonModal').classList.contains('active')) {
             closeReasonModal();
@@ -721,9 +856,11 @@
     });
 
     // Update label on radio change
-    document.querySelectorAll('input[name="reason"]').forEach(radio => {
+    document.querySelectorAll('input[name="reason"]').forEach(function(radio) {
         radio.addEventListener('change', function () {
-            document.querySelectorAll('.reason-label').forEach(label => label.classList.remove('checked'));
+            document.querySelectorAll('.reason-label').forEach(function(label) {
+                label.classList.remove('checked');
+            });
             this.parentElement.classList.add('checked');
         });
     });

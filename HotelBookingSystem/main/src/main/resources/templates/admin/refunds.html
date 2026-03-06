@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Quản lý hoàn tiền — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
+    <style>
+        :root {
+            --accent: #7c3aed;
+            --sidebar: #1e1b4b;
+            --accent-1: #29a14a;
+            --muted: #6b7280;
+            --card: #fff;
+            --bg: #f5f3ff;
+            --radius: 12px;
+            --shadow: 0 8px 24px rgba(11, 24, 40, 0.06)
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: Inter, system-ui;
+            margin: 0;
+            background: var(--bg);
+            color: #0f172a
+        }
+
+        .sidebar { width: 240px; position: fixed; top: 0; left: 0; height: 100vh; background: var(--sidebar); padding: 28px 0; z-index: 100; }
+        .sidebar-logo { color: white; font-size: 17px; font-weight: 700; padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-menu { list-style: none; margin: 20px 0 0; padding: 0; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255,255,255,0.12); color: white; border-left: 3px solid var(--accent); padding-left: 21px; }
+        .sidebar-menu a.active { background: rgba(124,58,237,0.25); }
+
+        .main { margin-left: 240px; padding: 32px; }
+        .page-title { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+        .page-subtitle { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+
+        .head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px }
+
+        .stats-badge {
+            background: linear-gradient(135deg, #fef08a, #fde68a);
+            color: #92400e; padding: 8px 16px; border-radius: 8px;
+            font-weight: 700; font-size: 14px;
+        }
+
+        .card {
+            background: var(--card); padding: 16px;
+            border-radius: var(--radius); box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 12px }
+
+        th, td {
+            padding: 12px 10px; text-align: left;
+            border-bottom: 1px solid #eef2f6; font-size: 13px;
+        }
+
+        th { color: var(--muted); font-weight: 700; font-size: 12px; }
+
+        .badge {
+            padding: 5px 8px; border-radius: 999px;
+            font-weight: 700; font-size: 11px; display: inline-block;
+        }
+
+        .status-pending { background: #fff7ed; color: #92400e }
+        .status-completed { background: #ecfdf5; color: #065f46 }
+        .status-failed { background: #fff1f2; color: #b91c1c }
+
+        .bank-info {
+            background: #f0f9ff; border: 1px solid #bae6fd;
+            border-radius: 6px; padding: 8px; font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .bank-info strong { color: #0369a1; }
+
+        .btn {
+            background: linear-gradient(90deg, var(--accent-1), #178e3a);
+            color: white; padding: 8px 12px; border-radius: 8px;
+            border: none; cursor: pointer; font-weight: 700; font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(41, 161, 74, 0.3); }
+
+        .actions form { display: inline-block; margin-right: 4px }
+
+        .admin-note-input {
+            width: 100%; padding: 6px 8px; border: 1px solid #d1d5db;
+            border-radius: 6px; font-size: 12px; margin-bottom: 6px;
+        }
+
+        /* ===== QR Modal ===== */
+        .qr-modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); z-index: 2000;
+            align-items: center; justify-content: center; backdrop-filter: blur(4px);
+        }
+
+        .qr-modal-overlay.active { display: flex; }
+
+        .qr-modal {
+            background: white; padding: 32px; border-radius: 16px;
+            max-width: 480px; width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+            text-align: center;
+            max-height: 90vh; overflow-y: auto;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .qr-modal h3 {
+            margin: 0 0 6px 0; font-size: 20px; font-weight: 700; color: #1f2937;
+        }
+
+        .qr-modal .subtitle {
+            color: var(--muted); font-size: 13px; margin-bottom: 20px;
+        }
+
+        .qr-amount {
+            font-size: 32px; font-weight: 700; color: #dc2626; margin: 12px 0;
+        }
+
+        .qr-amount small { font-size: 16px; color: var(--muted); font-weight: 500; }
+
+        .qr-img-wrapper {
+            background: #f8fafc; padding: 16px; border-radius: 12px;
+            border: 2px solid #e2e8f0; margin: 16px 0;
+            display: inline-block;
+        }
+
+        .qr-img-wrapper img {
+            width: 220px; height: 220px; border-radius: 8px;
+        }
+
+        .qr-bank-detail {
+            background: #f0f9ff; border: 1px solid #bae6fd;
+            border-radius: 10px; padding: 14px; margin: 16px 0;
+            text-align: left; font-size: 13px; line-height: 1.8;
+        }
+
+        .qr-bank-detail .label {
+            color: var(--muted); font-size: 12px; font-weight: 600;
+        }
+
+        .qr-bank-detail .value {
+            color: #0f172a; font-weight: 700; font-size: 14px;
+        }
+
+        .qr-modal-footer {
+            display: flex; gap: 10px; margin-top: 20px;
+        }
+
+        .qr-modal-footer form, .qr-modal-footer button { flex: 1; }
+
+        .qr-modal-footer .btn-process {
+            width: 100%; padding: 12px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--accent-1), #178e3a);
+            color: white; border: none; cursor: pointer;
+            font-weight: 700; font-size: 14px; transition: all 0.2s;
+        }
+
+        .qr-modal-footer .btn-process:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(39, 174, 96, 0.3); }
+
+        .qr-modal-footer .btn-close-modal {
+            width: 100%; padding: 12px; border-radius: 10px;
+            background: #f3f4f6; color: #374151; border: none;
+            cursor: pointer; font-weight: 600; font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-logo">🏨 Hotel Admin</div>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/admin/dashboard}"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+        <li><a th:href="@{/admin/users}"><i class="fa-solid fa-users"></i> Người dùng</a></li>
+        <li><a th:href="@{/admin/rooms}"><i class="fa-solid fa-door-open"></i> Phòng</a></li>
+        <li><a th:href="@{/admin/bookings}"><i class="fa-solid fa-calendar-check"></i> Booking</a></li>
+        <li><a th:href="@{/admin/refunds}" class="active"><i class="fa-solid fa-money-bill-transfer"></i> Hoàn tiền</a></li>
+        <li><a th:href="@{/admin/roomchanges}"><i class="fa-solid fa-arrows-rotate"></i> Đổi phòng</a></li>
+        <li><a th:href="@{/admin/logout}"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
+    </ul>
+</div>
+
+<!-- Main -->
+<div class="main">
+    <div class="head">
+        <div>
+            <div class="page-title">💰 Quản lý giao dịch hoàn tiền</div>
+            <div class="page-subtitle">Xem thông tin chuyển khoản, quét QR và xử lý hoàn tiền cho khách hàng</div>
+        </div>
+        <div class="stats-badge">
+            ⏳ Đang chờ xử lý: <span th:text="${pendingCount}">0</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Booking</th>
+                <th>Khách hàng</th>
+                <th>Số tiền hoàn</th>
+                <th>Thông tin CK</th>
+                <th>Trạng thái</th>
+                <th>Deadline</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr th:each="tx : ${transactions}">
+                <td th:text="${tx.id}">1</td>
+                <td>
+                    <span th:text="'#' + ${tx.booking.id}"></span>
+                    <br/>
+                    <small style="color:#6b7280;"
+                           th:text="'Phòng ' + ${tx.booking.room.roomNumber}">Phòng 101</small>
+                </td>
+                <td>
+                    <span th:text="${tx.user.email}">user@test.com</span>
+                    <br/>
+                    <small style="color:#6b7280;" th:text="${tx.user.fullName}">Nguyen Van A</small>
+                </td>
+                <td>
+                    <strong style="color:#dc2626;"
+                            th:text="${#numbers.formatDecimal(tx.refundAmount, 0, 'COMMA', 0, 'POINT')} + ' VND'">
+                        500,000 VND
+                    </strong>
+                    <br/>
+                    <small style="color:#6b7280;" th:text="${tx.refundPercentage} + '%'">50%</small>
+                </td>
+                <td>
+                    <div class="bank-info">
+                        <strong>🏦</strong> <span th:text="${tx.bankName}">Vietcombank</span><br/>
+                        <strong>💳</strong> <span th:text="${tx.accountNumber}">1234567890</span><br/>
+                        <strong>👤</strong> <span th:text="${tx.accountHolderName}">NGUYEN VAN A</span>
+                    </div>
+                </td>
+                <td>
+                    <span th:if="${tx.status.name()=='PENDING'}" class="badge status-pending">⏳ Chờ xử lý</span>
+                    <span th:if="${tx.status.name()=='COMPLETED'}" class="badge status-completed">✅ Đã hoàn</span>
+                    <span th:if="${tx.status.name()=='FAILED'}" class="badge status-failed">❌ Thất bại</span>
+                    <span th:if="${tx.status.name()=='EXPIRED'}" class="badge status-failed">⏰ Quá hạn</span>
+                </td>
+                <td>
+                    <span th:if="${tx.refundDeadline != null}"
+                          th:text="${#temporals.format(tx.refundDeadline, 'dd/MM HH:mm')}">01/01 12:00</span>
+                </td>
+                <td class="actions">
+                    <!-- Nút mở QR + xử lý (chỉ PENDING) -->
+                    <button th:if="${tx.status.name()=='PENDING'}"
+                            type="button"
+                            class="btn open-qr-btn"
+                            th:data-tx-id="${tx.id}"
+                            th:data-bank-name="${tx.bankName}"
+                            th:data-account-number="${tx.accountNumber}"
+                            th:data-account-holder="${tx.accountHolderName}"
+                            th:data-amount="${tx.refundAmount}"
+                            th:data-percentage="${tx.refundPercentage}"
+                            th:data-booking-id="${tx.booking.id}"
+                            th:data-room-number="${tx.booking.room.roomNumber}">
+                        📱 Mở QR chuyển khoản
+                    </button>
+
+                    <!-- Đã xử lý -->
+                    <div th:if="${tx.status.name()!='PENDING'}">
+                        <span style="color:#9ca3af;font-weight:600">—</span>
+                        <div th:if="${tx.adminNote != null and !tx.adminNote.isEmpty()}"
+                             style="font-size:11px; color:#6b7280; margin-top:4px;">
+                            📝 <span th:text="${tx.adminNote}">Ghi chú</span>
+                        </div>
+                        <div th:if="${tx.processedAt != null}"
+                             style="font-size:11px; color:#6b7280; margin-top:2px;">
+                            🕐 <span th:text="${#temporals.format(tx.processedAt, 'dd/MM/yyyy HH:mm')}">01/01/2026 12:00</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div th:if="${transactions == null or #lists.isEmpty(transactions)}"
+             style="text-align:center; padding:40px; color:#9ca3af;">
+            <p>📭 Chưa có giao dịch hoàn tiền nào.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ===== QR MODAL ===== -->
+<div id="qrModal" class="qr-modal-overlay">
+    <div class="qr-modal">
+        <h3>💸 Chuyển khoản hoàn tiền</h3>
+        <p class="subtitle">Quét mã QR bên dưới để chuyển tiền hoàn cho khách hàng</p>
+
+        <div class="qr-amount">
+            <span id="modalAmount">500,000</span> VND
+            <br/>
+            <small>Hoàn <span id="modalPercentage">50</span>% · Booking #<span id="modalBookingId">1</span> · Phòng <span id="modalRoomNumber">101</span></small>
+        </div>
+
+        <!-- QR Code VietQR — generate từ thông tin CK của user -->
+        <div class="qr-img-wrapper">
+            <img id="modalQrImage" src="" alt="QR Code hoàn tiền"/>
+        </div>
+
+        <!-- Thông tin ngân hàng -->
+        <div class="qr-bank-detail">
+            <div style="margin-bottom:6px;">
+                <span class="label">🏦 Ngân hàng:</span>
+                <span class="value" id="modalBankName">Vietcombank</span>
+            </div>
+            <div style="margin-bottom:6px;">
+                <span class="label">💳 Số tài khoản:</span>
+                <span class="value" id="modalAccountNumber">1234567890</span>
+            </div>
+            <div>
+                <span class="label">👤 Chủ tài khoản:</span>
+                <span class="value" id="modalAccountHolder">NGUYEN VAN A</span>
+            </div>
+        </div>
+
+        <!-- Admin ghi chú -->
+        <input type="text" id="modalAdminNote" class="admin-note-input"
+               placeholder="Ghi chú (mã giao dịch, thời gian CK...)" style="margin-top:12px;"/>
+
+        <div class="qr-modal-footer">
+            <button type="button" class="btn-close-modal" onclick="closeQrModal()">
+                Đóng
+            </button>
+            <form id="processRefundForm" method="post" style="flex:1;">
+                <input type="hidden" id="processAdminNote" name="adminNote" value=""/>
+                <button type="submit" class="btn-process"
+                        onclick="document.getElementById('processAdminNote').value = document.getElementById('modalAdminNote').value;">
+                    ✅ Xác nhận đã chuyển khoản
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Mapping tên ngân hàng phổ biến → mã BIN VietQR
+    const BANK_BIN_MAP = {
+        'vietcombank': '970436', 'vcb': '970436',
+        'techcombank': '970407', 'tcb': '970407',
+        'mb bank': '970422', 'mbbank': '970422', 'mb': '970422',
+        'vietinbank': '970415', 'ctg': '970415',
+        'bidv': '970418',
+        'agribank': '970405',
+        'acb': '970416',
+        'vpbank': '970432',
+        'tpbank': '970423',
+        'sacombank': '970403',
+        'hdbank': '970437',
+        'shb': '970443',
+        'eximbank': '970431',
+        'msb': '970426',
+        'ocb': '970448',
+        'lienvietpostbank': '970449', 'lpbank': '970449',
+        'vib': '970441',
+        'seabank': '970440',
+        'baovietbank': '970438',
+        'pvcombank': '970412',
+        'abbank': '970425',
+        'nam a bank': '970428', 'namabank': '970428',
+        'bac a bank': '970409', 'bacabank': '970409',
+        'vietabank': '970427',
+        'kienlongbank': '970452',
+        'dong a bank': '970406', 'dongabank': '970406',
+        'gpbank': '970408',
+        'cbbank': '970444',
+        'cake': '546034',
+        'ubank': '546035',
+        'momo': '900009'
+    };
+
+    function getBankBin(bankName) {
+        if (!bankName) return '970422'; // default MB Bank
+        const key = bankName.toLowerCase().trim();
+        // Tìm exact match trước
+        if (BANK_BIN_MAP[key]) return BANK_BIN_MAP[key];
+        // Tìm partial match
+        for (const [name, bin] of Object.entries(BANK_BIN_MAP)) {
+            if (key.includes(name) || name.includes(key)) return bin;
+        }
+        return '970422'; // fallback MB Bank
+    }
+
+    function formatNumber(num) {
+        return new Intl.NumberFormat('vi-VN').format(num);
+    }
+
+    // Event delegation cho nút mở QR
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.open-qr-btn');
+        if (!btn) return;
+
+        const txId = btn.getAttribute('data-tx-id');
+        const bankName = btn.getAttribute('data-bank-name');
+        const accountNumber = btn.getAttribute('data-account-number');
+        const accountHolder = btn.getAttribute('data-account-holder');
+        const amount = btn.getAttribute('data-amount');
+        const percentage = btn.getAttribute('data-percentage');
+        const bookingId = btn.getAttribute('data-booking-id');
+        const roomNumber = btn.getAttribute('data-room-number');
+
+        // Điền thông tin vào modal
+        document.getElementById('modalAmount').textContent = formatNumber(Math.round(parseFloat(amount)));
+        document.getElementById('modalPercentage').textContent = percentage;
+        document.getElementById('modalBookingId').textContent = bookingId;
+        document.getElementById('modalRoomNumber').textContent = roomNumber;
+        document.getElementById('modalBankName').textContent = bankName;
+        document.getElementById('modalAccountNumber').textContent = accountNumber;
+        document.getElementById('modalAccountHolder').textContent = accountHolder;
+
+        // Generate QR VietQR từ thông tin CK của user
+        const bankBin = getBankBin(bankName);
+        const amountInt = Math.round(parseFloat(amount));
+        const addInfo = encodeURIComponent('HoanTien Booking ' + bookingId);
+        const accountName = encodeURIComponent(accountHolder);
+
+        const qrUrl = 'https://img.vietqr.io/image/'
+            + bankBin + '-' + accountNumber + '-compact.jpg'
+            + '?amount=' + amountInt
+            + '&addInfo=' + addInfo
+            + '&accountName=' + accountName;
+
+        document.getElementById('modalQrImage').src = qrUrl;
+
+        // Set form action
+        document.getElementById('processRefundForm').action = '/admin/refunds/' + txId + '/process';
+
+        // Reset note
+        document.getElementById('modalAdminNote').value = '';
+
+        // Show modal
+        document.getElementById('qrModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    function closeQrModal() {
+        document.getElementById('qrModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close khi click ngoài modal
+    document.getElementById('qrModal').addEventListener('click', function(e) {
+        if (e.target === this) closeQrModal();
+    });
+
+    // Close bằng Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('qrModal').classList.contains('active')) {
+            closeQrModal();
+        }
+    });
+</script>
+</body>
+</html>

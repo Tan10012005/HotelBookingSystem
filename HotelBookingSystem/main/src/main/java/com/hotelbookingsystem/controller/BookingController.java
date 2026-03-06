@@ -40,7 +40,7 @@ public class BookingController {
     private BookingRepository bookingRepository;
 
     /**
-     * Bước 1: Xem trước thông tin đặt phòng (từ bookingForm.html chuyển sang)
+     * Bước 1: Xem trước thông tin đặt phòng
      */
     @PostMapping("/preview")
     public String previewBooking(
@@ -54,7 +54,6 @@ public class BookingController {
     ) {
         User user = (User) session.getAttribute("user");
 
-        // KIỂM TRA: Người dùng phải hoàn tất hồ sơ mới được đặt phòng
         if (user == null || !user.isProfileComplete()) {
             ra.addFlashAttribute("error", "Vui lòng cập nhật đầy đủ thông tin hồ sơ (Họ tên, SĐT, CCCD) trước khi đặt phòng!");
             ra.addFlashAttribute("redirectUrl", "/rooms");
@@ -63,7 +62,6 @@ public class BookingController {
 
         Room room = roomService.getRoomById(roomId);
 
-        // Tính toán tổng tiền dựa trên số đêm lưu trú
         long days = checkOut.toEpochDay() - checkIn.toEpochDay();
         BigDecimal totalPrice = room.getPricePerNight()
                 .multiply(BigDecimal.valueOf(days));
@@ -74,12 +72,11 @@ public class BookingController {
         model.addAttribute("guests", guests);
         model.addAttribute("totalPrice", totalPrice);
 
-        return "bookingConfirm"; // Chuyển đến trang xác nhận thông tin đơn hàng
+        return "bookingConfirm";
     }
 
     /**
-     * Bước 2: Xác nhận đặt phòng và thực hiện thanh toán
-     * Thay đổi: Sau khi bấm xác nhận, hệ thống lưu đơn vào DB và hiện trang VietQR thay vì Redirect thành công ngay.
+     * Bước 2: Xác nhận đặt phòng và thanh toán
      */
     @PostMapping("/confirm")
     public String confirmBooking(
@@ -87,34 +84,29 @@ public class BookingController {
             @RequestParam LocalDate checkIn,
             @RequestParam LocalDate checkOut,
             @RequestParam int guests,
-            @RequestParam BigDecimal totalPrice, // Nhận tổng tiền từ form để truyền sang trang thanh toán
+            @RequestParam BigDecimal totalPrice,
             HttpSession session,
             Model model,
             RedirectAttributes ra
     ) {
         User user = (User) session.getAttribute("user");
 
-        // KIỂM TRA LẠI: Đảm bảo hồ sơ vẫn đầy đủ
         if (user == null || !user.isProfileComplete()) {
             ra.addFlashAttribute("error", "Vui lòng cập nhật hồ sơ trước khi đặt phòng!");
             return "redirect:/profile";
         }
 
         Room room = roomService.getRoomById(roomId);
-
-        // Tạo đơn đặt phòng trong Database (Trạng thái mặc định là PENDING_CONFIRM)
         bookingService.createBooking(user, room, checkIn, checkOut, guests);
 
-        // Nạp dữ liệu vào Model để trang vietqr.html có thông tin hiển thị mã QR động
         model.addAttribute("room", room);
         model.addAttribute("totalPrice", totalPrice);
 
-        // Trả về View vietqr.html. Script trong trang này sẽ tự redirect sang /success sau khi "thanh toán".
         return "vietqr";
     }
 
     /**
-     * Bước 3: Thông báo đặt phòng thành công (được gọi từ Javascript của vietqr.html)
+     * Bước 3: Thông báo đặt phòng thành công
      */
     @GetMapping("/success")
     public String success() {
@@ -122,7 +114,7 @@ public class BookingController {
     }
 
     /**
-     * Xem danh sách các đơn đặt phòng của tôi
+     * Xem danh sách booking của tôi
      */
     @GetMapping("/my")
     public String myBookings(HttpSession session, Model model, RedirectAttributes ra) {
@@ -135,8 +127,6 @@ public class BookingController {
 
         List<Booking> bookings = bookingService.getBookingsByUser(user);
 
-        // Lấy tất cả yêu cầu đổi phòng PENDING của user
-        // Tạo Map<bookingId, RoomChangeRequest> để Thymeleaf tra cứu nhanh
         java.util.Map<Long, RoomChangeRequest> pendingChangeMap = new java.util.HashMap<>();
         roomChangeRequestRepository.findByUser(user).stream()
                 .filter(r -> r.getStatus() == RoomChangeStatus.PENDING)
@@ -148,13 +138,19 @@ public class BookingController {
     }
 
     /**
-     * 🆕 Hủy đơn đặt phòng với logic hoàn tiền 50%/100%
-     * Nhận lý do hủy từ form
+     * Hủy đơn đặt phòng - business rule mới:
+     * - >= 5 ngày trước check-in: hoàn 50%
+     * - < 5 ngày trước check-in: không hoàn tiền
+     * - User phải nhập thông tin chuyển khoản
+     * - Tiền hoàn vào TK trong 24h, admin thực hiện giao dịch
      */
     @PostMapping("/{id}/cancel")
     public String cancelBooking(
             @PathVariable Long id,
-            @RequestParam(required = false) String reason,  // 🆕 NEW: reason parameter
+            @RequestParam(required = false) String reason,
+            @RequestParam(required = false) String bankName,
+            @RequestParam(required = false) String accountNumber,
+            @RequestParam(required = false) String accountHolderName,
             HttpSession session,
             RedirectAttributes ra
     ) {
@@ -165,7 +161,7 @@ public class BookingController {
             return "redirect:/login";
         }
 
-        // 🆕 NEW: Parse cancellation reason
+        // Parse cancellation reason
         CancellationReason cancellationReason = CancellationReason.NO_REASON;
         try {
             if (reason != null && !reason.isEmpty()) {
@@ -175,8 +171,34 @@ public class BookingController {
             cancellationReason = CancellationReason.NO_REASON;
         }
 
-        // 🆕 UPDATED: Pass reason to service
-        CancelResult result = bookingService.cancelBooking(id, user, cancellationReason);
+        // Validate thông tin chuyển khoản (nếu có hoàn tiền)
+        // Kiểm tra trước xem booking này có được hoàn tiền không
+        Optional<Booking> checkBooking = bookingRepository.findByIdAndUser(id, user);
+        if (checkBooking.isPresent()) {
+            Booking bk = checkBooking.get();
+            long daysUntilCheckIn = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), bk.getCheckIn());
+
+            // Nếu >= 5 ngày (được hoàn tiền) thì bắt buộc nhập thông tin CK
+            if (daysUntilCheckIn >= 5) {
+                if (bankName == null || bankName.trim().isEmpty()
+                        || accountNumber == null || accountNumber.trim().isEmpty()
+                        || accountHolderName == null || accountHolderName.trim().isEmpty()) {
+                    ra.addFlashAttribute("error",
+                            "Vui lòng nhập đầy đủ thông tin chuyển khoản để nhận tiền hoàn.");
+                    return "redirect:/booking/my";
+                }
+            }
+        }
+
+        // Nếu không có thông tin CK, set default
+        if (bankName == null || bankName.trim().isEmpty()) bankName = "";
+        if (accountNumber == null || accountNumber.trim().isEmpty()) accountNumber = "";
+        if (accountHolderName == null || accountHolderName.trim().isEmpty()) accountHolderName = "";
+
+        CancelResult result = bookingService.cancelBooking(
+                id, user, cancellationReason,
+                bankName.trim(), accountNumber.trim(), accountHolderName.trim()
+        );
 
         switch (result) {
             case SUCCESS:
@@ -185,23 +207,34 @@ public class BookingController {
                     Booking b = booking.get();
                     Integer refundPercentage = b.getRefundPercentage();
                     BigDecimal refundAmount = b.getRefundAmount();
-                    // 🆕 NEW: Include cancellation reason in message
+
                     String reasonText = b.getCancellationReason() != null
                             ? b.getCancellationReason().getLabel()
                             : "Không xác định";
 
-                    String message = String.format(
-                            "Hủy booking thành công!\n" +
-                                    "Lý do: %s\n" +
-                                    "Hoàn tiền: %d%% = %,.0f VND\n" +
-                                    "Yêu cầu hoàn tiền đã được gửi.",
-                            reasonText,
-                            refundPercentage,
-                            refundAmount.doubleValue()
-                    );
-                    ra.addFlashAttribute("message", message);
+                    if (refundPercentage != null && refundPercentage > 0) {
+                        String message = String.format(
+                                "Hủy booking thành công!\n" +
+                                        "Lý do: %s\n" +
+                                        "Hoàn tiền: %d%% = %,.0f VND\n" +
+                                        "💰 Tiền sẽ được hoàn vào tài khoản của bạn trong vòng 24 giờ.\n" +
+                                        "Admin sẽ xử lý giao dịch sớm nhất có thể.",
+                                reasonText,
+                                refundPercentage,
+                                refundAmount != null ? refundAmount.doubleValue() : 0
+                        );
+                        ra.addFlashAttribute("message", message);
+                    } else {
+                        String message = String.format(
+                                "Hủy booking thành công!\n" +
+                                        "Lý do: %s\n" +
+                                        "⚠️ Hủy dưới 5 ngày trước check-in: Không được hoàn tiền.",
+                                reasonText
+                        );
+                        ra.addFlashAttribute("message", message);
+                    }
                 } else {
-                    ra.addFlashAttribute("message", "Hủy booking thành công! Yêu cầu hoàn tiền đã được gửi.");
+                    ra.addFlashAttribute("message", "Hủy booking thành công!");
                 }
                 break;
             case NOT_FOUND:
