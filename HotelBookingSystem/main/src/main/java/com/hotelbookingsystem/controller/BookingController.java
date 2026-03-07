@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -138,11 +139,11 @@ public class BookingController {
     }
 
     /**
-     * Hủy đơn đặt phòng - business rule mới:
-     * - >= 5 ngày trước check-in: hoàn 50%
-     * - < 5 ngày trước check-in: không hoàn tiền
-     * - User phải nhập thông tin chuyển khoản
-     * - Tiền hoàn vào TK trong 24h, admin thực hiện giao dịch
+     * Hủy đơn đặt phòng — business rule 3 mức:
+     * - >= 7 ngày trước check-in: hoàn 100%
+     * - >= 3 ngày trước check-in: hoàn 50%
+     * - < 3 ngày trước check-in (dưới 24h tính luôn): mất toàn bộ
+     * - User phải nhập thông tin CK nếu được hoàn tiền (>= 3 ngày)
      */
     @PostMapping("/{id}/cancel")
     public String cancelBooking(
@@ -161,7 +162,6 @@ public class BookingController {
             return "redirect:/login";
         }
 
-        // Parse cancellation reason
         CancellationReason cancellationReason = CancellationReason.NO_REASON;
         try {
             if (reason != null && !reason.isEmpty()) {
@@ -171,15 +171,14 @@ public class BookingController {
             cancellationReason = CancellationReason.NO_REASON;
         }
 
-        // Validate thông tin chuyển khoản (nếu có hoàn tiền)
-        // Kiểm tra trước xem booking này có được hoàn tiền không
+        // Validate thông tin chuyển khoản — chỉ bắt buộc nếu >= 3 ngày (có hoàn tiền)
         Optional<Booking> checkBooking = bookingRepository.findByIdAndUser(id, user);
         if (checkBooking.isPresent()) {
             Booking bk = checkBooking.get();
-            long daysUntilCheckIn = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), bk.getCheckIn());
+            long daysUntilCheckIn = ChronoUnit.DAYS.between(LocalDate.now(), bk.getCheckIn());
 
-            // Nếu >= 5 ngày (được hoàn tiền) thì bắt buộc nhập thông tin CK
-            if (daysUntilCheckIn >= 5) {
+            // >= 3 ngày → có hoàn tiền → bắt buộc nhập thông tin CK
+            if (daysUntilCheckIn >= 3) {
                 if (bankName == null || bankName.trim().isEmpty()
                         || accountNumber == null || accountNumber.trim().isEmpty()
                         || accountHolderName == null || accountHolderName.trim().isEmpty()) {
@@ -190,7 +189,6 @@ public class BookingController {
             }
         }
 
-        // Nếu không có thông tin CK, set default
         if (bankName == null || bankName.trim().isEmpty()) bankName = "";
         if (accountNumber == null || accountNumber.trim().isEmpty()) accountNumber = "";
         if (accountHolderName == null || accountHolderName.trim().isEmpty()) accountHolderName = "";
@@ -228,7 +226,7 @@ public class BookingController {
                         String message = String.format(
                                 "Hủy booking thành công!\n" +
                                         "Lý do: %s\n" +
-                                        "⚠️ Hủy dưới 5 ngày trước check-in: Không được hoàn tiền.",
+                                        "⚠️ Hủy dưới 3 ngày trước check-in: Không được hoàn tiền.",
                                 reasonText
                         );
                         ra.addFlashAttribute("message", message);

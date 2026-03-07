@@ -22,9 +22,7 @@
             --shadow: 0 12px 40px rgba(11, 24, 40, 0.12);
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         html, body {
             height: 100%;
@@ -42,15 +40,9 @@
         }
 
         @keyframes gradientShift {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
@@ -78,21 +70,12 @@
             padding-bottom: 15px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 12px;
-        }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
 
         thead th {
-            font-weight: 700;
-            padding: 12px 16px;
-            text-align: left;
-            color: #374151;
-            background: transparent;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-weight: 700; padding: 12px 16px; text-align: left;
+            color: #374151; background: transparent; font-size: 14px;
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
 
         tbody tr {
@@ -108,426 +91,242 @@
         }
 
         td {
-            padding: 16px;
-            background: transparent;
-            border: none;
-            vertical-align: middle;
-            font-size: 14px;
+            padding: 16px; background: transparent; border: none;
+            vertical-middle; font-size: 14px;
         }
 
-        td:first-child {
-            border-top-left-radius: 10px;
-            border-bottom-left-radius: 10px;
-        }
-
-        td:last-child {
-            border-top-right-radius: 10px;
-            border-bottom-right-radius: 10px;
-            text-align: center;
-        }
+        td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+        td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; text-align: center; }
 
         .badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
+            display: inline-block; padding: 6px 12px; border-radius: 6px;
+            font-size: 12px; font-weight: 600; white-space: nowrap;
         }
 
-        .status-pending {
-            background: #fef08a;
-            color: #92400e;
-            border-left: 3px solid #eab308;
-        }
-
-        .status-confirmed {
-            background: #d1fae5;
-            color: #065f46;
-            border-left: 3px solid #10b981;
-        }
-
-        .status-cancelled {
-            background: #fee2e2;
-            color: #7f1d1d;
-            border-left: 3px solid #ef4444;
-        }
+        .status-pending { background: #fef08a; color: #92400e; border-left: 3px solid #eab308; }
+        .status-confirmed { background: #d1fae5; color: #065f46; border-left: 3px solid #10b981; }
+        .status-cancelled { background: #fee2e2; color: #7f1d1d; border-left: 3px solid #ef4444; }
 
         .btn-cancel {
             background: linear-gradient(135deg, #dc2626, #991b1b);
-            color: #fff;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+            color: #fff; border: none; padding: 10px 16px; border-radius: 8px;
+            cursor: pointer; font-weight: 600; font-size: 13px;
+            transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
         }
 
         .btn-cancel:hover {
             background: linear-gradient(135deg, #b91c1c, #7f1d1d);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
+            transform: translateY(-2px); box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
         }
 
         .btn-refund {
             background: linear-gradient(135deg, #27ae60, #1e8449);
-            color: #fff;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2);
+            color: #fff; border: none; padding: 10px 16px; border-radius: 8px;
+            cursor: pointer; font-weight: 600; font-size: 13px;
+            transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(39, 174, 96, 0.2);
         }
 
         .btn-refund:hover {
             background: linear-gradient(135deg, #1e8449, #145a32);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(39, 174, 96, 0.3);
+            transform: translateY(-2px); box-shadow: 0 6px 16px rgba(39, 174, 96, 0.3);
         }
 
         .btn-ghost {
-            background: #f3f4f6;
-            color: #374151;
-            border: 2px solid #e5e7eb;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: all 0.2s ease;
+            background: #f3f4f6; color: #374151; border: 2px solid #e5e7eb;
+            padding: 8px 16px; border-radius: 8px; cursor: pointer;
+            font-weight: 600; font-size: 13px; transition: all 0.2s ease;
         }
 
-        .btn-ghost:hover {
-            background: #e5e7eb;
-            border-color: #d1d5db;
-        }
+        .btn-ghost:hover { background: #e5e7eb; border-color: #d1d5db; }
 
-        .refund-info {
-            font-size: 12px;
-            color: #6b7280;
-            margin-top: 4px;
-            display: block;
-            font-weight: 500;
-        }
+        .refund-info { font-size: 12px; color: #6b7280; margin-top: 4px; display: block; font-weight: 500; }
 
         .reason-badge {
-            display: inline-block;
-            background: #f0f9ff;
-            color: #0369a1;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            margin-top: 4px;
-            font-weight: 600;
-            border-left: 2px solid #0ea5e9;
+            display: inline-block; background: #f0f9ff; color: #0369a1;
+            padding: 4px 8px; border-radius: 4px; font-size: 11px;
+            margin-top: 4px; font-weight: 600; border-left: 2px solid #0ea5e9;
         }
 
         .empty-message {
-            text-align: center;
-            color: var(--muted);
-            margin-top: 30px;
-            padding: 40px 20px;
-            background: #f9fafb;
-            border-radius: 10px;
-            font-size: 16px;
+            text-align: center; color: var(--muted); margin-top: 30px;
+            padding: 40px 20px; background: #f9fafb; border-radius: 10px; font-size: 16px;
         }
 
-        .empty-message a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .empty-message a:hover {
-            color: #004d34;
-        }
+        .empty-message a { color: var(--accent); text-decoration: none; font-weight: 600; }
+        .empty-message a:hover { color: #004d34; }
 
         /* Modal styles */
         .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(4px);
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); z-index: 2000;
+            align-items: center; justify-content: center; backdrop-filter: blur(4px);
         }
 
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
 
         .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 520px;
-            width: 90%;
+            background: white; padding: 30px; border-radius: 12px;
+            max-width: 520px; width: 90%;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
+            max-height: 90vh; overflow-y: auto;
         }
 
         @keyframes slideUp {
-            from {
-                transform: translateY(30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .modal-header {
-            margin: 0 0 20px 0;
-            font-size: 22px;
-            font-weight: 700;
-            color: #1f2937;
+            margin: 0 0 20px 0; font-size: 22px; font-weight: 700; color: #1f2937;
         }
 
-        .reason-option {
-            margin-bottom: 10px;
-        }
+        .reason-option { margin-bottom: 10px; }
 
         .reason-label {
-            display: flex;
-            align-items: center;
-            padding: 10px 14px;
-            border-radius: 8px;
-            border: 2px solid #e5e7eb;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: #fff;
+            display: flex; align-items: center; padding: 10px 14px;
+            border-radius: 8px; border: 2px solid #e5e7eb;
+            cursor: pointer; transition: all 0.2s ease; background: #fff;
         }
 
-        .reason-label:hover {
-            border-color: var(--accent);
-            background: #f0fdf4;
-        }
-
-        .reason-label input[type="radio"] {
-            margin-right: 12px;
-            cursor: pointer;
-            accent-color: var(--accent);
-        }
-
-        .reason-label.checked {
-            border-color: var(--accent);
-            background: #f0fdf4;
-        }
+        .reason-label:hover { border-color: var(--accent); background: #f0fdf4; }
+        .reason-label input[type="radio"] { margin-right: 12px; cursor: pointer; accent-color: var(--accent); }
+        .reason-label.checked { border-color: var(--accent); background: #f0fdf4; }
 
         /* Bank info section */
         .bank-info-section {
-            margin-top: 20px;
-            padding: 16px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            margin-top: 20px; padding: 16px; border-radius: 10px;
             border: 1px solid #bbf7d0;
         }
 
-        .bank-info-section h4 {
-            margin: 0 0 12px 0;
-            font-size: 15px;
-            color: #065f46;
+        .bank-info-section.full-refund {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-color: #6ee7b7;
         }
 
-        .bank-info-section .form-group {
-            margin-bottom: 12px;
+        .bank-info-section.partial-refund {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border-color: #fcd34d;
         }
+
+        .bank-info-section h4 {
+            margin: 0 0 12px 0; font-size: 15px;
+        }
+
+        .bank-info-section.full-refund h4 { color: #065f46; }
+        .bank-info-section.partial-refund h4 { color: #92400e; }
+
+        .bank-info-section .form-group { margin-bottom: 12px; }
 
         .bank-info-section label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
-            margin-bottom: 4px;
+            display: block; font-size: 13px; font-weight: 600;
+            color: #374151; margin-bottom: 4px;
         }
 
         .bank-info-section input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.2s;
+            width: 100%; padding: 10px 12px; border: 2px solid #d1d5db;
+            border-radius: 8px; font-size: 14px; transition: border-color 0.2s;
             font-family: 'Inter', sans-serif;
         }
 
         .bank-info-section input:focus {
-            outline: none;
-            border-color: var(--accent);
+            outline: none; border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(0, 99, 64, 0.1);
         }
 
         .bank-info-section .note {
-            font-size: 12px;
-            color: #6b7280;
-            margin-top: 8px;
-            padding: 8px;
-            background: #fff;
-            border-radius: 6px;
+            font-size: 12px; color: #6b7280; margin-top: 8px;
+            padding: 8px; background: #fff; border-radius: 6px;
             border-left: 3px solid #10b981;
         }
 
         /* No refund warning */
         .no-refund-warning {
-            margin-top: 16px;
-            padding: 12px;
-            border-radius: 8px;
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #991b1b;
-            font-size: 13px;
-            font-weight: 600;
+            margin-top: 16px; padding: 12px; border-radius: 8px;
+            background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;
+            font-size: 13px; font-weight: 600;
         }
 
+        /* Refund level indicator */
+        .refund-level {
+            margin-top: 16px; padding: 10px 14px; border-radius: 8px;
+            font-size: 13px; font-weight: 700; text-align: center;
+        }
+
+        .refund-level.level-100 { background: #d1fae5; color: #065f46; border: 2px solid #6ee7b7; }
+        .refund-level.level-50 { background: #fef3c7; color: #92400e; border: 2px solid #fcd34d; }
+        .refund-level.level-0 { background: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; }
+
         .modal-footer {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
+            display: flex; gap: 12px; margin-top: 20px;
         }
 
         .modal-footer button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            flex: 1; padding: 12px; border-radius: 8px;
+            font-weight: 600; font-size: 14px; border: none;
+            cursor: pointer; transition: all 0.2s ease;
         }
 
         .modal-footer .btn-cancel {
             background: linear-gradient(135deg, #dc2626, #991b1b);
-            color: white;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+            color: white; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
         }
 
         .modal-footer .btn-ghost {
-            background: #f3f4f6;
-            color: #374151;
-            border: none;
+            background: #f3f4f6; color: #374151; border: none;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Responsive */
         @media (max-width: 980px) {
-            .container {
-                margin: 20px;
-                padding: 20px;
-            }
-
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-
-            thead {
-                display: none;
-            }
-
-            tbody tr {
-                margin-bottom: 15px;
-                padding: 0;
-            }
-
+            .container { margin: 20px; padding: 20px; }
+            table, thead, tbody, th, td, tr { display: block; }
+            thead { display: none; }
+            tbody tr { margin-bottom: 15px; padding: 0; }
             td {
-                padding: 10px 12px;
-                display: block;
-                text-align: left;
-                border: none !important;
-                border-radius: 0 !important;
+                padding: 10px 12px; display: block; text-align: left;
+                border: none !important; border-radius: 0 !important;
             }
-
             td:first-child {
-                border-top-left-radius: 10px !important;
-                border-top-right-radius: 10px !important;
-                background: #f9fafb;
-                font-weight: 600;
-                color: #1f2937;
+                border-top-left-radius: 10px !important; border-top-right-radius: 10px !important;
+                background: #f9fafb; font-weight: 600; color: #1f2937;
             }
-
             td:last-child {
-                border-bottom-left-radius: 10px !important;
-                border-bottom-right-radius: 10px !important;
+                border-bottom-left-radius: 10px !important; border-bottom-right-radius: 10px !important;
                 text-align: left;
             }
-
             td::before {
-                content: attr(data-label);
-                font-weight: 700;
-                display: inline;
-                width: 120px;
-                color: #666;
-                margin-right: 10px;
+                content: attr(data-label); font-weight: 700;
+                display: inline; width: 120px; color: #666; margin-right: 10px;
             }
-
-            h3.page-title {
-                font-size: 20px;
-            }
-
-            .modal-content {
-                padding: 24px;
-                max-width: 95%;
-            }
+            h3.page-title { font-size: 20px; }
+            .modal-content { padding: 24px; max-width: 95%; }
         }
 
         .room-change-pending {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            display: inline-flex; align-items: center; gap: 6px;
             background: linear-gradient(135deg, #faf5ff, #ede9fe);
-            color: #7c3aed;
-            border: 1px solid #c4b5fd;
-            padding: 7px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            width: 100%;
+            color: #7c3aed; border: 1px solid #c4b5fd;
+            padding: 7px 12px; border-radius: 8px;
+            font-size: 12px; font-weight: 600; margin-bottom: 8px; width: 100%;
         }
 
         .room-change-pending .arrow {
-            font-weight: 700;
-            background: #7c3aed;
-            color: white;
-            padding: 1px 6px;
-            border-radius: 4px;
-            font-size: 11px;
+            font-weight: 700; background: #7c3aed; color: white;
+            padding: 1px 6px; border-radius: 4px; font-size: 11px;
         }
 
         .btn-change-room {
             background: linear-gradient(135deg, #7c3aed, #6d28d9);
-            color: #fff;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 12px;
-            transition: all 0.2s ease;
-            box-shadow: 0 3px 10px rgba(124, 58, 237, 0.2);
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 6px;
+            color: #fff; border: none; padding: 8px 14px; border-radius: 8px;
+            cursor: pointer; font-weight: 600; font-size: 12px;
+            transition: all 0.2s ease; box-shadow: 0 3px 10px rgba(124, 58, 237, 0.2);
+            text-decoration: none; display: inline-block; margin-top: 6px;
         }
 
         .btn-change-room:hover {
             background: linear-gradient(135deg, #6d28d9, #5b21b6);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(124, 58, 237, 0.3);
+            transform: translateY(-2px); box-shadow: 0 6px 16px rgba(124, 58, 237, 0.3);
         }
     </style>
 </head>
@@ -540,12 +339,21 @@
 <div class="container">
     <h3 class="page-title">📄 Booking của tôi</h3>
 
-    <!-- Chính sách hoàn tiền -->
+    <!-- Chính sách hoàn tiền 3 mức -->
     <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 14px; margin-bottom: 20px; font-size: 13px;">
         <strong>📌 Chính sách hủy phòng:</strong><br/>
-        ✅ Hủy trước ngày check-in <strong>≥ 5 ngày</strong>: Hoàn <strong>50%</strong> tổng tiền<br/>
-        ❌ Hủy trước ngày check-in <strong>&lt; 5 ngày</strong>: <strong>Không hoàn tiền</strong><br/>
-        💰 Tiền hoàn sẽ được chuyển vào tài khoản của bạn trong vòng <strong>24 giờ</strong> sau khi hủy.
+        - Hủy trước ngày check-in <strong>≥ 7 ngày</strong>: Hoàn <strong style="color:#059669;">100%</strong> tổng tiền<br/>
+        - Hủy trước ngày check-in <strong>≥ 3 ngày</strong> (và &lt; 7 ngày): Hoàn <strong style="color:#d97706;">50%</strong> tổng tiền<br/>
+        - Hủy trước ngày check-in <strong>&lt; 3 ngày</strong>: <strong style="color:#dc2626;">Không hoàn tiền</strong><br/>
+        Tiền hoàn sẽ được chuyển vào tài khoản của bạn trong vòng <strong>24 giờ</strong> sau khi hủy.
+    </div>
+
+    <!-- Flash messages -->
+    <div th:if="${message}" style="background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-weight:600; font-size:14px; white-space:pre-line;">
+        <span th:text="${message}"></span>
+    </div>
+    <div th:if="${error}" style="background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-weight:600; font-size:14px;">
+        <span th:text="${error}"></span>
     </div>
 
     <table th:if="${bookings != null and !#lists.isEmpty(bookings)}">
@@ -571,14 +379,12 @@
                 <span th:text="${#numbers.formatDecimal(b.totalPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'"></span>
             </td>
 
-            <!-- BOOKING STATUS -->
             <td data-label="Trạng thái:">
                 <span th:if="${b.status.name() == 'PENDING_CONFIRM'}" class="badge status-pending">⏳ Đang chờ</span>
                 <span th:if="${b.status.name() == 'CONFIRMED'}" class="badge status-confirmed">✓ Đã xác nhận</span>
                 <span th:if="${b.status.name() == 'CANCELLED'}" class="badge status-cancelled">✗ Đã hủy</span>
             </td>
 
-            <!-- REFUND STATUS -->
             <td data-label="Hoàn tiền:">
                 <span th:if="${b.refundStatus.name() == 'NONE'}">—</span>
                 <span th:if="${b.refundStatus.name() == 'REQUESTED'}" class="badge status-pending">
@@ -604,9 +410,7 @@
                 </span>
             </td>
 
-            <!-- ACTIONS -->
             <td data-label="Hành động:">
-
                 <!-- Pending room change -->
                 <div th:if="${pendingChangeMap != null and pendingChangeMap.containsKey(b.id)}">
                     <div th:with="req=${pendingChangeMap.get(b.id)}" class="room-change-pending">
@@ -627,10 +431,9 @@
                     <span class="reason-badge" th:text="'📌 ' + ${b.cancellationReason.getLabel()}"></span>
                 </div>
 
-
-                <!-- Nút hủy booking -->
+                <!-- Nút hủy booking — dùng data-* attribute thay vì th:onclick -->
                 <button th:if="${(b.status.name() == 'PENDING_CONFIRM' or b.status.name() == 'CONFIRMED')
-                and (pendingChangeMap == null or !pendingChangeMap.containsKey(b.id))}"
+                                and (pendingChangeMap == null or !pendingChangeMap.containsKey(b.id))}"
                         type="button"
                         class="btn-cancel cancel-btn-trigger"
                         th:data-booking-id="${b.id}"
@@ -660,7 +463,6 @@
                         Xác nhận đã nhận tiền
                     </button>
                 </form>
-
             </td>
         </tr>
         </tbody>
@@ -671,14 +473,13 @@
     </div>
 </div>
 
-<!-- Modal hủy booking + nhập thông tin chuyển khoản -->
+<!-- Modal hủy booking — 3 mức hoàn tiền -->
 <div id="cancelReasonModal" class="modal-overlay">
     <div class="modal-content">
         <h3 class="modal-header">🗂️ Hủy booking</h3>
 
         <form id="cancelReasonForm" method="post">
 
-            <!-- Phần chọn lý do hủy -->
             <p style="font-weight:600; margin-bottom:10px; color:#374151;">Lý do hủy:</p>
 
             <div class="reason-option">
@@ -718,9 +519,14 @@
                 </label>
             </div>
 
-            <!-- Phần nhập thông tin chuyển khoản (chỉ hiện khi >= 5 ngày) -->
-            <div id="bankInfoSection" class="bank-info-section">
-                <h4>🏦 Thông tin nhận hoàn tiền</h4>
+            <!-- Refund level indicator — hiện mức hoàn tiền tương ứng -->
+            <div id="refundLevelIndicator" class="refund-level level-100">
+                ✅ Hoàn 100% tổng tiền (hủy trước ≥ 7 ngày)
+            </div>
+
+            <!-- Bank info section — hiện khi >= 3 ngày (có hoàn tiền) -->
+            <div id="bankInfoSection" class="bank-info-section full-refund">
+                <h4 id="bankInfoTitle">🏦 Thông tin nhận hoàn tiền</h4>
                 <div class="form-group">
                     <label for="bankName">Tên ngân hàng *</label>
                     <input type="text" id="bankName" name="bankName"
@@ -736,15 +542,14 @@
                     <input type="text" id="accountHolderName" name="accountHolderName"
                            placeholder="NGUYEN VAN A" style="text-transform: uppercase;" required>
                 </div>
-                <div class="note">
-                    💡 <strong>Hoàn 50%</strong> tổng tiền booking. Tiền sẽ được chuyển vào tài khoản của bạn
-                    trong vòng <strong>24 giờ</strong> sau khi hủy. Admin sẽ xử lý giao dịch.
+                <div class="note" id="refundNote">
+                    💡 Tiền sẽ được chuyển vào tài khoản của bạn trong vòng <strong>24 giờ</strong> sau khi hủy.
                 </div>
             </div>
 
-            <!-- Cảnh báo không hoàn tiền (chỉ hiện khi < 5 ngày) -->
+            <!-- Cảnh báo không hoàn tiền — hiện khi < 3 ngày -->
             <div id="noRefundWarning" class="no-refund-warning" style="display:none;">
-                ⚠️ <strong>Lưu ý:</strong> Bạn đang hủy dưới 5 ngày trước ngày check-in.
+                ⚠️ <strong>Lưu ý:</strong> Bạn đang hủy dưới 3 ngày trước ngày check-in.
                 Theo chính sách, bạn sẽ <strong>KHÔNG được hoàn tiền</strong>.
             </div>
 
@@ -764,12 +569,12 @@
     let currentBookingId = null;
     let currentCheckIn = null;
 
-    // Dùng event delegation thay vì th:onclick
+    // Event delegation — mở modal khi bấm nút hủy
     document.addEventListener('click', function(e) {
-        const btn = e.target.closest('.cancel-btn-trigger');
+        var btn = e.target.closest('.cancel-btn-trigger');
         if (btn) {
-            const bookingId = btn.getAttribute('data-booking-id');
-            const checkIn = btn.getAttribute('data-check-in');
+            var bookingId = btn.getAttribute('data-booking-id');
+            var checkIn = btn.getAttribute('data-check-in');
             openReasonModal(bookingId, checkIn);
         }
     });
@@ -777,30 +582,52 @@
     function openReasonModal(bookingId, checkInDate) {
         currentBookingId = bookingId;
         currentCheckIn = checkInDate;
-        const modal = document.getElementById('cancelReasonModal');
+        var modal = document.getElementById('cancelReasonModal');
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
 
         // Tính số ngày từ hôm nay đến check-in
-        const today = new Date();
+        var today = new Date();
         today.setHours(0, 0, 0, 0);
-        const checkIn = new Date(checkInDate);
+        var checkIn = new Date(checkInDate);
         checkIn.setHours(0, 0, 0, 0);
-        const diffTime = checkIn.getTime() - today.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        var diffTime = checkIn.getTime() - today.getTime();
+        var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        const bankSection = document.getElementById('bankInfoSection');
-        const noRefundWarning = document.getElementById('noRefundWarning');
+        var bankSection = document.getElementById('bankInfoSection');
+        var noRefundWarning = document.getElementById('noRefundWarning');
+        var refundLevel = document.getElementById('refundLevelIndicator');
+        var refundNote = document.getElementById('refundNote');
+        var bankInfoTitle = document.getElementById('bankInfoTitle');
 
-        if (diffDays >= 5) {
-            // >= 5 ngày: hiện form nhập thông tin CK, hoàn 50%
+        if (diffDays >= 7) {
+            // >= 7 ngày: hoàn 100%
+            refundLevel.className = 'refund-level level-100';
+            refundLevel.innerHTML = 'Hoàn <strong>100%</strong> tổng tiền (hủy trước ≥ 7 ngày)';
             bankSection.style.display = 'block';
+            bankSection.className = 'bank-info-section full-refund';
+            bankInfoTitle.textContent = '🏦 Thông tin nhận hoàn tiền (100%)';
+            refundNote.innerHTML = '💡 <strong>Hoàn 100%</strong> tổng tiền booking. Tiền sẽ được chuyển vào tài khoản của bạn trong vòng <strong>24 giờ</strong>.';
+            noRefundWarning.style.display = 'none';
+            document.getElementById('bankName').required = true;
+            document.getElementById('accountNumber').required = true;
+            document.getElementById('accountHolderName').required = true;
+        } else if (diffDays >= 3) {
+            // >= 3 ngày, < 7 ngày: hoàn 50%
+            refundLevel.className = 'refund-level level-50';
+            refundLevel.innerHTML = 'Hoàn <strong>50%</strong> tổng tiền (hủy trước 3-6 ngày)';
+            bankSection.style.display = 'block';
+            bankSection.className = 'bank-info-section partial-refund';
+            bankInfoTitle.textContent = '🏦 Thông tin nhận hoàn tiền (50%)';
+            refundNote.innerHTML = '<strong>Hoàn 50%</strong> tổng tiền booking. Tiền sẽ được chuyển vào tài khoản của bạn trong vòng <strong>24 giờ</strong>.';
             noRefundWarning.style.display = 'none';
             document.getElementById('bankName').required = true;
             document.getElementById('accountNumber').required = true;
             document.getElementById('accountHolderName').required = true;
         } else {
-            // < 5 ngày: không hoàn tiền, ẩn form CK
+            // < 3 ngày: không hoàn tiền
+            refundLevel.className = 'refund-level level-0';
+            refundLevel.innerHTML = '❌ <strong>Không hoàn tiền</strong> (hủy dưới 3 ngày trước check-in)';
             bankSection.style.display = 'none';
             noRefundWarning.style.display = 'block';
             document.getElementById('bankName').required = false;
@@ -810,13 +637,11 @@
     }
 
     function closeReasonModal() {
-        const modal = document.getElementById('cancelReasonModal');
+        var modal = document.getElementById('cancelReasonModal');
         modal.classList.remove('active');
         document.body.style.overflow = 'auto';
         currentBookingId = null;
         currentCheckIn = null;
-
-        // Reset form
         document.getElementById('bankName').value = '';
         document.getElementById('accountNumber').value = '';
         document.getElementById('accountHolderName').value = '';
@@ -825,15 +650,15 @@
     // Handle form submission
     document.getElementById('cancelReasonForm').addEventListener('submit', function (e) {
         e.preventDefault();
-        const reason = document.querySelector('input[name="reason"]:checked').value;
-        const bankName = document.getElementById('bankName').value;
-        const accountNumber = document.getElementById('accountNumber').value;
-        const accountHolderName = document.getElementById('accountHolderName').value;
+        var reason = document.querySelector('input[name="reason"]:checked').value;
+        var bankName = document.getElementById('bankName').value;
+        var accountNumber = document.getElementById('accountNumber').value;
+        var accountHolderName = document.getElementById('accountHolderName').value;
 
-        const form = document.createElement('form');
+        var form = document.createElement('form');
         form.method = 'POST';
 
-        let actionUrl = '/booking/' + currentBookingId + '/cancel?reason=' + encodeURIComponent(reason);
+        var actionUrl = '/booking/' + currentBookingId + '/cancel?reason=' + encodeURIComponent(reason);
         if (bankName) actionUrl += '&bankName=' + encodeURIComponent(bankName);
         if (accountNumber) actionUrl += '&accountNumber=' + encodeURIComponent(accountNumber);
         if (accountHolderName) actionUrl += '&accountHolderName=' + encodeURIComponent(accountHolderName);
@@ -843,19 +668,19 @@
         form.submit();
     });
 
-    // Close modal when clicking outside
+    // Close modal khi click ngoài
     document.getElementById('cancelReasonModal').addEventListener('click', function (e) {
         if (e.target === this) closeReasonModal();
     });
 
-    // Close with Escape key
+    // Close bằng Escape
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && document.getElementById('cancelReasonModal').classList.contains('active')) {
             closeReasonModal();
         }
     });
 
-    // Update label on radio change
+    // Radio label highlight
     document.querySelectorAll('input[name="reason"]').forEach(function(radio) {
         radio.addEventListener('change', function () {
             document.querySelectorAll('.reason-label').forEach(function(label) {
@@ -865,7 +690,6 @@
         });
     });
 
-    // Set initial checked state
     document.querySelector('input[name="reason"]:checked').parentElement.classList.add('checked');
 </script>
 

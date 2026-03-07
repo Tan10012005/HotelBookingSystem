@@ -31,14 +31,18 @@ public class BookingServiceImpl implements BookingService {
     private RefundTransactionRepository refundTransactionRepo;
 
     /**
-     * Business Rule mới:
-     * - Hủy >= 5 ngày trước check-in → hoàn 50%
-     * - Hủy < 5 ngày trước check-in → không hoàn tiền (0%)
+     * Business Rule mới (3 mức):
+     * - Hủy >= 7 ngày trước check-in → hoàn 100%
+     * - Hủy >= 3 ngày và < 7 ngày trước check-in → hoàn 50%
+     * - Hủy < 3 ngày trước check-in → mất toàn bộ (0%)
      */
-    private static final int REFUND_CUTOFF_DAYS = 5;
-    private static final Integer PARTIAL_REFUND_PERCENTAGE = 50;   // >= 5 ngày → 50%
-    private static final Integer NO_REFUND_PERCENTAGE = 0;          // < 5 ngày → 0%
-    private static final Integer FULL_REFUND_PERCENTAGE = 100;      // Giữ lại cho getRefundPercentage default
+    private static final int FULL_REFUND_DAYS = 7;       // >= 7 ngày → 100%
+    private static final int PARTIAL_REFUND_DAYS = 3;     // >= 3 ngày → 50%
+    // < 3 ngày → 0%
+
+    private static final Integer FULL_REFUND_PERCENTAGE = 100;
+    private static final Integer PARTIAL_REFUND_PERCENTAGE = 50;
+    private static final Integer NO_REFUND_PERCENTAGE = 0;
 
     @Override
     public void createBooking(User user, Room room,
@@ -88,17 +92,19 @@ public class BookingServiceImpl implements BookingService {
             return CancelResult.ALREADY_CANCELLED;
         }
 
-        // ========== BUSINESS RULE MỚI ==========
-        // Tính số ngày từ bây giờ đến ngày check-in
+        // ========== BUSINESS RULE 3 MỨC ==========
         LocalDate today = LocalDate.now();
         LocalDate checkInDate = booking.getCheckIn();
         long daysUntilCheckIn = ChronoUnit.DAYS.between(today, checkInDate);
 
-        if (daysUntilCheckIn >= REFUND_CUTOFF_DAYS) {
-            // Hủy trước >= 5 ngày → hoàn 50%
+        if (daysUntilCheckIn >= FULL_REFUND_DAYS) {
+            // >= 7 ngày → hoàn 100%
+            booking.setRefundPercentage(FULL_REFUND_PERCENTAGE);
+        } else if (daysUntilCheckIn >= PARTIAL_REFUND_DAYS) {
+            // >= 3 ngày và < 7 ngày → hoàn 50%
             booking.setRefundPercentage(PARTIAL_REFUND_PERCENTAGE);
         } else {
-            // Hủy < 5 ngày trước check-in → KHÔNG hoàn tiền
+            // < 3 ngày → mất toàn bộ (0%)
             booking.setRefundPercentage(NO_REFUND_PERCENTAGE);
         }
 
@@ -123,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
                     .refundAmount(refundAmount)
                     .refundPercentage(booking.getRefundPercentage())
                     .status(RefundTransactionStatus.PENDING)
-                    .refundDeadline(now.plusHours(24))  // Hoàn trong 24h
+                    .refundDeadline(now.plusHours(24))
                     .build();
             refundTransactionRepo.save(transaction);
         } else {
@@ -166,16 +172,13 @@ public class BookingServiceImpl implements BookingService {
 
         RefundTransaction tx = maybe.get();
 
-        // Chỉ xử lý transaction đang PENDING
         if (tx.getStatus() != RefundTransactionStatus.PENDING) return false;
 
-        // Cập nhật transaction
         tx.setStatus(RefundTransactionStatus.COMPLETED);
         tx.setAdminNote(adminNote);
         tx.setProcessedAt(LocalDateTime.now());
         refundTransactionRepo.save(tx);
 
-        // Cập nhật booking refund status
         Booking booking = tx.getBooking();
         booking.setRefundStatus(RefundStatus.TRANSFERRED);
         bookingRepo.save(booking);
