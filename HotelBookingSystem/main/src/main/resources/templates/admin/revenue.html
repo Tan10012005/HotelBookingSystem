@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Thống kê doanh thu — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --accent: #7c3aed;
+      --sidebar: #1e1b4b;
+      --accent-1: #29a14a;
+      --accent-2: #178e3a;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --bg: #f5f3ff;
+      --radius: 12px;
+      --shadow: 0 10px 30px rgba(11, 24, 40, 0.08);
+    }
+
+    * { box-sizing: border-box }
+
+    body {
+      font-family: Inter, system-ui, Arial;
+      color: #0f172a; margin: 0;
+      background: var(--bg);
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 240px; position: fixed; top: 0; left: 0; height: 100vh;
+      background: var(--sidebar); padding: 28px 0; z-index: 100;
+    }
+
+    .sidebar-logo {
+      color: white; font-size: 17px; font-weight: 700;
+      padding: 0 24px 28px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu { list-style: none; margin: 20px 0 0; padding: 0; }
+
+    .sidebar-menu a {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 24px; color: rgba(255, 255, 255, 0.75);
+      text-decoration: none; font-size: 14px; font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background: rgba(255, 255, 255, 0.12); color: white;
+      border-left: 3px solid var(--accent); padding-left: 21px;
+    }
+
+    .sidebar-menu a.active { background: rgba(124, 58, 237, 0.25); }
+
+    /* ===== MAIN ===== */
+    .main { margin-left: 240px; padding: 32px; }
+
+    .page-header {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 24px;
+    }
+
+    .page-title { font-size: 24px; font-weight: 700; }
+    .page-subtitle { color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+    /* Year selector */
+    .year-selector {
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .year-selector label {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+    }
+
+    .year-selector select {
+      padding: 8px 14px; border: 2px solid #e5e7eb;
+      border-radius: 8px; font-size: 14px; font-weight: 600;
+      font-family: Inter, sans-serif;
+      background: white; cursor: pointer; color: #0f172a;
+    }
+
+    .year-selector select:focus {
+      outline: none; border-color: var(--accent);
+    }
+
+    /* Stats cards */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 16px; margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card); padding: 20px;
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      display: flex; flex-direction: column; gap: 8px;
+      border-left: 4px solid transparent;
+    }
+
+    .stat-card:nth-child(1) { border-left-color: #7c3aed; }
+    .stat-card:nth-child(2) { border-left-color: #10b981; }
+    .stat-card:nth-child(3) { border-left-color: #f59e0b; }
+    .stat-card:nth-child(4) { border-left-color: #3b82f6; }
+
+    .stat-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 24px; font-weight: 700; color: #0f172a; }
+    .stat-unit { font-size: 14px; color: var(--muted); font-weight: 500; }
+
+    /* Chart cards */
+    .charts-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .chart-card {
+      background: var(--card); padding: 24px;
+      border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+
+    .chart-card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .chart-header {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 16px;
+    }
+
+    .chart-title {
+      font-size: 16px; font-weight: 700; color: #1f2937;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .chart-badge {
+      font-size: 11px; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+    }
+
+    .badge-purple { background: #ede9fe; color: #7c3aed; }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-amber { background: #fef3c7; color: #92400e; }
+    .badge-blue { background: #dbeafe; color: #1d4ed8; }
+
+    .chart-wrapper {
+      position: relative; width: 100%; height: 320px;
+    }
+
+    .chart-wrapper canvas {
+      width: 100% !important; height: 100% !important;
+    }
+
+    @media (max-width: 1100px) {
+      .charts-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-logo">🏨 Hotel Admin</div>
+  <ul class="sidebar-menu">
+    <li><a th:href="@{/admin/dashboard}"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+    <li><a th:href="@{/admin/users}"><i class="fa-solid fa-users"></i> Người dùng</a></li>
+    <li><a th:href="@{/admin/rooms}"><i class="fa-solid fa-door-open"></i> Phòng</a></li>
+    <li><a th:href="@{/admin/bookings}"><i class="fa-solid fa-calendar-check"></i> Booking</a></li>
+    <li><a th:href="@{/admin/revenue}" class="active"><i class="fa-solid fa-chart-line"></i> Doanh thu</a></li>
+    <li><a th:href="@{/admin/refunds}"><i class="fa-solid fa-money-bill-transfer"></i> Hoàn tiền</a></li>
+    <li><a th:href="@{/admin/roomchanges}"><i class="fa-solid fa-arrows-rotate"></i> Đổi phòng</a></li>
+    <li><a th:href="@{/admin/logout}"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
+  </ul>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Header + Year selector -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">📊 Thống kê doanh thu</div>
+      <div class="page-subtitle">Biểu đồ doanh thu theo ngày, tháng, quý và năm</div>
+    </div>
+    <div class="year-selector">
+      <label for="yearSelect">📅 Năm:</label>
+      <select id="yearSelect" onchange="changeYear(this.value)">
+        <option th:each="y : ${#numbers.sequence(currentYear - 4, currentYear)}"
+                th:value="${y}" th:text="${y}"
+                th:selected="${y == selectedYear}">
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Stats overview -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">💰 Tổng doanh thu</div>
+      <div class="stat-value" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">0</div>
+      <div class="stat-unit">VND</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">📅 Doanh thu tháng này</div>
+      <div class="stat-value" th:text="${#numbers.formatDecimal(currentMonthRevenue, 0, 'COMMA', 0, 'POINT')}">0</div>
+      <div class="stat-unit">VND</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">🌅 Doanh thu hôm nay</div>
+      <div class="stat-value" th:text="${#numbers.formatDecimal(todayRevenue, 0, 'COMMA', 0, 'POINT')}">0</div>
+      <div class="stat-unit">VND</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">✅ Booking đã xác nhận</div>
+      <div class="stat-value" th:text="${totalConfirmedBookings}">0</div>
+      <div class="stat-unit">đơn</div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+
+    <!-- 1. DAILY REVENUE — Biểu đồ đường, full width -->
+    <div class="chart-card full-width">
+      <div class="chart-header">
+        <div class="chart-title">
+          <i class="fa-solid fa-calendar-day" style="color:#7c3aed;"></i>
+          Doanh thu theo ngày (30 ngày gần nhất)
+        </div>
+        <span class="chart-badge badge-purple">Line Chart</span>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="dailyChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 2. MONTHLY REVENUE — Biểu đồ cột -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">
+          <i class="fa-solid fa-calendar-days" style="color:#10b981;"></i>
+          Doanh thu theo tháng
+        </div>
+        <span class="chart-badge badge-green">Bar Chart</span>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="monthlyChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 3. QUARTERLY REVENUE — Biểu đồ tròn (Doughnut) -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">
+          <i class="fa-solid fa-chart-pie" style="color:#f59e0b;"></i>
+          Doanh thu theo quý
+        </div>
+        <span class="chart-badge badge-amber">Doughnut</span>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="quarterlyChart"></canvas>
+      </div>
+    </div>
+
+    <!-- 4. YEARLY REVENUE �� Biểu đồ cột ngang -->
+    <div class="chart-card full-width">
+      <div class="chart-header">
+        <div class="chart-title">
+          <i class="fa-solid fa-chart-bar" style="color:#3b82f6;"></i>
+          Doanh thu theo năm (5 năm gần nhất)
+        </div>
+        <span class="chart-badge badge-blue">Horizontal Bar</span>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="yearlyChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script th:inline="javascript">
+  // ===== DATA TỪ SERVER =====
+  const dailyLabels = /*[[${dailyLabels}]]*/ [];
+  const dailyValues = /*[[${dailyValues}]]*/ [];
+
+  const monthlyLabels = /*[[${monthlyLabels}]]*/ [];
+  const monthlyValues = /*[[${monthlyValues}]]*/ [];
+
+  const quarterlyLabels = /*[[${quarterlyLabels}]]*/ [];
+  const quarterlyValues = /*[[${quarterlyValues}]]*/ [];
+
+  const yearlyLabels = /*[[${yearlyLabels}]]*/ [];
+  const yearlyValues = /*[[${yearlyValues}]]*/ [];
+
+  // ===== CHART DEFAULTS =====
+  Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+  Chart.defaults.font.size = 12;
+  Chart.defaults.plugins.tooltip.callbacks.label = function(context) {
+    return context.dataset.label + ': ' +
+            new Intl.NumberFormat('vi-VN').format(context.parsed.y || context.parsed) + ' VND';
+  };
+
+  // ===== 1. DAILY CHART — Line =====
+  new Chart(document.getElementById('dailyChart'), {
+    type: 'line',
+    data: {
+      labels: dailyLabels,
+      datasets: [{
+        label: 'Doanh thu',
+        data: dailyValues,
+        borderColor: '#7c3aed',
+        backgroundColor: 'rgba(124, 58, 237, 0.08)',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#7c3aed',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        tension: 0.35,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e1b4b',
+          titleColor: '#e2e8f0',
+          bodyColor: '#fff',
+          padding: 12,
+          cornerRadius: 8,
+          callbacks: {
+            label: function(ctx) {
+              return '💰 ' + new Intl.NumberFormat('vi-VN').format(ctx.parsed.y) + ' VND';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { maxRotation: 45, font: { size: 11 } }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: '#f3f4f6' },
+          ticks: {
+            callback: function(v) {
+              if (v >= 1000000) return (v / 1000000).toFixed(1) + 'M';
+              if (v >= 1000) return (v / 1000).toFixed(0) + 'K';
+              return v;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // ===== 2. MONTHLY CHART — Bar =====
+  new Chart(document.getElementById('monthlyChart'), {
+    type: 'bar',
+    data: {
+      labels: monthlyLabels,
+      datasets: [{
+        label: 'Doanh thu',
+        data: monthlyValues,
+        backgroundColor: [
+          '#10b981', '#34d399', '#6ee7b7', '#a7f3d0',
+          '#10b981', '#34d399', '#6ee7b7', '#a7f3d0',
+          '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'
+        ],
+        borderColor: '#059669',
+        borderWidth: 1,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#064e3b',
+          padding: 12, cornerRadius: 8,
+          callbacks: {
+            label: function(ctx) {
+              return '💰 ' + new Intl.NumberFormat('vi-VN').format(ctx.parsed.y) + ' VND';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 11 } }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: '#f3f4f6' },
+          ticks: {
+            callback: function(v) {
+              if (v >= 1000000) return (v / 1000000).toFixed(1) + 'M';
+              if (v >= 1000) return (v / 1000).toFixed(0) + 'K';
+              return v;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // ===== 3. QUARTERLY CHART — Doughnut =====
+  new Chart(document.getElementById('quarterlyChart'), {
+    type: 'doughnut',
+    data: {
+      labels: quarterlyLabels,
+      datasets: [{
+        data: quarterlyValues,
+        backgroundColor: ['#7c3aed', '#f59e0b', '#10b981', '#3b82f6'],
+        borderColor: '#fff',
+        borderWidth: 3,
+        hoverBorderWidth: 0,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '55%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            padding: 16, usePointStyle: true, pointStyle: 'circle',
+            font: { size: 12, weight: '600' }
+          }
+        },
+        tooltip: {
+          backgroundColor: '#1e1b4b',
+          padding: 12, cornerRadius: 8,
+          callbacks: {
+            label: function(ctx) {
+              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+              const pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
+              return ctx.label + ': ' +
+                      new Intl.NumberFormat('vi-VN').format(ctx.parsed) + ' VND (' + pct + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // ===== 4. YEARLY CHART — Horizontal Bar =====
+  new Chart(document.getElementById('yearlyChart'), {
+    type: 'bar',
+    data: {
+      labels: yearlyLabels,
+      datasets: [{
+        label: 'Doanh thu',
+        data: yearlyValues,
+        backgroundColor: ['#93c5fd', '#60a5fa', '#3b82f6', '#2563eb', '#1d4ed8'],
+        borderColor: '#1e40af',
+        borderWidth: 1,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1e3a5f',
+          padding: 12, cornerRadius: 8,
+          callbacks: {
+            label: function(ctx) {
+              return '💰 ' + new Intl.NumberFormat('vi-VN').format(ctx.parsed.x) + ' VND';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          grid: { color: '#f3f4f6' },
+          ticks: {
+            callback: function(v) {
+              if (v >= 1000000) return (v / 1000000).toFixed(1) + 'M';
+              if (v >= 1000) return (v / 1000).toFixed(0) + 'K';
+              return v;
+            }
+          }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { font: { size: 13, weight: '700' } }
+        }
+      }
+    }
+  });
+
+  // ===== YEAR SELECTOR =====
+  function changeYear(year) {
+    window.location.href = '/admin/revenue?year=' + year;
+  }
+</script>
+</body>
+</html>

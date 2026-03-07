@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -42,6 +43,9 @@ public class AdminController {
 
     @Autowired
     private BookingService bookingService;
+
+    @Autowired
+    private com.hotelbookingsystem.service.RevenueService revenueService;
 
     // ===== DASHBOARD =====
     @GetMapping({"/dashboard", ""})
@@ -358,5 +362,53 @@ public class AdminController {
             ra.addFlashAttribute("error", "Không thể từ chối yêu cầu này.");
         }
         return "redirect:/admin/roomchanges";
+    }
+
+    /* ===== REVENUE CHART ===== */
+
+    @GetMapping("/revenue")
+    public String revenuePage(
+            @RequestParam(required = false) Integer year,
+            HttpSession session, Model model, RedirectAttributes ra
+    ) {
+        if (!isAdminSession(session, ra)) return "redirect:/login";
+
+        int selectedYear = (year != null) ? year : java.time.LocalDate.now().getYear();
+
+        // Doanh thu theo ngày (30 ngày gần nhất)
+        Map<String, java.math.BigDecimal> dailyRevenue = revenueService.getDailyRevenue(30);
+
+        // Doanh thu theo tháng
+        Map<String, BigDecimal> monthlyRevenue = revenueService.getMonthlyRevenue(selectedYear);
+
+        // Doanh thu theo quý
+        Map<String, java.math.BigDecimal> quarterlyRevenue = revenueService.getQuarterlyRevenue(selectedYear);
+
+        // Doanh thu theo năm (5 năm gần nhất)
+        Map<String, java.math.BigDecimal> yearlyRevenue = revenueService.getYearlyRevenue();
+
+        // Stats tổng
+        model.addAttribute("totalRevenue", revenueService.getTotalRevenue());
+        model.addAttribute("currentMonthRevenue", revenueService.getCurrentMonthRevenue());
+        model.addAttribute("todayRevenue", revenueService.getTodayRevenue());
+        model.addAttribute("totalConfirmedBookings", revenueService.getTotalConfirmedBookings());
+
+        // Chart data
+        model.addAttribute("dailyLabels", new java.util.ArrayList<>(dailyRevenue.keySet()));
+        model.addAttribute("dailyValues", new java.util.ArrayList<>(dailyRevenue.values()));
+
+        model.addAttribute("monthlyLabels", new java.util.ArrayList<>(monthlyRevenue.keySet()));
+        model.addAttribute("monthlyValues", new java.util.ArrayList<>(monthlyRevenue.values()));
+
+        model.addAttribute("quarterlyLabels", new java.util.ArrayList<>(quarterlyRevenue.keySet()));
+        model.addAttribute("quarterlyValues", new java.util.ArrayList<>(quarterlyRevenue.values()));
+
+        model.addAttribute("yearlyLabels", new java.util.ArrayList<>(yearlyRevenue.keySet()));
+        model.addAttribute("yearlyValues", new java.util.ArrayList<>(yearlyRevenue.values()));
+
+        model.addAttribute("selectedYear", selectedYear);
+        model.addAttribute("currentYear", java.time.LocalDate.now().getYear());
+
+        return "admin/revenue";
     }
 }
