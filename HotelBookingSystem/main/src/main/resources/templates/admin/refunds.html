@@ -132,6 +132,7 @@
         .qr-amount small { font-size: 16px; color: var(--muted); font-weight: 500; }
 
         .qr-img-wrapper {
+            position: relative;
             background: #f8fafc; padding: 16px; border-radius: 12px;
             border: 2px solid #e2e8f0; margin: 16px 0;
             display: inline-block;
@@ -139,6 +140,66 @@
 
         .qr-img-wrapper img {
             width: 220px; height: 220px; border-radius: 8px;
+        }
+
+        /* Success overlay trên QR — giống vietqr.html */
+        .qr-success-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.97);
+            border-radius: 12px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .qr-success-overlay.active { display: flex; }
+
+        .qr-success-overlay .success-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 12px;
+            animation: popIn 0.4s ease;
+        }
+
+        .qr-success-overlay .success-icon i {
+            font-size: 28px; color: white;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .qr-success-overlay .success-text {
+            font-weight: 700; color: #059669; font-size: 18px;
+        }
+
+        .qr-success-overlay .success-sub {
+            font-size: 12px; color: var(--muted); margin-top: 4px;
+        }
+
+        /* Loader + status text */
+        .loader-spin {
+            width: 18px; height: 18px;
+            border: 2px solid #e2e8f0;
+            border-top: 2px solid var(--accent-1);
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin 1s linear infinite;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .qr-status {
+            font-size: 13px; color: var(--muted); margin: 8px 0 0 0;
+            transition: opacity 0.3s;
         }
 
         .qr-bank-detail {
@@ -206,6 +267,14 @@
         </div>
     </div>
 
+    <!-- Flash messages -->
+    <div th:if="${message}" style="background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-weight:600; font-size:14px;">
+        <span th:text="${message}"></span>
+    </div>
+    <div th:if="${error}" style="background:#fef2f2; border:1px solid #fecaca; color:#991b1b; padding:12px 16px; border-radius:8px; margin-bottom:16px; font-weight:600; font-size:14px;">
+        <span th:text="${error}"></span>
+    </div>
+
     <div class="card">
         <table>
             <thead>
@@ -251,10 +320,10 @@
                     </div>
                 </td>
                 <td>
-                    <span th:if="${tx.status.name()=='PENDING'}" class="badge status-pending">⏳ Chờ xử lý</span>
-                    <span th:if="${tx.status.name()=='COMPLETED'}" class="badge status-completed">✅ Đã hoàn</span>
-                    <span th:if="${tx.status.name()=='FAILED'}" class="badge status-failed">❌ Thất bại</span>
-                    <span th:if="${tx.status.name()=='EXPIRED'}" class="badge status-failed">⏰ Quá hạn</span>
+                    <span th:if="${tx.status.name()=='PENDING'}" class="badge status-pending">Chờ xử lý</span>
+                    <span th:if="${tx.status.name()=='COMPLETED'}" class="badge status-completed">Đã hoàn</span>
+                    <span th:if="${tx.status.name()=='FAILED'}" class="badge status-failed">Thất bại</span>
+                    <span th:if="${tx.status.name()=='EXPIRED'}" class="badge status-failed">Quá hạn</span>
                 </td>
                 <td>
                     <span th:if="${tx.refundDeadline != null}"
@@ -312,9 +381,23 @@
             <small>Hoàn <span id="modalPercentage">50</span>% · Booking #<span id="modalBookingId">1</span> · Phòng <span id="modalRoomNumber">101</span></small>
         </div>
 
-        <!-- QR Code VietQR — generate từ thông tin CK của user -->
+        <!-- QR Code VietQR + Success Overlay -->
         <div class="qr-img-wrapper">
             <img id="modalQrImage" src="" alt="QR Code hoàn tiền"/>
+
+            <!-- Giả lập thành công overlay — hiện sau 7s -->
+            <div id="qrSuccessOverlay" class="qr-success-overlay">
+                <div class="success-icon">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+<!--                <div class="success-text">Chuyển khoản thành công!</div>-->
+                <div class="success-sub">Đang xác nhận giao dịch...</div>
+            </div>
+        </div>
+
+        <!-- Status text — giống vietqr.html -->
+        <div id="qrStatusInfo" class="qr-status">
+            <div class="loader-spin"></div> Đang kiểm tra giao dịch...
         </div>
 
         <!-- Thông tin ngân hàng -->
@@ -343,8 +426,7 @@
             </button>
             <form id="processRefundForm" method="post" style="flex:1;">
                 <input type="hidden" id="processAdminNote" name="adminNote" value=""/>
-                <button type="submit" class="btn-process"
-                        onclick="document.getElementById('processAdminNote').value = document.getElementById('modalAdminNote').value;">
+                <button type="submit" class="btn-process" id="btnProcess">
                     ✅ Xác nhận đã chuyển khoản
                 </button>
             </form>
@@ -389,20 +471,22 @@
     };
 
     function getBankBin(bankName) {
-        if (!bankName) return '970422'; // default MB Bank
+        if (!bankName) return '970422';
         const key = bankName.toLowerCase().trim();
-        // Tìm exact match trước
         if (BANK_BIN_MAP[key]) return BANK_BIN_MAP[key];
-        // Tìm partial match
         for (const [name, bin] of Object.entries(BANK_BIN_MAP)) {
             if (key.includes(name) || name.includes(key)) return bin;
         }
-        return '970422'; // fallback MB Bank
+        return '970422';
     }
 
     function formatNumber(num) {
         return new Intl.NumberFormat('vi-VN').format(num);
     }
+
+    // Timer reference để clear khi đóng modal
+    let autoSubmitTimer = null;
+    let successShowTimer = null;
 
     // Event delegation cho nút mở QR
     document.addEventListener('click', function(e) {
@@ -444,17 +528,67 @@
         // Set form action
         document.getElementById('processRefundForm').action = '/admin/refunds/' + txId + '/process';
 
-        // Reset note
+        // Reset trạng thái
         document.getElementById('modalAdminNote').value = '';
+        document.getElementById('qrSuccessOverlay').classList.remove('active');
+        document.getElementById('qrStatusInfo').style.opacity = '1';
+        document.getElementById('qrStatusInfo').innerHTML =
+            '<div class="loader-spin"></div> Đang kiểm tra giao dịch...';
+        document.getElementById('btnProcess').disabled = false;
+        document.getElementById('btnProcess').textContent = '✅ Xác nhận đã chuyển khoản';
 
         // Show modal
         document.getElementById('qrModal').classList.add('active');
         document.body.style.overflow = 'hidden';
+
+        // ===== GIẢ LẬP: Sau 7 giây tự động thành công =====
+        // Clear timer cũ nếu có
+        if (autoSubmitTimer) clearTimeout(autoSubmitTimer);
+        if (successShowTimer) clearTimeout(successShowTimer);
+
+        successShowTimer = setTimeout(function() {
+            // Ẩn loader text
+            document.getElementById('qrStatusInfo').style.opacity = '0';
+
+            // Hiện success overlay trên QR
+            document.getElementById('qrSuccessOverlay').classList.add('active');
+
+            // Đổi text nút + tự động ghi chú
+            document.getElementById('btnProcess').textContent = '🎉 Giao dịch thành công — Xác nhận';
+            if (!document.getElementById('modalAdminNote').value) {
+                document.getElementById('modalAdminNote').value =
+                    'GD tu dong xac nhan luc ' + new Date().toLocaleTimeString('vi-VN');
+            }
+
+            // Sau thêm 2.5 giây nữa → tự động submit form
+            autoSubmitTimer = setTimeout(function() {
+                document.getElementById('processAdminNote').value =
+                    document.getElementById('modalAdminNote').value;
+                document.getElementById('processRefundForm').submit();
+            }, 2500);
+
+        }, 7000); // 7 giây giả lập quét QR
+    });
+
+    // Nút xác nhận thủ công (không đợi 7s)
+    document.getElementById('btnProcess').addEventListener('click', function(e) {
+        // Copy ghi chú vào hidden field
+        document.getElementById('processAdminNote').value =
+            document.getElementById('modalAdminNote').value;
+        // Clear timer auto-submit
+        if (autoSubmitTimer) clearTimeout(autoSubmitTimer);
+        if (successShowTimer) clearTimeout(successShowTimer);
+        // Form sẽ tự submit vì button type=submit
     });
 
     function closeQrModal() {
         document.getElementById('qrModal').classList.remove('active');
         document.body.style.overflow = 'auto';
+        // Clear timers khi đóng modal
+        if (autoSubmitTimer) clearTimeout(autoSubmitTimer);
+        if (successShowTimer) clearTimeout(successShowTimer);
+        autoSubmitTimer = null;
+        successShowTimer = null;
     }
 
     // Close khi click ngoài modal
