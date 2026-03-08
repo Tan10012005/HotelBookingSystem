@@ -85,6 +85,14 @@ public class Booking {
     @Column(name = "check_in_notes", columnDefinition = "TEXT")
     private String checkInNotes;
 
+    // ========== CCCD IMAGE UPLOAD FIELDS ==========
+
+    @Column(name = "citizen_id_front_image", length = 500)
+    private String citizenIdFrontImage;
+
+    @Column(name = "citizen_id_back_image", length = 500)
+    private String citizenIdBackImage;
+
     // ========== REFUND TRANSACTION LINK ==========
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
