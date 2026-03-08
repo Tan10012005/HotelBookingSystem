@@ -2,6 +2,8 @@ package com.hotelbookingsystem.service;
 
 import com.hotelbookingsystem.entity.Booking;
 import com.hotelbookingsystem.entity.User;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -27,9 +29,11 @@ public interface CheckInService {
     String generateQRCode(Booking booking);
 
     /**
-     * Xử lý check-in online: tạo QR code và lưu trạng thái
+     * Xử lý check-in online: tạo QR code, lưu ảnh CCCD và lưu trạng thái
      */
-    Optional<Booking> performOnlineCheckIn(Long bookingId, User user, String citizenId, String notes);
+    Optional<Booking> performOnlineCheckIn(Long bookingId, User user, String citizenId,
+                                           String notes, MultipartFile frontImage,
+                                           MultipartFile backImage);
 
     /**
      * Lấy booking bằng ID + User (kiểm tra quyền)

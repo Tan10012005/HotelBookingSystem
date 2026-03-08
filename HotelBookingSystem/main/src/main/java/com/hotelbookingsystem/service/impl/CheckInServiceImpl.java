@@ -9,21 +9,40 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.common.BitMatrix;
 import com.hotelbookingsystem.service.CheckInService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Base64;
 
 @Service
 public class CheckInServiceImpl implements CheckInService {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    // Thư mục lưu ảnh CCCD, có thể cấu hình trong application.properties
+    @Value("${app.upload.cccd-dir:uploads/cccd}")
+    private String cccdUploadDir;
+
+    // Danh sách content type được phép
+    private static final List<String> ALLOWED_CONTENT_TYPES = Arrays.asList(
+            "image/jpeg", "image/jpg", "image/png"
+    );
+
+    // Kích thước file tối đa: 5MB
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     /**
      * Lấy danh sách booking sắp tới (7 ngày)
@@ -35,14 +54,12 @@ public class CheckInServiceImpl implements CheckInService {
 
         return bookingRepository.findByUser(user).stream()
                 .filter(b -> {
-                    // Chỉ lấy booking đã CONFIRMED và chưa check-in
                     if (b.getStatus() != BookingStatus.CONFIRMED) {
                         return false;
                     }
                     if (b.getCheckInStatus() != CheckInStatus.PENDING) {
                         return false;
                     }
-                    // Chỉ lấy booking có check-in trong 7 ngày tới
                     return !b.getCheckIn().isBefore(today) &&
                             !b.getCheckIn().isAfter(weekFromNow);
                 })
@@ -55,19 +72,10 @@ public class CheckInServiceImpl implements CheckInService {
     @Override
     public boolean isEligibleForCheckIn(Booking booking) {
         if (booking == null) return false;
-
-        // Phải ở trạng thái CONFIRMED
         if (booking.getStatus() != BookingStatus.CONFIRMED) return false;
-
-        // Phải chưa check-in
         if (booking.getCheckInStatus() != CheckInStatus.PENDING) return false;
-
-        // Ngày check-in phải >= hôm nay
         if (booking.getCheckIn().isBefore(LocalDate.now())) return false;
-
-        // Ngày check-in phải <= ngày hôm nay + 1 ngày (cho phép check-in sớm 1 ngày)
         if (booking.getCheckIn().isAfter(LocalDate.now().plusDays(1))) return false;
-
         return true;
     }
 
@@ -77,17 +85,14 @@ public class CheckInServiceImpl implements CheckInService {
     @Override
     public String generateQRCode(Booking booking) {
         try {
-            // Dữ liệu trong QR: bookingId + userId + checkInDate
             String qrData = String.format("BOOKING_%d_USER_%d_CHECKIN_%s",
                     booking.getId(),
                     booking.getUser().getId(),
                     booking.getCheckIn());
 
-            // Tạo QR code (300x300 pixels)
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bitMatrix = qrCodeWriter.encode(qrData, BarcodeFormat.QR_CODE, 300, 300);
 
-            // Convert BitMatrix thành BufferedImage
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -98,7 +103,6 @@ public class CheckInServiceImpl implements CheckInService {
                 }
             }
 
-            // Convert thành Base64
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(image, "PNG", baos);
             byte[] imageData = baos.toByteArray();
@@ -114,11 +118,14 @@ public class CheckInServiceImpl implements CheckInService {
     /**
      * Thực hiện check-in online:
      * - Xác nhận thông tin CCCD
+     * - Lưu ảnh CCCD (mặt trước + mặt sau)
      * - Tạo QR code
      * - Lưu vào database
      */
     @Override
-    public Optional<Booking> performOnlineCheckIn(Long bookingId, User user, String citizenId, String notes) {
+    public Optional<Booking> performOnlineCheckIn(Long bookingId, User user, String citizenId,
+                                                  String notes, MultipartFile frontImage,
+                                                  MultipartFile backImage) {
         Optional<Booking> maybe = bookingRepository.findByIdAndUser(bookingId, user);
 
         if (maybe.isEmpty()) {
@@ -132,9 +139,42 @@ public class CheckInServiceImpl implements CheckInService {
             return Optional.empty();
         }
 
-        // Xác nhận CCCD khớp (so sánh với trường citizenId trong User)
+        // Xác nhận CCCD khớp
         if (!user.getCitizenId().equals(citizenId)) {
-            return Optional.empty(); // CCCD không khớp
+            return Optional.empty();
+        }
+
+        // Validate và lưu ảnh CCCD
+        try {
+            // Validate ảnh mặt trước
+            if (frontImage == null || frontImage.isEmpty()) {
+                return Optional.empty();
+            }
+            if (!isValidImage(frontImage)) {
+                return Optional.empty();
+            }
+
+            // Validate ảnh mặt sau
+            if (backImage == null || backImage.isEmpty()) {
+                return Optional.empty();
+            }
+            if (!isValidImage(backImage)) {
+                return Optional.empty();
+            }
+
+            // Lưu ảnh mặt trước
+            String frontPath = saveImage(frontImage, bookingId, "front");
+
+            // Lưu ảnh mặt sau
+            String backPath = saveImage(backImage, bookingId, "back");
+
+            // Cập nhật đường dẫn ảnh vào booking
+            booking.setCitizenIdFrontImage(frontPath);
+            booking.setCitizenIdBackImage(backPath);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Optional.empty();
         }
 
         // Tạo QR code
@@ -152,6 +192,53 @@ public class CheckInServiceImpl implements CheckInService {
         bookingRepository.save(booking);
 
         return Optional.of(booking);
+    }
+
+    /**
+     * Validate file ảnh: kiểm tra content type và kích thước
+     */
+    private boolean isValidImage(MultipartFile file) {
+        // Kiểm tra content type
+        String contentType = file.getContentType();
+        if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType.toLowerCase())) {
+            return false;
+        }
+
+        // Kiểm tra kích thước (max 5MB)
+        if (file.getSize() > MAX_FILE_SIZE) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Lưu file ảnh vào thư mục uploads/cccd/
+     * Tên file: {bookingId}_{side}_{UUID}.{ext}
+     */
+    private String saveImage(MultipartFile file, Long bookingId, String side) throws IOException {
+        // Tạo thư mục nếu chưa tồn tại
+        Path uploadPath = Paths.get(cccdUploadDir);
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        // Lấy extension từ tên file gốc
+        String originalFilename = file.getOriginalFilename();
+        String extension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+
+        // Tạo tên file unique
+        String filename = bookingId + "_" + side + "_" + UUID.randomUUID() + extension;
+
+        // Lưu file
+        Path filePath = uploadPath.resolve(filename);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // Trả về đường dẫn tương đối (để hiển thị trên web)
+        return "/uploads/cccd/" + filename;
     }
 
     /**
