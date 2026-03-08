@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
@@ -27,7 +28,6 @@ public class CheckInController {
 
     /**
      * BƯỚC 1: Hiển thị trang check-in online
-     * Danh sách các booking sắp tới (7 ngày)
      */
     @GetMapping("/online")
     public String checkInPage(
@@ -42,7 +42,6 @@ public class CheckInController {
             return "redirect:/login";
         }
 
-        // Lấy danh sách booking sắp tới
         List<Booking> upcomingBookings = checkInService.getUpcomingBookings(user);
 
         model.addAttribute("user", user);
@@ -68,7 +67,6 @@ public class CheckInController {
             return "redirect:/login";
         }
 
-        // Lấy booking của user
         Optional<Booking> maybe = checkInService.getBookingByIdAndUser(bookingId, user);
 
         if (maybe.isEmpty()) {
@@ -78,7 +76,6 @@ public class CheckInController {
 
         Booking booking = maybe.get();
 
-        // Kiểm tra điều kiện check-in
         if (!checkInService.isEligibleForCheckIn(booking)) {
             ra.addFlashAttribute("error", "Booking này không thể check-in lúc này!");
             return "redirect:/checkin/online";
@@ -91,16 +88,15 @@ public class CheckInController {
     }
 
     /**
-     * BƯỚC 3: Xử lý form check-in
-     * - Xác nhận thông tin CCCD
-     * - Tạo QR code
-     * - Hiển thị QR code
+     * BƯỚC 3: Xử lý form check-in (có upload ảnh CCCD)
      */
     @PostMapping("/confirm")
     public String confirmCheckIn(
             @RequestParam Long bookingId,
             @RequestParam String citizenId,
             @RequestParam(required = false) String notes,
+            @RequestParam("cccdFront") MultipartFile cccdFront,
+            @RequestParam("cccdBack") MultipartFile cccdBack,
             HttpSession session,
             Model model,
             RedirectAttributes ra
@@ -112,8 +108,31 @@ public class CheckInController {
             return "redirect:/login";
         }
 
-        // Thực hiện check-in
-        Optional<Booking> result = checkInService.performOnlineCheckIn(bookingId, user, citizenId, notes);
+        // Validate ảnh CCCD trước khi gọi service
+        if (cccdFront.isEmpty() || cccdBack.isEmpty()) {
+            ra.addFlashAttribute("error", "Vui lòng upload đầy đủ ảnh CCCD mặt trước và mặt sau!");
+            return "redirect:/checkin/form/" + bookingId;
+        }
+
+        // Kiểm tra định dạng file
+        String frontContentType = cccdFront.getContentType();
+        String backContentType = cccdBack.getContentType();
+        if (!isAllowedImageType(frontContentType) || !isAllowedImageType(backContentType)) {
+            ra.addFlashAttribute("error", "Chỉ chấp nhận ảnh định dạng JPG, JPEG hoặc PNG!");
+            return "redirect:/checkin/form/" + bookingId;
+        }
+
+        // Kiểm tra kích thước file (max 5MB)
+        long maxSize = 5 * 1024 * 1024;
+        if (cccdFront.getSize() > maxSize || cccdBack.getSize() > maxSize) {
+            ra.addFlashAttribute("error", "Kích thước ảnh không được vượt quá 5MB!");
+            return "redirect:/checkin/form/" + bookingId;
+        }
+
+        // Thực hiện check-in với ảnh CCCD
+        Optional<Booking> result = checkInService.performOnlineCheckIn(
+                bookingId, user, citizenId, notes, cccdFront, cccdBack
+        );
 
         if (result.isEmpty()) {
             ra.addFlashAttribute("error", "Xác nhận check-in thất bại! Vui lòng kiểm tra thông tin CCCD.");
@@ -121,9 +140,17 @@ public class CheckInController {
         }
 
         Booking booking = result.get();
-
-        // Chuyển đến trang hiển thị QR code
         return "redirect:/checkin/qr/" + booking.getId();
+    }
+
+    /**
+     * Kiểm tra content type có phải ảnh hợp lệ không
+     */
+    private boolean isAllowedImageType(String contentType) {
+        if (contentType == null) return false;
+        return contentType.equalsIgnoreCase("image/jpeg")
+                || contentType.equalsIgnoreCase("image/jpg")
+                || contentType.equalsIgnoreCase("image/png");
     }
 
     /**
@@ -165,7 +192,6 @@ public class CheckInController {
 
     /**
      * API: Quét QR code tại cổng khách sạn
-     * Cập nhật trạng thái check-in thực tế
      */
     @PostMapping("/api/scan-qr")
     @ResponseBody
