@@ -35,7 +35,7 @@
 
         .checkin-card{
             width:100%;
-            max-width:600px;
+            max-width:700px;
             background:rgba(255,255,255,0.95);
             backdrop-filter: blur(10px);
             border-radius:20px;
@@ -90,6 +90,144 @@
             box-shadow:0 10px 20px rgba(0,0,0,0.15);
         }
 
+        /* ========== CCCD UPLOAD STYLES ========== */
+        .cccd-section {
+            background: #f0fdf4;
+            border: 2px dashed #198754;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .cccd-section .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #198754;
+            margin-bottom: 16px;
+        }
+
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 576px) {
+            .upload-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .upload-box {
+            position: relative;
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fff;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-box:hover {
+            border-color: #198754;
+            background: #f0fdf4;
+        }
+
+        .upload-box.has-image {
+            border-color: #198754;
+            border-style: solid;
+            padding: 8px;
+        }
+
+        .upload-box input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-box .upload-icon {
+            font-size: 32px;
+            color: #9ca3af;
+            margin-bottom: 8px;
+        }
+
+        .upload-box .upload-text {
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .upload-box .upload-hint {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 4px;
+        }
+
+        .upload-box .preview-img {
+            width: 100%;
+            max-height: 160px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .upload-box.has-image .upload-icon,
+        .upload-box.has-image .upload-text,
+        .upload-box.has-image .upload-hint {
+            display: none;
+        }
+
+        .upload-box.has-image .preview-img {
+            display: block;
+        }
+
+        .upload-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+            z-index: 10;
+            line-height: 24px;
+            text-align: center;
+        }
+
+        .upload-box.has-image .remove-btn {
+            display: block;
+        }
+
+        .file-info {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 6px;
+            text-align: center;
+        }
+
     </style>
 </head>
 <body>
@@ -106,7 +244,7 @@
                 <i class="fa-solid fa-id-card me-2 text-success"></i>
                 Xác Nhận Check-in
             </div>
-            <div class="sub-title">Vui lòng xác nhận thông tin CCCD</div>
+            <div class="sub-title">Vui lòng xác nhận thông tin CCCD và upload ảnh</div>
         </div>
 
         <!-- Booking Info -->
@@ -126,14 +264,15 @@
         <!-- Warning -->
         <div class="alert alert-warning rounded-3">
             <i class="fa-solid fa-triangle-exclamation me-2"></i>
-            Vui lòng nhập chính xác CCCD để xác nhận
+            Vui lòng nhập chính xác CCCD và upload ảnh CCCD mặt trước + mặt sau để xác nhận
         </div>
 
-        <!-- Form -->
-        <form th:action="@{/checkin/confirm}" method="post">
+        <!-- Form với enctype multipart -->
+        <form th:action="@{/checkin/confirm}" method="post" enctype="multipart/form-data" id="checkinForm">
 
             <input type="hidden" name="bookingId" th:value="${booking.id}"/>
 
+            <!-- Số CCCD -->
             <div class="mb-3">
                 <label class="form-label fw-semibold">
                     <i class="fa-solid fa-id-badge me-1 text-success"></i>
@@ -146,6 +285,68 @@
                        required>
             </div>
 
+            <!-- ========== UPLOAD ẢNH CCCD ========== -->
+            <div class="cccd-section">
+                <div class="section-title">
+                    <i class="fa-solid fa-camera me-1"></i>
+                    Upload ảnh CCCD <span class="text-danger">*</span>
+                </div>
+
+                <div class="upload-grid">
+
+                    <!-- Ảnh mặt trước -->
+                    <div>
+                        <span class="upload-label">
+                            <i class="fa-solid fa-image me-1"></i> Mặt trước CCCD
+                        </span>
+                        <div class="upload-box" id="frontBox">
+                            <input type="file"
+                                   name="cccdFront"
+                                   id="cccdFront"
+                                   accept="image/jpeg,image/jpg,image/png"
+                                   required
+                                   onchange="previewImage(this, 'frontPreview', 'frontBox', 'frontInfo')">
+                            <button type="button" class="remove-btn"
+                                    onclick="removeImage('cccdFront', 'frontPreview', 'frontBox', 'frontInfo')">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                            <div class="upload-text">Nhấn để chọn ảnh</div>
+                            <div class="upload-hint">JPG, JPEG, PNG - Tối đa 5MB</div>
+                            <img class="preview-img" id="frontPreview" alt="Mặt trước CCCD">
+                        </div>
+                        <div class="file-info" id="frontInfo"></div>
+                    </div>
+
+                    <!-- Ảnh mặt sau -->
+                    <div>
+                        <span class="upload-label">
+                            <i class="fa-solid fa-image me-1"></i> Mặt sau CCCD
+                        </span>
+                        <div class="upload-box" id="backBox">
+                            <input type="file"
+                                   name="cccdBack"
+                                   id="cccdBack"
+                                   accept="image/jpeg,image/jpg,image/png"
+                                   required
+                                   onchange="previewImage(this, 'backPreview', 'backBox', 'backInfo')">
+                            <button type="button" class="remove-btn"
+                                    onclick="removeImage('cccdBack', 'backPreview', 'backBox', 'backInfo')">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                            <div class="upload-text">Nhấn để chọn ảnh</div>
+                            <div class="upload-hint">JPG, JPEG, PNG - Tối đa 5MB</div>
+                            <img class="preview-img" id="backPreview" alt="Mặt sau CCCD">
+                        </div>
+                        <div class="file-info" id="backInfo"></div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- ========== END UPLOAD ẢNH CCCD ========== -->
+
+            <!-- Ghi chú -->
             <div class="mb-4">
                 <label class="form-label fw-semibold">
                     <i class="fa-solid fa-note-sticky me-1 text-success"></i>
@@ -157,7 +358,7 @@
                           placeholder="Ví dụ: Tôi có nhu cầu đặc biệt..."></textarea>
             </div>
 
-            <button type="submit" class="btn btn-confirm w-100 text-white">
+            <button type="submit" class="btn btn-confirm w-100 text-white" id="submitBtn">
                 <i class="fa-solid fa-check me-2"></i>
                 Xác Nhận Check-in
             </button>
@@ -170,6 +371,82 @@
 
 <!-- FOOTER -->
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    /**
+     * Preview ảnh khi chọn file
+     */
+    function previewImage(input, previewId, boxId, infoId) {
+        const file = input.files[0];
+        const preview = document.getElementById(previewId);
+        const box = document.getElementById(boxId);
+        const info = document.getElementById(infoId);
+
+        if (!file) return;
+
+        // Validate loại file
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Chỉ chấp nhận ảnh định dạng JPG, JPEG hoặc PNG!');
+            input.value = '';
+            return;
+        }
+
+        // Validate kích thước (5MB)
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            alert('Kích thước ảnh không được vượt quá 5MB!');
+            input.value = '';
+            return;
+        }
+
+        // Hiển thị preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            box.classList.add('has-image');
+        };
+        reader.readAsDataURL(file);
+
+        // Hiển thị thông tin file
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        info.textContent = file.name + ' (' + sizeMB + ' MB)';
+    }
+
+    /**
+     * Xóa ảnh đã chọn
+     */
+    function removeImage(inputId, previewId, boxId, infoId) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        const box = document.getElementById(boxId);
+        const info = document.getElementById(infoId);
+
+        input.value = '';
+        preview.src = '';
+        box.classList.remove('has-image');
+        info.textContent = '';
+    }
+
+    /**
+     * Validate trước khi submit
+     */
+    document.getElementById('checkinForm').addEventListener('submit', function(e) {
+        const front = document.getElementById('cccdFront');
+        const back = document.getElementById('cccdBack');
+
+        if (!front.files.length || !back.files.length) {
+            e.preventDefault();
+            alert('Vui lòng upload đầy đủ ảnh CCCD mặt trước và mặt sau!');
+            return;
+        }
+
+        // Disable nút submit để tránh click nhiều lần
+        const btn = document.getElementById('submitBtn');
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Đang xử lý...';
+        btn.style.pointerEvents = 'none';
+    });
+</script>
 
 </body>
 </html>
