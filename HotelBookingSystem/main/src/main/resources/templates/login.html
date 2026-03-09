@@ -309,6 +309,10 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             transform: translateY(-1px);
         }
+
+        .register-link {
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -328,7 +332,10 @@
             <div class="panel" th:classappend="${error} ? ' shake' : ''">
                 <div>
                     <h3>Đăng nhập</h3>
-                    <div class="sub">Đăng nhập để quản lý đặt phòng của bạn</div>
+                    <div class="sub">
+                        Chưa có tài khoản Hotel Booking?
+                        <a class="register-link" th:href="@{/register}">Đăng ký ngay</a>
+                    </div>
                 </div>
 
                 <!-- Alerts: show banned message (from ?banned=true) and any flash messages -->
@@ -361,8 +368,6 @@
                         <label class="remember">
                             <input type="checkbox" id="remember" name="remember"/>
                             <span style="font-size:13px;color:var(--muted)">Ghi nhớ đăng nhập</span>
-                        </label>
-                        <a th:href="@{/register}">Tạo tài khoản</a>
                     </div>
 
                     <div class="actions">
