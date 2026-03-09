@@ -1,15 +1,18 @@
 package com.hotelbookingsystem.enums;
 
 /**
- * 🆕 Enum định nghĩa 6 lý do hủy booking
+ * Enum định nghĩa các lý do hủy đặt phòng
  */
 public enum CancellationReason {
+    CHANGE_OF_PLANS("Thay đổi kế hoạch di chuyển"),
+    FOUND_ALTERNATIVE("Đã tìm được phương án lưu trú phù hợp hơn"),
+    HEALTH_ISSUE("Lý do sức khỏe"),
+    WORK_COMMITMENT("Bận công việc đột xuất"),
+    FINANCIAL_REASON("Điều chỉnh ngân sách cá nhân"),
+    TRAVEL_RESTRICTIONS("Hạn chế về di chuyển hoặc visa"),
+    BOOKING_ERROR("Đặt phòng nhầm thông tin"),
     PERSONAL_REASON("Lý do cá nhân"),
-    PLAN_CHANGED("Kế hoạch thay đổi"),
-    FIND_BETTER_PRICE("Tìm được giá tốt hơn"),
-    HEALTH_ISSUE("Vấn đề sức khỏe"),
-    WORK_EMERGENCY("Công việc khẩn cấp"),
-    NO_REASON("Không muốn nói");
+    OTHER("Lý do khác");
 
     private final String label;
 

@@ -428,7 +428,7 @@
 
                 <!-- Show cancellation reason if exists -->
                 <div th:if="${b.cancellationReason != null}" style="margin-bottom: 8px;">
-                    <span class="reason-badge" th:text="'📌 ' + ${b.cancellationReason.getLabel()}"></span>
+                    <span class="reason-badge" th:text="'Lý do hủy: ' + ${b.cancellationReason.getLabel()}"></span>
                 </div>
 
                 <!-- Nút hủy booking — dùng data-* attribute thay vì th:onclick -->
@@ -473,49 +473,67 @@
     </div>
 </div>
 
-<!-- Modal hủy booking — 3 mức hoàn tiền -->
+<!-- Modal xác nhận hủy đặt phòng -->
 <div id="cancelReasonModal" class="modal-overlay">
     <div class="modal-content">
-        <h3 class="modal-header">🗂️ Hủy booking</h3>
+        <h3 class="modal-header">Xác nhận hủy đặt phòng</h3>
 
         <form id="cancelReasonForm" method="post">
 
-            <p style="font-weight:600; margin-bottom:10px; color:#374151;">Lý do hủy:</p>
+            <p style="font-weight:600; margin-bottom:10px; color:#374151;">Vui lòng cho chúng tôi biết lý do hủy:</p>
 
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="PERSONAL_REASON" checked>
-                    <span>👤 Lý do cá nhân</span>
+                    <span>Lý do cá nhân</span>
                 </label>
             </div>
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="PLAN_CHANGED">
-                    <span>📅 Kế hoạch thay đổi</span>
+                    <span>Thay đổi kế hoạch di chuyển</span>
                 </label>
             </div>
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="FIND_BETTER_PRICE">
-                    <span>💰 Tìm được giá tốt hơn</span>
+                    <span>Đã tìm được phương án lưu trú phù hợp hơn</span>
                 </label>
             </div>
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="HEALTH_ISSUE">
-                    <span>🏥 Vấn đề sức khỏe</span>
+                    <span>Lý do sức khỏe</span>
                 </label>
             </div>
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="WORK_EMERGENCY">
-                    <span>🚨 Công việc khẩn cấp</span>
+                    <span>Bận công việc đột xuất</span>
+                </label>
+            </div>
+            <div class="reason-option">
+                <label class="reason-label">
+                    <input type="radio" name="reason" value="FINANCIAL_REASON">
+                    <span>Điều chỉnh ngân sách cá nhân</span>
+                </label>
+            </div>
+            <div class="reason-option">
+                <label class="reason-label">
+                    <input type="radio" name="reason" value="TRAVEL_RESTRICTIONS">
+                    <span>Hạn chế về di chuyển hoặc visa</span>
+                </label>
+            </div>
+            <div class="reason-option">
+                <label class="reason-label">
+                    <input type="radio" name="reason" value="BOOKING_ERROR">
+                    <span>Đặt phòng nhầm thông tin</span>
                 </label>
             </div>
             <div class="reason-option">
                 <label class="reason-label">
                     <input type="radio" name="reason" value="NO_REASON">
-                    <span>🤐 Không muốn nói</span>
+                    <span>Lý do khác</span>
                 </label>
             </div>
 

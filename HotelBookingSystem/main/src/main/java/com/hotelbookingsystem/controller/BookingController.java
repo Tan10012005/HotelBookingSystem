@@ -162,13 +162,13 @@ public class BookingController {
             return "redirect:/login";
         }
 
-        CancellationReason cancellationReason = CancellationReason.NO_REASON;
+        CancellationReason cancellationReason = CancellationReason.OTHER;
         try {
             if (reason != null && !reason.isEmpty()) {
                 cancellationReason = CancellationReason.valueOf(reason);
             }
-        } catch (IllegalArgumentException e) {
-            cancellationReason = CancellationReason.NO_REASON;
+        } catch (IllegalArgumentException ignored) {
+            cancellationReason = CancellationReason.OTHER;
         }
 
         // Validate thông tin chuyển khoản — chỉ bắt buộc nếu >= 3 ngày (có hoàn tiền)
@@ -182,8 +182,7 @@ public class BookingController {
                 if (bankName == null || bankName.trim().isEmpty()
                         || accountNumber == null || accountNumber.trim().isEmpty()
                         || accountHolderName == null || accountHolderName.trim().isEmpty()) {
-                    ra.addFlashAttribute("error",
-                            "Vui lòng nhập đầy đủ thông tin chuyển khoản để nhận tiền hoàn.");
+                    ra.addFlashAttribute("error", "Vui lòng cung cấp đầy đủ thông tin tài khoản ngân hàng để chúng tôi xử lý hoàn tiền cho Quý khách.");
                     return "redirect:/booking/my";
                 }
             }
@@ -212,11 +211,11 @@ public class BookingController {
 
                     if (refundPercentage != null && refundPercentage > 0) {
                         String message = String.format(
-                                "Hủy booking thành công!\n" +
-                                        "Lý do: %s\n" +
-                                        "Hoàn tiền: %d%% = %,.0f VND\n" +
-                                        "💰 Tiền sẽ được hoàn vào tài khoản của bạn trong vòng 24 giờ.\n" +
-                                        "Admin sẽ xử lý giao dịch sớm nhất có thể.",
+                                "Yêu cầu hủy đặt phòng đã được xử lý thành công.\n" +
+                                        "Lý do hủy: %s\n" +
+                                        "Mức hoàn tiền: %d%% — Số tiền hoàn: %,.0f VND\n" +
+                                        "Khoản hoàn tiền sẽ được chuyển vào tài khoản của Quý khách trong vòng 24 giờ làm việc.\n" +
+                                        "Bộ phận hỗ trợ sẽ xử lý giao dịch trong thời gian sớm nhất.",
                                 reasonText,
                                 refundPercentage,
                                 refundAmount != null ? refundAmount.doubleValue() : 0
@@ -224,28 +223,28 @@ public class BookingController {
                         ra.addFlashAttribute("message", message);
                     } else {
                         String message = String.format(
-                                "Hủy booking thành công!\n" +
-                                        "Lý do: %s\n" +
-                                        "⚠️ Hủy dưới 3 ngày trước check-in: Không được hoàn tiền.",
+                                "Yêu cầu hủy đặt phòng đã được xử lý thành công.\n" +
+                                        "Lý do hủy: %s\n" +
+                                        "Theo chính sách hủy phòng, yêu cầu hủy trong vòng 3 ngày trước ngày nhận phòng sẽ không được hoàn tiền.",
                                 reasonText
                         );
                         ra.addFlashAttribute("message", message);
                     }
                 } else {
-                    ra.addFlashAttribute("message", "Hủy booking thành công!");
+                    ra.addFlashAttribute("message", "Yêu cầu hủy đặt phòng đã được xử lý thành công.");
                 }
                 break;
             case NOT_FOUND:
-                ra.addFlashAttribute("error", "Không tìm thấy booking.");
+                ra.addFlashAttribute("error", "Không tìm thấy thông tin đặt phòng. Vui lòng thử lại hoặc liên hệ bộ phận hỗ trợ.");
                 break;
             case ALREADY_CANCELLED:
-                ra.addFlashAttribute("error", "Booking đã được hủy trước đó.");
+                ra.addFlashAttribute("error", "Đặt phòng này đã được hủy trước đó.");
                 break;
             case TOO_LATE:
-                ra.addFlashAttribute("error", "Không thể hủy booking. Đã quá hạn hủy.");
+                ra.addFlashAttribute("error", "Không thể hủy đặt phòng. Yêu cầu hủy đã quá thời hạn cho phép.");
                 break;
             default:
-                ra.addFlashAttribute("error", "Không thể hủy booking.");
+                ra.addFlashAttribute("error", "Không thể xử lý yêu cầu hủy đặt phòng. Vui lòng thử lại sau.");
         }
 
         return "redirect:/booking/my";

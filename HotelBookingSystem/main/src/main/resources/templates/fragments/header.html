@@ -1,25 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="">
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&display=swap"
           rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-          crossorigin="anonymous"/>
+    <link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          rel="stylesheet"/>
+    <title></title>
 </head>
 <body>
-<header th:fragment="header" class="app-header"
-        style="position:relative;margin:0;padding:0;width:100%;box-sizing:border-box;">
+<header class="app-header" style="position:relative;margin:0;padding:0;width:100%;box-sizing:border-box;"
+        th:fragment="header">
     <style>
-        /*@keyframes slideDown {*/
-        /*    from {*/
-        /*        opacity: 0;*/
-        /*        transform: translateY(-20px);*/
-        /*    }*/
-        /*    to {*/
-        /*        opacity: 1;*/
-        /*        transform: translateY(0);*/
-        /*    }*/
-        /*}*/
 
         @keyframes float {
             0%, 100% {
@@ -51,7 +42,6 @@
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            animation: slideDown 0.6s ease;
             width: 100%;
             margin: 0;
             padding: 0;
@@ -488,7 +478,7 @@
     <div class="header-top">
 
         <div class="header-top-left">
-            <a th:href="@{/rooms}" style="text-decoration:none;display:inline-block;">
+            <a style="text-decoration:none;display:inline-block;" th:href="@{/rooms}">
                 <div style="font-family: 'Playfair Display', serif; font-size:32px; font-weight:700; color:#fff; text-shadow:0 6px 18px rgba(0,0,0,0.45);">
                     Hotel Booking
                 </div>
@@ -505,7 +495,7 @@
                         <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
                     </button>
                     <div class="dropdown-menu" id="languageMenu">
-                        <a href="#" onclick="changeLanguage('vi', 'Tiếng Việt', event)" class="active">
+                        <a class="active" href="#" onclick="changeLanguage('vi', 'Tiếng Việt', event)">
                             <i class="fas fa-check"></i> Tiếng Việt
                         </a>
                         <a href="#" onclick="changeLanguage('en', 'English', event)">
@@ -541,7 +531,7 @@
                         <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
                     </button>
                     <div class="dropdown-menu" id="currencyMenu">
-                        <button onclick="changeCurrency('VND', event)" class="active">
+                        <button class="active" onclick="changeCurrency('VND', event)">
                             <i class="fas fa-check"></i> VND - ₫ (Việt Nam)
                         </button>
                         <button onclick="changeCurrency('USD', event)">
@@ -575,13 +565,13 @@
 
 
         <nav style="display:flex;gap:10px;align-items:center;">
-            <a th:href="@{/rooms}" class="nav-item"><i class="fas fa-home"></i>Trang chủ</a>
-            <a th:href="@{/profile}" class="nav-item"><i class="fas fa-user-circle"></i>Hồ sơ</a>
-            <a th:href="@{/booking/my}" class="nav-item"><i class="fas fa-bookmark"></i>Booking của tôi</a>
-            <a th:href="@{/roomchange/select}" class="nav-item"><i class="fas fa-exchange-alt"></i>Đổi phòng</a>
-            <a th:href="@{/checkin/online}" class="nav-item"><i class="fas fa-check-circle"></i>Check-in Online</a>
-            <a th:href="@{/about}" class="nav-item"><i class="fas fa-info-circle"></i>Về chúng tôi</a>
-            <a th:href="@{/logout}" class="nav-item"><i class="fas fa-sign-out-alt"></i>Logout</a>
+            <a class="nav-item" th:href="@{/rooms}"><i class="fas fa-home"></i>Trang chủ</a>
+            <a class="nav-item" th:href="@{/profile}"><i class="fas fa-user-circle"></i>Hồ sơ</a>
+            <a class="nav-item" th:href="@{/booking/my}"><i class="fas fa-bookmark"></i>Booking của tôi</a>
+            <a class="nav-item" th:href="@{/roomchange/select}"><i class="fas fa-exchange-alt"></i>Đổi phòng</a>
+            <a class="nav-item" th:href="@{/checkin/online}"><i class="fas fa-check-circle"></i>Check-in Online</a>
+            <a class="nav-item" th:href="@{/about}"><i class="fas fa-info-circle"></i>Về chúng tôi</a>
+            <a class="nav-item" th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i>Logout</a>
         </nav>
     </div>
 
