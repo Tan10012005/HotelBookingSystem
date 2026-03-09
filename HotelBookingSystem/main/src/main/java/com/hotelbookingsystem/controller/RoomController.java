@@ -1,6 +1,8 @@
 package com.hotelbookingsystem.controller;
 
 import com.hotelbookingsystem.entity.Room;
+import com.hotelbookingsystem.entity.RoomType;
+import com.hotelbookingsystem.repository.RoomTypeRepository;
 import com.hotelbookingsystem.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,10 +20,15 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
+    @Autowired
+    private RoomTypeRepository roomTypeRepo;
+
     @GetMapping
     public String listRooms(Model model) {
         List<Room> rooms = roomService.getAvailableRooms();
+        List<RoomType> roomTypes = roomTypeRepo.findAll();
         model.addAttribute("rooms", rooms);
+        model.addAttribute("roomTypes", roomTypes);
         return "roomList"; // ✅ KHỚP FILE
     }
 

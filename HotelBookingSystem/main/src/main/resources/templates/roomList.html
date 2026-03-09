@@ -27,7 +27,6 @@
             position: fixed;
             inset: -20px;
             z-index: -2;
-
             background-size: cover;
             background-position: center;
             filter: blur(6px) brightness(0.86);
@@ -42,11 +41,233 @@
         }
 
         .page-wrapper {
-            max-width: 1100px;
+            max-width: 1300px;
             margin: 40px auto;
             padding: 0 20px;
             position: relative;
             z-index: 5
+        }
+
+        /* ── 2-column layout ── */
+        .layout-wrapper {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        /* ── Filter Sidebar ── */
+        .filter-sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: sticky;
+            top: 20px;
+        }
+
+        .filter-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 24px;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .filter-header i {
+            font-size: 15px;
+        }
+
+        .filter-toggle-btn {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background .2s;
+            display: none;
+        }
+
+        .filter-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .filter-body {
+            padding: 20px 24px;
+        }
+
+        .filter-section {
+            margin-bottom: 24px;
+        }
+
+        .filter-section:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .filter-section-title {
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        /* ── Price Range Slider ── */
+        .price-display {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        .range-slider-wrap {
+            position: relative;
+            height: 36px;
+        }
+
+        .range-track {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .range-fill {
+            position: absolute;
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .range-input {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            outline: none;
+            pointer-events: none;
+            -webkit-appearance: none;
+            appearance: none;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            pointer-events: all;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 6px rgba(0, 99, 64, 0.35);
+            transition: transform .15s;
+        }
+
+        .range-input::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        .range-input::-moz-range-thumb {
+            pointer-events: all;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 6px rgba(0, 99, 64, 0.35);
+        }
+
+        /* ── Checkboxes ── */
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #374151;
+            padding: 5px 0;
+            user-select: none;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 17px;
+            height: 17px;
+            accent-color: var(--accent);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* ── Radio buttons ── */
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #374151;
+            padding: 5px 0;
+            user-select: none;
+        }
+
+        .radio-label input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* ── Count + Reset ── */
+        .filter-count {
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+            padding: 10px;
+            background: #f9fafb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            margin-top: 8px;
+        }
+
+        .btn-reset {
+            width: 100%;
+            padding: 10px;
+            background: none;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .btn-reset:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        /* ── Main content ── */
+        .main-content {
+            flex: 1;
+            min-width: 0;
         }
 
         .room-container {
@@ -76,9 +297,13 @@
             border-radius: 14px;
             padding: 20px;
             background: #fff;
-            transition: all .2s ease;
+            transition: all .25s ease;
             align-items: center;
             border: 1px solid #f0f0f0
+        }
+
+        .room-card.hidden {
+            display: none;
         }
 
         .room-card:hover {
@@ -136,6 +361,39 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(0, 99, 64, 0.2)
         }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--muted);
+            font-size: 16px;
+            display: none;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 800px) {
+            .layout-wrapper {
+                flex-direction: column;
+            }
+
+            .filter-sidebar {
+                width: 100%;
+                position: static;
+            }
+
+            .filter-toggle-btn {
+                display: block;
+            }
+
+            .filter-body.collapsed {
+                display: none;
+            }
+
+            .room-image {
+                width: 130px;
+                height: 100px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -143,111 +401,201 @@
 <div class="bg" th:style="|background-image: url(@{/images/backgrounds/nen.jpg});|"></div>
 <div class="bg-overlay"></div>
 <main class="page-wrapper">
-    <div class="room-container">
-        <div class="room-title">Khám phá không gian nghỉ dưỡng</div>
-        <div class="room-list">
-            <div class="room-card" th:each="room : ${rooms}">
-                <div class="room-image">
-                    <img th:src="${room.roomNumber.startsWith('1')} ? @{/images/rooms/executiveRoom.webp} : (${room.roomNumber.startsWith('3')} ? @{/images/rooms/suiteCityView.webp} : @{/images/rooms/superiorCityView.webp})"/>
-                </div>
-                <div class="room-info">
-                    <div class="room-name" th:text="|Phòng ${room.roomNumber} - ${room.roomType.name}|"></div>
-                    <div style="font-size:14px;color:var(--muted)"
-                         th:text="|Sức chứa: ${room.roomType.capacity} khách|"></div>
-                    <div class="room-price"
-                         th:text="|${#numbers.formatDecimal(room.pricePerNight, 0, 'COMMA', 0, 'POINT')} VND/đêm|"></div>
-                    <div style="margin-top:8px">
-                        <a th:href="@{/rooms/{id}(id=${room.id})}" class="btn-select">Xem &amp; Chọn phòng</a>
+    <div class="layout-wrapper">
+
+        <!-- ── Filter Sidebar ── -->
+        <aside class="filter-sidebar">
+            <div class="filter-header">
+                <i class="fa-solid fa-sliders"></i>
+                <span>Bộ lọc</span>
+                <button class="filter-toggle-btn" id="filterToggleBtn">▼</button>
+            </div>
+            <div class="filter-body" id="filterBody">
+
+                <!-- Price Range -->
+                <div class="filter-section">
+                    <div class="filter-section-title">💰 Khoảng giá</div>
+                    <div class="price-display">
+                        <span id="priceMinLabel">500,000</span> — <span id="priceMaxLabel">2,000,000</span> VND
                     </div>
+                    <div class="range-slider-wrap">
+                        <div class="range-track">
+                            <div class="range-fill" id="rangeFill"></div>
+                        </div>
+                        <input type="range" id="priceMin" min="500000" max="2000000"
+                               value="500000" step="50000" class="range-input">
+                        <input type="range" id="priceMax" min="500000" max="2000000"
+                               value="2000000" step="50000" class="range-input">
+                    </div>
+                </div>
+
+                <!-- Room Type -->
+                <div class="filter-section">
+                    <div class="filter-section-title">🏠 Loại phòng</div>
+                    <label class="checkbox-label" th:each="rt : ${roomTypes}">
+                        <input type="checkbox" th:value="${rt.name}" checked class="type-checkbox">
+                        <span th:text="${rt.name}">STANDARD</span>
+                    </label>
+                </div>
+
+                <!-- Sort -->
+                <div class="filter-section">
+                    <div class="filter-section-title">↕ Sắp xếp</div>
+                    <label class="radio-label">
+                        <input type="radio" name="sortOrder" value="asc" checked>
+                        Giá Thấp → Cao
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="sortOrder" value="desc">
+                        Giá Cao → Thấp
+                    </label>
+                </div>
+
+                <!-- Count + Reset -->
+                <div class="filter-count" id="filterCount"></div>
+                <button class="btn-reset" id="btnReset">↺ Đặt lại</button>
+
+            </div>
+        </aside>
+
+        <!-- ── Room List ── -->
+        <div class="main-content">
+            <div class="room-container">
+                <div class="room-title">Khám phá không gian nghỉ dưỡng</div>
+                <div class="room-list" id="roomList">
+                    <div class="room-card"
+                         th:each="room : ${rooms}"
+                         th:attr="data-price=${room.pricePerNight}, data-type=${room.roomType.name}">
+                        <div class="room-image">
+                            <img th:src="${room.roomNumber.startsWith('1')} ? @{/images/rooms/executiveRoom.webp} : (${room.roomNumber.startsWith('3')} ? @{/images/rooms/suiteCityView.webp} : @{/images/rooms/superiorCityView.webp})"/>
+                        </div>
+                        <div class="room-info">
+                            <div class="room-name" th:text="|Phòng ${room.roomNumber} - ${room.roomType.name}|"></div>
+                            <div style="font-size:14px;color:var(--muted)"
+                                 th:text="|Sức chứa: ${room.roomType.capacity} khách|"></div>
+                            <div class="room-price"
+                                 th:text="|${#numbers.formatDecimal(room.pricePerNight, 0, 'COMMA', 0, 'POINT')} VND/đêm|"></div>
+                            <div style="margin-top:8px">
+                                <a th:href="@{/rooms/{id}(id=${room.id})}" class="btn-select">Xem &amp; Chọn phòng</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="no-results" id="noResults">
+                    😕 Không tìm thấy phòng phù hợp. Hãy thử điều chỉnh bộ lọc.
                 </div>
             </div>
         </div>
+
     </div>
 </main>
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    const typeImages = {
-        'STANDARD': ['/images/rooms/executiveRoom.webp','/images/rooms/executiveRoom1.webp'],
-        'DELUXE': ['/images/rooms/superiorCityView.webp','/images/rooms/superiorCityView1.webp'],
-        'SUITE': ['/images/rooms/suiteCityView.webp','/images/rooms/suiteCityView1.webp']
-    };
+<script>
+    // ─── Filter Logic ────────────────────────────────────────────────
+    const PRICE_GAP = 50000; // minimum gap between min and max price handles
 
-    document.querySelectorAll('.open-modal-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const id = btn.dataset.id;
-            const number = btn.dataset.roomnumber;
-            const type = btn.dataset.type;
-            const capacity = parseInt(btn.dataset.capacity || '2', 10);
-            const price = parseFloat(btn.dataset.price || '0');
+    const priceMinInput = document.getElementById('priceMin');
+    const priceMaxInput = document.getElementById('priceMax');
+    const priceMinLabel = document.getElementById('priceMinLabel');
+    const priceMaxLabel = document.getElementById('priceMaxLabel');
+    const rangeFill     = document.getElementById('rangeFill');
+    const filterCount   = document.getElementById('filterCount');
+    const noResults     = document.getElementById('noResults');
+    const roomListEl    = document.getElementById('roomList');
 
-            document.getElementById('modalRoomId').value = id;
-            document.getElementById('modalTitle').textContent = 'Phòng ' + number + ' — ' + (type || 'STANDARD');
-
-            // Update price & capacity in highlight box
-            document.getElementById('modalPrice').textContent = new Intl.NumberFormat('vi-VN').format(price) + ' VND/đêm';
-            document.getElementById('modalCapacity').textContent = 'Sức chứa: ' + capacity + ' khách';
-
-            document.getElementById('maxGuests').textContent = capacity;
-            const guestsInput = document.getElementById('guests');
-            guestsInput.max = capacity;
-            if (parseInt(guestsInput.value) > capacity) guestsInput.value = capacity;
-
-            const imgs = typeImages[type] || ['/images/rooms/executiveRoom.webp'];
-            document.getElementById('modalImg').style.backgroundImage = 'url(' + imgs[0] + ')';
-
-            const today = new Date().toISOString().split('T')[0];
-            const checkInInput = document.getElementById('checkIn');
-            const checkOutInput = document.getElementById('checkOut');
-
-            checkInInput.min = today;
-            checkInInput.value = '';
-            checkOutInput.value = '';
-            checkOutInput.min = today;
-
-            document.getElementById('roomOverlay').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        });
-    });
-
-    // VALIDATION: Check-out must be at least 1 day after check-in
-    document.getElementById('checkIn').addEventListener('change', function() {
-        const checkInDate = new Date(this.value);
-        if (!isNaN(checkInDate)) {
-            // Set check-out minimum to 1 day after check-in
-            const minCheckOut = new Date(checkInDate);
-            minCheckOut.setDate(minCheckOut.getDate() + 1);
-
-            const minCheckOutStr = minCheckOut.toISOString().split('T')[0];
-            document.getElementById('checkOut').min = minCheckOutStr;
-
-            // Clear check-out if it's before new minimum
-            const currentCheckOut = document.getElementById('checkOut').value;
-            if (currentCheckOut && currentCheckOut <= this.value) {
-                document.getElementById('checkOut').value = '';
-            }
-        }
-    });
-
-    // Additional validation on form submit
-    document.getElementById('modalForm').addEventListener('submit', function(e) {
-        const checkIn = new Date(document.getElementById('checkIn').value);
-        const checkOut = new Date(document.getElementById('checkOut').value);
-
-        if (checkOut <= checkIn) {
-            e.preventDefault();
-            alert('Ngày check-out phải sau ngày check-in ít nhất 1 ngày!');
-            return false;
-        }
-
-        return true;
-    });
-
-    function closeModal(){
-        document.getElementById('roomOverlay').style.display = 'none';
-        document.body.style.overflow = '';
+    function formatVND(n) {
+        return new Intl.NumberFormat('vi-VN').format(n);
     }
-    /*]]>*/
+
+    function updateRangeFill() {
+        const min    = parseInt(priceMinInput.min);
+        const max    = parseInt(priceMinInput.max);
+        const valMin = parseInt(priceMinInput.value);
+        const valMax = parseInt(priceMaxInput.value);
+        const leftPct  = ((valMin - min) / (max - min)) * 100;
+        const rightPct = ((valMax - min) / (max - min)) * 100;
+        rangeFill.style.left  = leftPct + '%';
+        rangeFill.style.width = (rightPct - leftPct) + '%';
+        priceMinLabel.textContent = formatVND(valMin);
+        priceMaxLabel.textContent = formatVND(valMax);
+    }
+
+    priceMinInput.addEventListener('input', function () {
+        if (parseInt(this.value) > parseInt(priceMaxInput.value) - PRICE_GAP) {
+            this.value = parseInt(priceMaxInput.value) - PRICE_GAP;
+        }
+        updateRangeFill();
+        applyFilters();
+    });
+
+    priceMaxInput.addEventListener('input', function () {
+        if (parseInt(this.value) < parseInt(priceMinInput.value) + PRICE_GAP) {
+            this.value = parseInt(priceMinInput.value) + PRICE_GAP;
+        }
+        updateRangeFill();
+        applyFilters();
+    });
+
+    document.querySelectorAll('.type-checkbox').forEach(cb => {
+        cb.addEventListener('change', applyFilters);
+    });
+
+    document.querySelectorAll('input[name="sortOrder"]').forEach(r => {
+        r.addEventListener('change', applyFilters);
+    });
+
+    function applyFilters() {
+        const minPrice    = parseInt(priceMinInput.value);
+        const maxPrice    = parseInt(priceMaxInput.value);
+        const checkedTypes = Array.from(document.querySelectorAll('.type-checkbox:checked')).map(cb => cb.value);
+        const sortOrder   = document.querySelector('input[name="sortOrder"]:checked').value;
+        const cards       = Array.from(document.querySelectorAll('#roomList .room-card'));
+
+        // Filter
+        const visibleCards = [];
+        cards.forEach(card => {
+            const price = parseFloat(card.dataset.price);
+            const type  = card.dataset.type;
+            const show  = price >= minPrice && price <= maxPrice && checkedTypes.includes(type);
+            card.classList.toggle('hidden', !show);
+            if (show) visibleCards.push(card);
+        });
+
+        // Sort visible cards in-place
+        visibleCards.sort((a, b) => {
+            const pa = parseFloat(a.dataset.price);
+            const pb = parseFloat(b.dataset.price);
+            return sortOrder === 'asc' ? pa - pb : pb - pa;
+        });
+        visibleCards.forEach(card => roomListEl.appendChild(card));
+
+        // Count
+        filterCount.textContent = 'Tìm thấy ' + visibleCards.length + ' phòng';
+
+        // No-results message
+        noResults.style.display = visibleCards.length === 0 ? 'block' : 'none';
+    }
+
+    // Reset
+    document.getElementById('btnReset').addEventListener('click', function () {
+        priceMinInput.value = priceMinInput.min;
+        priceMaxInput.value = priceMaxInput.max;
+        document.querySelectorAll('.type-checkbox').forEach(cb => cb.checked = true);
+        document.querySelector('input[name="sortOrder"][value="asc"]').checked = true;
+        updateRangeFill();
+        applyFilters();
+    });
+
+    // Mobile filter toggle
+    document.getElementById('filterToggleBtn').addEventListener('click', function () {
+        const body = document.getElementById('filterBody');
+        body.classList.toggle('collapsed');
+        this.textContent = body.classList.contains('collapsed') ? '▶' : '▼';
+    });
+
+    // Initialise
+    updateRangeFill();
+    applyFilters();
 </script>
 
 <div th:replace="~{fragments/chatbot :: chatbot}"></div>
