@@ -51,7 +51,7 @@ public class Booking {
     @Column(nullable = false)
     private RefundStatus refundStatus;
 
-    @Column(name = "refund_percentage", columnDefinition = "INT DEFAULT 100")
+    @Column(name = "refund_percentage")
     private Integer refundPercentage = 100;
 
     @Column(name = "refund_amount")
@@ -69,11 +69,12 @@ public class Booking {
 
     // ========== WORKFLOW 3 FIELDS ==========
 
-    @Column(name = "qr_code", columnDefinition = "LONGTEXT")
+    @Column(name = "qr_code", columnDefinition = "NVARCHAR(MAX)")
     private String qrCode;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "check_in_status", columnDefinition = "VARCHAR(50) DEFAULT 'PENDING'")
+    @Column(name = "check_in_status")
+    @Builder.Default
     private CheckInStatus checkInStatus = CheckInStatus.PENDING;
 
     @Column(name = "actual_check_in_time")
@@ -82,7 +83,7 @@ public class Booking {
     @Column(name = "actual_check_out_time")
     private LocalDateTime actualCheckOutTime;
 
-    @Column(name = "check_in_notes", columnDefinition = "TEXT")
+    @Column(name = "check_in_notes", columnDefinition = "NVARCHAR(MAX)")
     private String checkInNotes;
 
     // ========== CCCD IMAGE UPLOAD FIELDS ==========
@@ -97,8 +98,6 @@ public class Booking {
 
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RefundTransaction refundTransaction;
-
-    // ========== END NEW FIELDS ==========
 
     @PrePersist
     public void onCreate() {

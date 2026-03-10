@@ -11,6 +11,8 @@ import com.hotelbookingsystem.repository.BookingRepository;
 import com.hotelbookingsystem.repository.RoomChangeRequestRepository;
 import com.hotelbookingsystem.service.BookingService;
 import com.hotelbookingsystem.service.RoomService;
+import com.hotelbookingsystem.service.UserService;
+import com.hotelbookingsystem.service.WalletService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,8 +22,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -40,9 +43,15 @@ public class BookingController {
     @Autowired
     private BookingRepository bookingRepository;
 
-    /**
-     * Bước 1: Xem trước thông tin đặt phòng
-     */
+    @Autowired
+    private WalletService walletService;
+
+    @Autowired
+    private UserService userService;  // ✅ Cần để refresh session sau khi trừ ví
+
+    // =========================================================
+    //  BƯỚC 1: Preview thông tin đặt phòng + hiển thị số dư ví
+    // =========================================================
     @PostMapping("/preview")
     public String previewBooking(
             @RequestParam Long roomId,
@@ -56,7 +65,8 @@ public class BookingController {
         User user = (User) session.getAttribute("user");
 
         if (user == null || !user.isProfileComplete()) {
-            ra.addFlashAttribute("error", "Vui lòng cập nhật đầy đủ thông tin hồ sơ (Họ tên, SĐT, CCCD) trước khi đặt phòng!");
+            ra.addFlashAttribute("error",
+                    "Vui lòng cập nhật đầy đủ thông tin hồ sơ (Họ tên, SĐT, CCCD) trước khi đặt phòng!");
             ra.addFlashAttribute("redirectUrl", "/rooms");
             return "redirect:/profile";
         }
@@ -67,18 +77,24 @@ public class BookingController {
         BigDecimal totalPrice = room.getPricePerNight()
                 .multiply(BigDecimal.valueOf(days));
 
-        model.addAttribute("room", room);
-        model.addAttribute("checkIn", checkIn);
-        model.addAttribute("checkOut", checkOut);
-        model.addAttribute("guests", guests);
-        model.addAttribute("totalPrice", totalPrice);
+        // Lấy số dư ví để hiển thị lựa chọn thanh toán
+        BigDecimal walletBalance = walletService.getBalance(user);
+        boolean walletSufficient = walletBalance.compareTo(totalPrice) >= 0;
+
+        model.addAttribute("room",            room);
+        model.addAttribute("checkIn",         checkIn);
+        model.addAttribute("checkOut",        checkOut);
+        model.addAttribute("guests",          guests);
+        model.addAttribute("totalPrice",      totalPrice);
+        model.addAttribute("walletBalance",   walletBalance);
+        model.addAttribute("walletSufficient", walletSufficient);
 
         return "bookingConfirm";
     }
 
-    /**
-     * Bước 2: Xác nhận đặt phòng và thanh toán
-     */
+    // =========================================================
+    //  BƯỚC 2: Xác nhận đặt phòng — chọn WALLET hoặc QR
+    // =========================================================
     @PostMapping("/confirm")
     public String confirmBooking(
             @RequestParam Long roomId,
@@ -86,6 +102,7 @@ public class BookingController {
             @RequestParam LocalDate checkOut,
             @RequestParam int guests,
             @RequestParam BigDecimal totalPrice,
+            @RequestParam(defaultValue = "QR") String paymentMethod,
             HttpSession session,
             Model model,
             RedirectAttributes ra
@@ -98,25 +115,57 @@ public class BookingController {
         }
 
         Room room = roomService.getRoomById(roomId);
-        bookingService.createBooking(user, room, checkIn, checkOut, guests);
 
-        model.addAttribute("room", room);
-        model.addAttribute("totalPrice", totalPrice);
+        if ("WALLET".equals(paymentMethod)) {
+            // ── THANH TOÁN BẰNG VÍ ──
+            BigDecimal currentBalance = walletService.getBalance(user);
+            boolean ok = walletService.debit(user, totalPrice);
 
-        return "vietqr";
+            if (!ok) {
+                ra.addFlashAttribute("error",
+                        "Số dư ví không đủ! Số dư hiện tại: "
+                                + String.format("%,.0f", currentBalance.doubleValue())
+                                + " VND. Vui lòng chọn thanh toán QR.");
+                return "redirect:/rooms/" + roomId;
+            }
+
+            // Tạo booking sau khi đã trừ ví thành công
+            bookingService.createBooking(user, room, checkIn, checkOut, guests);
+
+            // Refresh user trong session để cập nhật số dư ví mới
+            User refreshed = userService.getUserById(user.getId());
+            session.setAttribute("user", refreshed);
+
+            // Truyền data vào trang walletSuccess
+            BigDecimal remaining = walletService.getBalance(refreshed);
+            model.addAttribute("room",             room);
+            model.addAttribute("paidAmount",       totalPrice);
+            model.addAttribute("remainingBalance", remaining);
+
+            return "walletSuccess";
+
+        } else {
+            // ── THANH TOÁN QR (giữ nguyên luồng cũ) ──
+            bookingService.createBooking(user, room, checkIn, checkOut, guests);
+
+            model.addAttribute("room",       room);
+            model.addAttribute("totalPrice", totalPrice);
+
+            return "vietqr";
+        }
     }
 
-    /**
-     * Bước 3: Thông báo đặt phòng thành công
-     */
+    // =========================================================
+    //  BƯỚC 3: Trang thành công (dùng cho QR và redirect chung)
+    // =========================================================
     @GetMapping("/success")
     public String success() {
         return "bookingSuccess";
     }
 
-    /**
-     * Xem danh sách booking của tôi
-     */
+    // =========================================================
+    //  Danh sách booking của tôi
+    // =========================================================
     @GetMapping("/my")
     public String myBookings(HttpSession session, Model model, RedirectAttributes ra) {
         User user = (User) session.getAttribute("user");
@@ -128,30 +177,30 @@ public class BookingController {
 
         List<Booking> bookings = bookingService.getBookingsByUser(user);
 
-        java.util.Map<Long, RoomChangeRequest> pendingChangeMap = new java.util.HashMap<>();
+        // Map bookingId → RoomChangeRequest đang PENDING (để hiển thị trạng thái trên UI)
+        Map<Long, RoomChangeRequest> pendingChangeMap = new HashMap<>();
         roomChangeRequestRepository.findByUser(user).stream()
                 .filter(r -> r.getStatus() == RoomChangeStatus.PENDING)
                 .forEach(r -> pendingChangeMap.put(r.getBooking().getId(), r));
 
-        model.addAttribute("bookings", bookings);
+        // Lấy số dư ví để hiển thị trên trang
+        BigDecimal walletBalance = walletService.getBalance(user);
+
+        model.addAttribute("bookings",        bookings);
         model.addAttribute("pendingChangeMap", pendingChangeMap);
+        model.addAttribute("walletBalance",   walletBalance);
+
         return "bookingList";
     }
 
-    /**
-     * Hủy đơn đặt phòng — business rule 3 mức:
-     * - >= 7 ngày trước check-in: hoàn 100%
-     * - >= 3 ngày trước check-in: hoàn 50%
-     * - < 3 ngày trước check-in (dưới 24h tính luôn): mất toàn bộ
-     * - User phải nhập thông tin CK nếu được hoàn tiền (>= 3 ngày)
-     */
+    // =========================================================
+    //  Hủy booking — tiền hoàn sẽ vào ví sau khi admin duyệt
+    //  (không cần nhập thông tin ngân hàng nữa)
+    // =========================================================
     @PostMapping("/{id}/cancel")
     public String cancelBooking(
             @PathVariable Long id,
             @RequestParam(required = false) String reason,
-            @RequestParam(required = false) String bankName,
-            @RequestParam(required = false) String accountNumber,
-            @RequestParam(required = false) String accountHolderName,
             HttpSession session,
             RedirectAttributes ra
     ) {
@@ -162,6 +211,7 @@ public class BookingController {
             return "redirect:/login";
         }
 
+        // Parse lý do hủy
         CancellationReason cancellationReason = CancellationReason.OTHER;
         try {
             if (reason != null && !reason.isEmpty()) {
@@ -171,88 +221,66 @@ public class BookingController {
             cancellationReason = CancellationReason.OTHER;
         }
 
-        // Validate thông tin chuyển khoản — chỉ bắt buộc nếu >= 3 ngày (có hoàn tiền)
-        Optional<Booking> checkBooking = bookingRepository.findByIdAndUser(id, user);
-        if (checkBooking.isPresent()) {
-            Booking bk = checkBooking.get();
-            long daysUntilCheckIn = ChronoUnit.DAYS.between(LocalDate.now(), bk.getCheckIn());
-
-            // >= 3 ngày → có hoàn tiền → bắt buộc nhập thông tin CK
-            if (daysUntilCheckIn >= 3) {
-                if (bankName == null || bankName.trim().isEmpty()
-                        || accountNumber == null || accountNumber.trim().isEmpty()
-                        || accountHolderName == null || accountHolderName.trim().isEmpty()) {
-                    ra.addFlashAttribute("error", "Vui lòng cung cấp đầy đủ thông tin tài khoản ngân hàng để chúng tôi xử lý hoàn tiền cho Quý khách.");
-                    return "redirect:/booking/my";
-                }
-            }
-        }
-
-        if (bankName == null || bankName.trim().isEmpty()) bankName = "";
-        if (accountNumber == null || accountNumber.trim().isEmpty()) accountNumber = "";
-        if (accountHolderName == null || accountHolderName.trim().isEmpty()) accountHolderName = "";
-
+        // Truyền chuỗi rỗng cho bank info vì tiền hoàn vào ví thay vì chuyển khoản
         CancelResult result = bookingService.cancelBooking(
                 id, user, cancellationReason,
-                bankName.trim(), accountNumber.trim(), accountHolderName.trim()
+                "", "", ""
         );
 
         switch (result) {
             case SUCCESS:
-                Optional<Booking> booking = bookingRepository.findByIdAndUser(id, user);
-                if (booking.isPresent()) {
-                    Booking b = booking.get();
+                Optional<Booking> bookingOpt = bookingRepository.findByIdAndUser(id, user);
+                if (bookingOpt.isPresent()) {
+                    Booking b = bookingOpt.get();
                     Integer refundPercentage = b.getRefundPercentage();
-                    BigDecimal refundAmount = b.getRefundAmount();
-
+                    BigDecimal refundAmount  = b.getRefundAmount();
                     String reasonText = b.getCancellationReason() != null
                             ? b.getCancellationReason().getLabel()
                             : "Không xác định";
 
                     if (refundPercentage != null && refundPercentage > 0) {
                         String message = String.format(
-                                "Yêu cầu hủy đặt phòng đã được xử lý thành công.\n" +
-                                        "Lý do hủy: %s\n" +
-                                        "Mức hoàn tiền: %d%% — Số tiền hoàn: %,.0f VND\n" +
-                                        "Khoản hoàn tiền sẽ được chuyển vào tài khoản của Quý khách trong vòng 24 giờ làm việc.\n" +
-                                        "Bộ phận hỗ trợ sẽ xử lý giao dịch trong thời gian sớm nhất.",
+                                "✅ Hủy đặt phòng thành công!\n"
+                                        + "Lý do: %s\n"
+                                        + "Hoàn %d%% — %,.0f VND sẽ được cộng vào ví của bạn sau khi admin xử lý.",
                                 reasonText,
                                 refundPercentage,
                                 refundAmount != null ? refundAmount.doubleValue() : 0
                         );
                         ra.addFlashAttribute("message", message);
                     } else {
-                        String message = String.format(
-                                "Yêu cầu hủy đặt phòng đã được xử lý thành công.\n" +
-                                        "Lý do hủy: %s\n" +
-                                        "Theo chính sách hủy phòng, yêu cầu hủy trong vòng 3 ngày trước ngày nhận phòng sẽ không được hoàn tiền.",
-                                reasonText
-                        );
-                        ra.addFlashAttribute("message", message);
+                        ra.addFlashAttribute("message",
+                                "✅ Hủy đặt phòng thành công!\n"
+                                        + "Lý do: " + reasonText + "\n"
+                                        + "Không hoàn tiền do hủy trong vòng 3 ngày trước ngày check-in.");
                     }
                 } else {
-                    ra.addFlashAttribute("message", "Yêu cầu hủy đặt phòng đã được xử lý thành công.");
+                    ra.addFlashAttribute("message", "✅ Hủy đặt phòng thành công.");
                 }
                 break;
+
             case NOT_FOUND:
-                ra.addFlashAttribute("error", "Không tìm thấy thông tin đặt phòng. Vui lòng thử lại hoặc liên hệ bộ phận hỗ trợ.");
+                ra.addFlashAttribute("error", "Không tìm thấy thông tin đặt phòng. Vui lòng thử lại.");
                 break;
+
             case ALREADY_CANCELLED:
                 ra.addFlashAttribute("error", "Đặt phòng này đã được hủy trước đó.");
                 break;
+
             case TOO_LATE:
-                ra.addFlashAttribute("error", "Không thể hủy đặt phòng. Yêu cầu hủy đã quá thời hạn cho phép.");
+                ra.addFlashAttribute("error", "Không thể hủy, đã quá thời hạn cho phép.");
                 break;
+
             default:
-                ra.addFlashAttribute("error", "Không thể xử lý yêu cầu hủy đặt phòng. Vui lòng thử lại sau.");
+                ra.addFlashAttribute("error", "Không thể xử lý yêu cầu hủy. Vui lòng thử lại.");
         }
 
         return "redirect:/booking/my";
     }
 
-    /**
-     * Người dùng xác nhận đã nhận được tiền hoàn trả
-     */
+    // =========================================================
+    //  User xác nhận đã nhận tiền hoàn (legacy flow)
+    // =========================================================
     @PostMapping("/{id}/confirm-refund")
     public String confirmRefundReceived(
             @PathVariable Long id,
@@ -268,9 +296,9 @@ public class BookingController {
 
         boolean ok = bookingService.userConfirmRefundReceived(id, user);
         if (ok) {
-            ra.addFlashAttribute("message", "Cảm ơn! Bạn đã xác nhận đã nhận tiền hoàn trả.");
+            ra.addFlashAttribute("message", "✅ Xác nhận nhận tiền hoàn thành công.");
         } else {
-            ra.addFlashAttribute("error", "Không thể xác nhận nhận tiền (kiểm tra trạng thái hoàn tiền).");
+            ra.addFlashAttribute("error", "Không thể xác nhận. Vui lòng kiểm tra trạng thái hoàn tiền.");
         }
         return "redirect:/booking/my";
     }

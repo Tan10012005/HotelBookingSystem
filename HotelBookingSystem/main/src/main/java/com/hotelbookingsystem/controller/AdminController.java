@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -365,49 +366,67 @@ public class AdminController {
     }
 
     /* ===== REVENUE CHART ===== */
-
     @GetMapping("/revenue")
     public String revenuePage(
             @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) LocalDate to,
             HttpSession session, Model model, RedirectAttributes ra
     ) {
         if (!isAdminSession(session, ra)) return "redirect:/login";
 
         int selectedYear = (year != null) ? year : java.time.LocalDate.now().getYear();
 
-        // Doanh thu theo ngày (30 ngày gần nhất)
-        Map<String, java.math.BigDecimal> dailyRevenue = revenueService.getDailyRevenue(30);
+        // Default date range: last 30 days
+        LocalDate dateFrom = (from != null) ? from : LocalDate.now().minusDays(29);
+        LocalDate dateTo   = (to   != null) ? to   : LocalDate.now();
+        if (dateTo.isBefore(dateFrom)) dateTo = dateFrom;
 
-        // Doanh thu theo tháng
-        Map<String, BigDecimal> monthlyRevenue = revenueService.getMonthlyRevenue(selectedYear);
+        // ── Biểu đồ theo khoảng ngày (thay thế "30 ngày gần nhất") ──
+        Map<String, java.math.BigDecimal> dateRangeRevenue = revenueService.getRevenueByDateRange(dateFrom, dateTo);
 
-        // Doanh thu theo quý
+        // ── Biểu đồ tháng / quý / năm ──
+        Map<String, java.math.BigDecimal> monthlyRevenue   = revenueService.getMonthlyRevenue(selectedYear);
         Map<String, java.math.BigDecimal> quarterlyRevenue = revenueService.getQuarterlyRevenue(selectedYear);
+        Map<String, java.math.BigDecimal> yearlyRevenue    = revenueService.getYearlyRevenue();
 
-        // Doanh thu theo năm (5 năm gần nhất)
-        Map<String, java.math.BigDecimal> yearlyRevenue = revenueService.getYearlyRevenue();
-
-        // Stats tổng
-        model.addAttribute("totalRevenue", revenueService.getTotalRevenue());
-        model.addAttribute("currentMonthRevenue", revenueService.getCurrentMonthRevenue());
-        model.addAttribute("todayRevenue", revenueService.getTodayRevenue());
+        // ── Stats tổng ──
+        model.addAttribute("totalRevenue",           revenueService.getTotalRevenue());
+        model.addAttribute("currentMonthRevenue",    revenueService.getCurrentMonthRevenue());
+        model.addAttribute("todayRevenue",           revenueService.getTodayRevenue());
         model.addAttribute("totalConfirmedBookings", revenueService.getTotalConfirmedBookings());
 
-        // Chart data
-        model.addAttribute("dailyLabels", new java.util.ArrayList<>(dailyRevenue.keySet()));
-        model.addAttribute("dailyValues", new java.util.ArrayList<>(dailyRevenue.values()));
+        // ── Date range stats ──
+        model.addAttribute("dateRangeRevenue",       revenueService.getTotalByDateRange(dateFrom, dateTo));
+        model.addAttribute("dateRangeBookingCount",  revenueService.getBookingCountByDateRange(dateFrom, dateTo));
+        model.addAttribute("dateFrom", dateFrom);
+        model.addAttribute("dateTo",   dateTo);
 
-        model.addAttribute("monthlyLabels", new java.util.ArrayList<>(monthlyRevenue.keySet()));
-        model.addAttribute("monthlyValues", new java.util.ArrayList<>(monthlyRevenue.values()));
+        // ── Chart data ──
+        model.addAttribute("dateRangeLabels", new java.util.ArrayList<>(dateRangeRevenue.keySet()));
+        model.addAttribute("dateRangeValues", new java.util.ArrayList<>(dateRangeRevenue.values()));
+
+        model.addAttribute("monthlyLabels",   new java.util.ArrayList<>(monthlyRevenue.keySet()));
+        model.addAttribute("monthlyValues",   new java.util.ArrayList<>(monthlyRevenue.values()));
 
         model.addAttribute("quarterlyLabels", new java.util.ArrayList<>(quarterlyRevenue.keySet()));
         model.addAttribute("quarterlyValues", new java.util.ArrayList<>(quarterlyRevenue.values()));
 
-        model.addAttribute("yearlyLabels", new java.util.ArrayList<>(yearlyRevenue.keySet()));
-        model.addAttribute("yearlyValues", new java.util.ArrayList<>(yearlyRevenue.values()));
+        model.addAttribute("yearlyLabels",    new java.util.ArrayList<>(yearlyRevenue.keySet()));
+        model.addAttribute("yearlyValues",    new java.util.ArrayList<>(yearlyRevenue.values()));
+
+        // ── Room rankings ──
+        model.addAttribute("mostBookedRooms",  revenueService.getMostBookedRooms(5));
+        model.addAttribute("leastBookedRooms", revenueService.getLeastBookedRooms(5));
+
+        // ── YoY comparison data (cho modal báo cáo) ──
+        Map<String, Object> yoyMonthly   = revenueService.getYearlyComparison(selectedYear);
+        Map<String, Object> yoyQuarterly = revenueService.getQuarterlyComparison(selectedYear);
+        model.addAttribute("yoyMonthly",   yoyMonthly);
+        model.addAttribute("yoyQuarterly", yoyQuarterly);
 
         model.addAttribute("selectedYear", selectedYear);
-        model.addAttribute("currentYear", java.time.LocalDate.now().getYear());
+        model.addAttribute("currentYear",  java.time.LocalDate.now().getYear());
 
         return "admin/revenue";
     }

@@ -5,7 +5,8 @@ import com.hotelbookingsystem.enums.BookingStatus;
 import com.hotelbookingsystem.enums.RoomStatus;
 import com.hotelbookingsystem.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Component
-public class DataInitializer implements CommandLineRunner {
+public class DataInitializer {
 
     @Autowired
     private UserRepository userRepo;
@@ -30,8 +31,8 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private BookingRepository bookingRepo;
 
-    @Override
-    public void run(String... args) {
+    @EventListener(ApplicationReadyEvent.class)
+    public void init() {
 
         // ===== CREATE ADMIN ACCOUNT =====
         Admin admin = adminRepo.findByUsername("admin");
@@ -56,6 +57,7 @@ public class DataInitializer implements CommandLineRunner {
                     .email("user@test.com")
                     .password("123456")
                     .role("USER")
+                    .isActive(true)
                     .createdAt(LocalDateTime.now())
                     .build());
         }
@@ -161,6 +163,8 @@ public class DataInitializer implements CommandLineRunner {
                     .guests(2)
                     .totalPrice(room102.getPricePerNight().multiply(BigDecimal.valueOf(days1)))
                     .status(BookingStatus.CONFIRMED)
+                    .refundStatus(com.hotelbookingsystem.enums.RefundStatus.NONE)
+                    .refundPercentage(100)
                     .build());
         }
 
@@ -179,6 +183,8 @@ public class DataInitializer implements CommandLineRunner {
                     .guests(3)
                     .totalPrice(room201.getPricePerNight().multiply(BigDecimal.valueOf(days2)))
                     .status(BookingStatus.CONFIRMED)
+                    .refundStatus(com.hotelbookingsystem.enums.RefundStatus.NONE)
+                    .refundPercentage(100)
                     .build());
         }
 
@@ -198,6 +204,8 @@ public class DataInitializer implements CommandLineRunner {
                     .guests(1)
                     .totalPrice(room101.getPricePerNight().multiply(BigDecimal.valueOf(days3)))
                     .status(BookingStatus.CANCELLED)
+                    .refundStatus(com.hotelbookingsystem.enums.RefundStatus.NONE)
+                    .refundPercentage(0)
                     .build());
         }
 

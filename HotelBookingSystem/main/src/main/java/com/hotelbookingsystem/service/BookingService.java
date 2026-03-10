@@ -4,6 +4,7 @@ import com.hotelbookingsystem.entity.Booking;
 import com.hotelbookingsystem.entity.RefundTransaction;
 import com.hotelbookingsystem.entity.Room;
 import com.hotelbookingsystem.entity.User;
+import com.hotelbookingsystem.entity.Wallet;
 import com.hotelbookingsystem.enums.CancelResult;
 import com.hotelbookingsystem.enums.CancellationReason;
 
@@ -24,9 +25,10 @@ public interface BookingService {
     List<Booking> getBookingsByUser(User user);
 
     /**
-     * Hủy booking với business rule mới:
-     * - Hủy >= 5 ngày trước check-in: hoàn 50%
-     * - Hủy < 5 ngày trước check-in: không hoàn tiền (0%)
+     * Hủy booking với business rule 3 mức:
+     * - Hủy >= 7 ngày trước check-in: hoàn 100%
+     * - Hủy >= 3 ngày và < 7 ngày: hoàn 50%
+     * - Hủy < 3 ngày: không hoàn tiền (0%)
      * - Yêu cầu thông tin chuyển khoản để tạo RefundTransaction
      */
     CancelResult cancelBooking(Long bookingId, User user,
@@ -36,7 +38,10 @@ public interface BookingService {
     boolean adminMarkRefundTransferred(Long bookingId);
 
     /**
-     * Admin xử lý giao dịch hoàn tiền - thực hiện chuyển khoản
+     * Admin xử lý giao dịch hoàn tiền:
+     * - Cộng tiền vào ví user
+     * - Cập nhật trạng thái RefundTransaction → COMPLETED
+     * - Cập nhật RefundStatus booking → RECEIVED
      */
     boolean adminProcessRefundTransaction(Long transactionId, String adminNote);
 
@@ -46,13 +51,14 @@ public interface BookingService {
 
     Integer getRefundPercentage(Booking booking);
 
-    /**
-     * Lấy tất cả RefundTransaction đang chờ xử lý (cho admin)
-     */
+    /** Lấy tất cả RefundTransaction đang chờ xử lý (cho admin) */
     List<RefundTransaction> getPendingRefundTransactions();
 
-    /**
-     * Lấy tất cả RefundTransaction (cho admin)
-     */
+    /** Lấy tất cả RefundTransaction (cho admin) */
     List<RefundTransaction> getAllRefundTransactions();
+
+    /**
+     * Lấy ví của user, tạo mới nếu chưa có
+     */
+    Wallet getOrCreateWallet(User user);
 }

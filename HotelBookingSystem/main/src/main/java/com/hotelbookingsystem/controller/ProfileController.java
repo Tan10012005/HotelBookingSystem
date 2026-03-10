@@ -2,6 +2,7 @@ package com.hotelbookingsystem.controller;
 
 import com.hotelbookingsystem.entity.User;
 import com.hotelbookingsystem.service.UserService;
+import com.hotelbookingsystem.service.WalletService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,12 +13,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private WalletService walletService;   // ✅ THÊM MỚI
 
     @GetMapping
     public String viewProfile(HttpSession session, Model model, RedirectAttributes ra) {
@@ -28,11 +34,16 @@ public class ProfileController {
             return "redirect:/login";
         }
 
-        // Refresh user data from database
+        // Refresh user data từ DB
         User currentUser = userService.getUserById(user.getId());
         session.setAttribute("user", currentUser);
 
+        // ✅ Lấy số dư ví từ WalletService (bảng wallets riêng)
+        BigDecimal walletBalance = walletService.getBalance(currentUser);
+
         model.addAttribute("user", currentUser);
+        model.addAttribute("walletBalance", walletBalance);   // ✅ THÊM MỚI
+
         return "profile";
     }
 
@@ -51,14 +62,14 @@ public class ProfileController {
             return "redirect:/login";
         }
 
-        // Validation
         if (fullName == null || fullName.isBlank()) {
             ra.addFlashAttribute("error", "Vui lòng nhập họ tên");
             return "redirect:/profile";
         }
 
         if (phoneNumber == null || !phoneNumber.matches("^0[0-9]{9,10}$")) {
-            ra.addFlashAttribute("error", "Số điện thoại không hợp lệ (phải bắt đầu bằng 0 và có 10-11 số)");
+            ra.addFlashAttribute("error",
+                    "Số điện thoại không hợp lệ (phải bắt đầu bằng 0 và có 10-11 số)");
             return "redirect:/profile";
         }
 
@@ -67,7 +78,6 @@ public class ProfileController {
             return "redirect:/profile";
         }
 
-        // Update user
         User updatedUser = userService.updateProfile(user.getId(), fullName, phoneNumber, citizenId);
         session.setAttribute("user", updatedUser);
 

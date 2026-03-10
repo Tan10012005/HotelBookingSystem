@@ -20,31 +20,22 @@ public class RoomChangeRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /** Booking cần đổi phòng */
     @ManyToOne
     @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
 
-    /** User yêu cầu đổi */
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    /** Phòng hiện tại */
     @ManyToOne
     @JoinColumn(name = "old_room_id", nullable = false)
     private Room oldRoom;
 
-    /** Phòng muốn chuyển sang */
     @ManyToOne
     @JoinColumn(name = "new_room_id", nullable = false)
     private Room newRoom;
 
-    /**
-     * Chênh lệch giá = (newRoom.pricePerNight - oldRoom.pricePerNight) * số đêm
-     * > 0: upgrade (user phải trả thêm)
-     * = 0: ngang hạng (không phát sinh thêm)
-     */
     @Column(nullable = false)
     private BigDecimal priceDifference;
 
@@ -53,8 +44,7 @@ public class RoomChangeRequest {
     @Builder.Default
     private RoomChangeStatus status = RoomChangeStatus.PENDING;
 
-    /** Ghi chú của admin khi duyệt/từ chối */
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String adminNote;
 
     private LocalDateTime requestedAt;

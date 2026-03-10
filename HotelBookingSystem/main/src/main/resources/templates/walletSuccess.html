@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Thanh toán thành công — Hotel Booking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
+    <style>
+        *{box-sizing:border-box} html,body{height:100%;margin:0;}
+        body{font-family:'Inter',sans-serif;color:#0f172a;background:#f5f7fa;}
+        .bg{position:fixed;inset:0;z-index:-2;background-size:cover;background-position:center;filter:blur(6px) brightness(0.86);transform:scale(1.03);}
+        .bg-overlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.14),rgba(255,255,255,.02));z-index:-1;pointer-events:none;}
+        .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 18px;}
+        .card{width:100%;max-width:460px;background:rgba(255,255,255,.98);border-radius:20px;padding:44px 40px;box-shadow:0 12px 40px rgba(11,24,40,.12);text-align:center;animation:fadeUp .4s ease both;}
+        @keyframes fadeUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+        .icon-wrap{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#5b21b6);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:36px;box-shadow:0 8px 24px rgba(124,58,237,.3);}
+        h2{margin:0 0 8px;font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#29a14a;}
+        .sub{color:#6b7280;font-size:14px;margin:0 0 28px;}
+        .info-box{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:12px;padding:16px 20px;margin-bottom:24px;text-align:left;}
+        .info-row{display:flex;justify-content:space-between;padding:7px 0;font-size:14px;border-bottom:1px solid #ede9fe;}
+        .info-row:last-child{border-bottom:none;}
+        .info-label{color:#6b7280;}
+        .info-val{font-weight:700;color:#0f172a;}
+        .wallet-remaining{background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px 16px;font-size:14px;font-weight:700;color:#166534;margin-bottom:24px;display:flex;align-items:center;gap:8px;}
+        .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none;transition:all .2s;border:none;cursor:pointer;}
+        .btn-primary{background:linear-gradient(90deg,#29a14a,#178e3a);color:#fff;box-shadow:0 6px 16px rgba(23,142,58,.25);}
+        .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(23,142,58,.3);}
+        .btn-outline{background:#f1f5f9;color:#475569;margin-left:10px;}
+        .btn-outline:hover{background:#e2e8f0;}
+        .actions-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+    </style>
+</head>
+<body>
+<div class="bg" th:style="'background-image: url(' + @{/images/backgrounds/nen.jpg} + ');'"></div>
+<div class="bg-overlay"></div>
+
+<main class="page">
+    <div class="card">
+        <div class="icon-wrap">🪙</div>
+        <h2>Thanh toán thành công!</h2>
+        <p class="sub">Đặt phòng đã được xác nhận. Số dư ví đã được trừ thành công.</p>
+
+        <div class="info-box">
+            <div class="info-row">
+                <span class="info-label">Phòng</span>
+                <span class="info-val" th:text="'Phòng ' + ${room != null ? room.roomNumber : '---'}">101</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Số tiền đã trừ</span>
+                <span class="info-val" style="color:#7c3aed;"
+                      th:text="${#numbers.formatDecimal(paidAmount,0,'COMMA',0,'POINT')} + ' VND'">0 VND</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Phương thức</span>
+                <span class="info-val">🪙 Số dư ví</span>
+            </div>
+        </div>
+
+        <div class="wallet-remaining">
+            <i class="fa-solid fa-wallet" style="color:#7c3aed;"></i>
+            Số dư ví còn lại: <strong th:text="${#numbers.formatDecimal(remainingBalance,0,'COMMA',0,'POINT')} + ' VND'">0 VND</strong>
+        </div>
+
+        <div class="actions-row">
+            <a href="/booking/my" class="btn btn-primary">
+                <i class="fa-solid fa-list-check"></i> Xem đơn đặt phòng
+            </a>
+            <a href="/rooms" class="btn btn-outline">
+                <i class="fa-solid fa-door-open"></i> Đặt thêm phòng
+            </a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments/chatbot :: chatbot}"></div>
+</body>
+</html>

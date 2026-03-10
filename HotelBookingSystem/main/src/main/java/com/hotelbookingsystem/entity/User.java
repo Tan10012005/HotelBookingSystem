@@ -3,6 +3,7 @@ package com.hotelbookingsystem.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -37,10 +38,17 @@ public class User {
 
     @Column(nullable = false)
     @Builder.Default
-    private Boolean isActive = true; // true = active, false = banned
+    private Boolean isActive = true;
 
     @Column(length = 20)
-    private String authProvider;  // "LOCAL" hoặc "GOOGLE"
+    private String authProvider;
+
+    // ===================== WALLET =====================
+    /** Số dư ví — được cộng khi admin xử lý hoàn tiền */
+    @Column(name = "wallet_balance", precision = 15, scale = 2)
+    @Builder.Default
+    private BigDecimal walletBalance = BigDecimal.ZERO;
+    // ==================================================
 
     private LocalDateTime createdAt;
 
@@ -52,5 +60,10 @@ public class User {
 
     public boolean isAdmin() {
         return "ADMIN".equalsIgnoreCase(role);
+    }
+
+    /** Helper: lấy số dư ví an toàn (không null) */
+    public BigDecimal safeWalletBalance() {
+        return walletBalance != null ? walletBalance : BigDecimal.ZERO;
     }
 }

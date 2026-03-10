@@ -1,523 +1,688 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Thống kê doanh thu — Admin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <style>
-    :root {
-      --accent: #7c3aed;
-      --sidebar: #1e1b4b;
-      --accent-1: #29a14a;
-      --accent-2: #178e3a;
-      --muted: #6b7280;
-      --card: #ffffff;
-      --bg: #f5f3ff;
-      --radius: 12px;
-      --shadow: 0 10px 30px rgba(11, 24, 40, 0.08);
-    }
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Thống kê doanh thu — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --accent:#7c3aed; --sidebar:#1e1b4b; --green:#10b981; --amber:#f59e0b;
+            --blue:#3b82f6; --red:#ef4444; --muted:#6b7280; --card:#fff;
+            --bg:#f5f3ff; --radius:12px; --shadow:0 8px 24px rgba(11,24,40,.07);
+        }
+        * { box-sizing:border-box; }
+        body { font-family:Inter,system-ui,Arial; color:#0f172a; margin:0; background:var(--bg); }
 
-    * { box-sizing: border-box }
+        /* SIDEBAR */
+        .sidebar { width:240px; position:fixed; top:0; left:0; height:100vh; background:var(--sidebar); padding:28px 0; z-index:100; }
+        .sidebar-logo { color:#fff; font-size:17px; font-weight:700; padding:0 24px 28px; border-bottom:1px solid rgba(255,255,255,.1); }
+        .sidebar-menu { list-style:none; margin:20px 0 0; padding:0; }
+        .sidebar-menu a { display:flex; align-items:center; gap:12px; padding:12px 24px; color:rgba(255,255,255,.75); text-decoration:none; font-size:14px; font-weight:500; transition:all .2s; }
+        .sidebar-menu a:hover,.sidebar-menu a.active { background:rgba(255,255,255,.12); color:#fff; border-left:3px solid var(--accent); padding-left:21px; }
+        .sidebar-menu a.active { background:rgba(124,58,237,.25); }
 
-    body {
-      font-family: Inter, system-ui, Arial;
-      color: #0f172a; margin: 0;
-      background: var(--bg);
-    }
+        /* MAIN */
+        .main { margin-left:240px; padding:28px 32px; }
 
-    /* ===== SIDEBAR ===== */
-    .sidebar {
-      width: 240px; position: fixed; top: 0; left: 0; height: 100vh;
-      background: var(--sidebar); padding: 28px 0; z-index: 100;
-    }
+        /* PAGE HEADER */
+        .page-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; gap:16px; flex-wrap:wrap; }
+        .page-title  { font-size:24px; font-weight:700; margin:0 0 4px; }
+        .page-sub    { color:var(--muted); font-size:13px; }
+        .header-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 
-    .sidebar-logo {
-      color: white; font-size: 17px; font-weight: 700;
-      padding: 0 24px 28px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
+        /* DATE RANGE FILTER */
+        .filter-bar {
+            background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+            padding:16px 20px; margin-bottom:20px;
+            display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+        }
+        .filter-bar label { font-size:13px; font-weight:600; color:var(--muted); white-space:nowrap; }
+        .filter-bar input[type=date] {
+            padding:8px 12px; border:2px solid #e5e7eb; border-radius:8px;
+            font-size:13px; font-family:Inter,sans-serif; color:#0f172a; background:#fff; cursor:pointer;
+        }
+        .filter-bar input[type=date]:focus { outline:none; border-color:var(--accent); }
+        .btn { padding:9px 16px; border-radius:8px; font-size:13px; font-weight:700; border:none; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
+        .btn-primary  { background:linear-gradient(135deg,var(--accent),#5b21b6); color:#fff; box-shadow:0 4px 12px rgba(124,58,237,.25); }
+        .btn-primary:hover  { transform:translateY(-1px); box-shadow:0 6px 16px rgba(124,58,237,.3); }
+        .btn-report   { background:linear-gradient(135deg,#0ea5e9,#0284c7); color:#fff; box-shadow:0 4px 12px rgba(14,165,233,.25); }
+        .btn-report:hover   { transform:translateY(-1px); }
+        .btn-year     { background:#f3f4f6; color:#374151; border:2px solid #e5e7eb; }
+        .btn-year:hover { background:#e5e7eb; }
+        .year-select  { padding:8px 14px; border:2px solid #e5e7eb; border-radius:8px; font-size:14px; font-weight:600; background:#fff; cursor:pointer; color:#0f172a; }
+        .year-select:focus { outline:none; border-color:var(--accent); }
 
-    .sidebar-menu { list-style: none; margin: 20px 0 0; padding: 0; }
+        /* STATS GRID */
+        .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:22px; }
+        .stat-card {
+            background:var(--card); padding:18px 20px; border-radius:var(--radius);
+            box-shadow:var(--shadow); border-left:4px solid transparent; position:relative; overflow:hidden;
+        }
+        .stat-card:nth-child(1) { border-left-color:#7c3aed; }
+        .stat-card:nth-child(2) { border-left-color:var(--green); }
+        .stat-card:nth-child(3) { border-left-color:var(--amber); }
+        .stat-card:nth-child(4) { border-left-color:var(--blue); }
+        .stat-label { font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+        .stat-value { font-size:22px; font-weight:700; color:#0f172a; }
+        .stat-unit  { font-size:12px; color:var(--muted); margin-top:2px; }
+        .stat-change { font-size:12px; font-weight:700; margin-top:6px; }
+        .stat-change.up   { color:#059669; }
+        .stat-change.down { color:#dc2626; }
+        .stat-change.flat { color:var(--muted); }
 
-    .sidebar-menu a {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 24px; color: rgba(255, 255, 255, 0.75);
-      text-decoration: none; font-size: 14px; font-weight: 500;
-      transition: all 0.2s;
-    }
+        /* CONTENT LAYOUT: chart area + side panel */
+        .content-wrap { display:grid; grid-template-columns:1fr 320px; gap:20px; align-items:start; }
 
-    .sidebar-menu a:hover, .sidebar-menu a.active {
-      background: rgba(255, 255, 255, 0.12); color: white;
-      border-left: 3px solid var(--accent); padding-left: 21px;
-    }
+        /* CHARTS AREA */
+        .charts-area { display:flex; flex-direction:column; gap:20px; }
+        .chart-card  { background:var(--card); padding:22px; border-radius:var(--radius); box-shadow:var(--shadow); }
+        .charts-row  { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        .chart-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+        .chart-title  { font-size:15px; font-weight:700; color:#1f2937; display:flex; align-items:center; gap:8px; }
+        .chart-badge  { font-size:10px; font-weight:700; padding:3px 9px; border-radius:999px; }
+        .badge-purple { background:#ede9fe; color:#7c3aed; }
+        .badge-green  { background:#d1fae5; color:#065f46; }
+        .badge-amber  { background:#fef3c7; color:#92400e; }
+        .badge-blue   { background:#dbeafe; color:#1d4ed8; }
+        .chart-wrap   { position:relative; width:100%; height:280px; }
+        .chart-wrap canvas { width:100%!important; height:100%!important; }
 
-    .sidebar-menu a.active { background: rgba(124, 58, 237, 0.25); }
+        /* SIDE PANEL */
+        .side-panel { display:flex; flex-direction:column; gap:16px; }
+        .panel-card  { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; }
+        .panel-title { font-size:14px; font-weight:700; color:#1f2937; margin:0 0 14px; display:flex; align-items:center; gap:8px; }
 
-    /* ===== MAIN ===== */
-    .main { margin-left: 240px; padding: 32px; }
+        /* Date range summary */
+        .range-summary { background:linear-gradient(135deg,#ede9fe,#ddd6fe); border-radius:10px; padding:14px 16px; margin-bottom:4px; }
+        .range-total   { font-size:22px; font-weight:800; color:#5b21b6; }
+        .range-label   { font-size:12px; color:#7c3aed; font-weight:600; margin-top:2px; }
+        .range-meta    { font-size:12px; color:#6d28d9; margin-top:6px; }
 
-    .page-header {
-      display: flex; justify-content: space-between;
-      align-items: center; margin-bottom: 24px;
-    }
+        /* Room rankings */
+        .room-rank-item {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:8px 0; border-bottom:1px solid #f3f4f6; font-size:13px;
+        }
+        .room-rank-item:last-child { border-bottom:none; }
+        .room-rank-left  { display:flex; align-items:center; gap:8px; }
+        .rank-num        { width:22px; height:22px; border-radius:50%; background:#ede9fe; color:#7c3aed; font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .rank-num.top1   { background:#fef9c3; color:#854d0e; }
+        .rank-num.top2   { background:#f1f5f9; color:#475569; }
+        .rank-num.top3   { background:#fef3c7; color:#92400e; }
+        .room-name       { font-weight:700; color:#0f172a; }
+        .room-count      { font-size:12px; color:var(--muted); }
+        .count-badge     { background:#ede9fe; color:#7c3aed; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; }
+        .count-badge.low { background:#fee2e2; color:#991b1b; }
 
-    .page-title { font-size: 24px; font-weight: 700; }
-    .page-subtitle { color: var(--muted); font-size: 14px; margin-top: 4px; }
+        /* YoY quick stats */
+        .yoy-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid #f3f4f6; font-size:13px; }
+        .yoy-row:last-child { border-bottom:none; }
+        .yoy-quarter { font-weight:700; color:#0f172a; }
+        .yoy-curr    { color:#059669; font-weight:700; }
+        .yoy-pct     { font-size:11px; font-weight:800; padding:2px 7px; border-radius:999px; }
+        .pct-up      { background:#dcfce7; color:#15803d; }
+        .pct-down    { background:#fee2e2; color:#dc2626; }
+        .pct-flat    { background:#f3f4f6; color:#6b7280; }
 
-    /* Year selector */
-    .year-selector {
-      display: flex; align-items: center; gap: 8px;
-    }
+        /* ===== REPORT MODAL ===== */
+        .modal-overlay  { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:3000; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+        .modal-overlay.active { display:flex; }
+        .modal-box {
+            background:#fff; border-radius:16px; max-width:760px; width:94%;
+            max-height:90vh; overflow-y:auto; box-shadow:0 24px 64px rgba(0,0,0,.25);
+            animation:slideUp .3s ease;
+        }
+        @keyframes slideUp { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
+        .modal-head {
+            position:sticky; top:0; background:#fff; z-index:1;
+            padding:20px 24px 16px; border-bottom:1px solid #f3f4f6;
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        .modal-head h2 { margin:0; font-size:20px; font-weight:800; color:#1f2937; }
+        .modal-close  { background:none; border:none; cursor:pointer; font-size:20px; color:var(--muted); padding:4px 8px; border-radius:6px; }
+        .modal-close:hover { background:#f3f4f6; color:#0f172a; }
+        .modal-body   { padding:20px 24px 24px; }
 
-    .year-selector label {
-      font-size: 13px; font-weight: 600; color: var(--muted);
-    }
+        /* Report sections */
+        .report-section { margin-bottom:24px; }
+        .report-section-title { font-size:15px; font-weight:800; color:#1f2937; margin:0 0 12px; padding-bottom:8px; border-bottom:2px solid #ede9fe; display:flex; align-items:center; gap:8px; }
+        .report-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .report-kpi {
+            background:#f9fafb; border-radius:10px; padding:14px 16px;
+            border-left:4px solid #7c3aed;
+        }
+        .report-kpi.green { border-left-color:#10b981; }
+        .report-kpi.amber { border-left-color:#f59e0b; }
+        .report-kpi.red   { border-left-color:#ef4444; }
+        .report-kpi label { font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase; display:block; margin-bottom:4px; }
+        .report-kpi .val  { font-size:20px; font-weight:800; color:#0f172a; }
+        .report-kpi .sub  { font-size:12px; color:var(--muted); margin-top:2px; }
+        .report-kpi .chg  { font-size:13px; font-weight:800; margin-top:4px; }
+        .chg.up   { color:#059669; }
+        .chg.down { color:#dc2626; }
+        .chg.flat { color:var(--muted); }
 
-    .year-selector select {
-      padding: 8px 14px; border: 2px solid #e5e7eb;
-      border-radius: 8px; font-size: 14px; font-weight: 600;
-      font-family: Inter, sans-serif;
-      background: white; cursor: pointer; color: #0f172a;
-    }
+        .report-table { width:100%; border-collapse:collapse; font-size:13px; }
+        .report-table th { background:#f3f4f6; padding:8px 10px; text-align:left; font-weight:700; color:#374151; font-size:12px; }
+        .report-table td { padding:8px 10px; border-bottom:1px solid #f3f4f6; vertical-align:middle; }
+        .report-table tr:last-child td { border-bottom:none; }
+        .up-arrow   { color:#059669; font-weight:800; }
+        .down-arrow { color:#dc2626; font-weight:800; }
+        .neutral    { color:var(--muted); }
 
-    .year-selector select:focus {
-      outline: none; border-color: var(--accent);
-    }
+        /* Print button */
+        .btn-print { background:#f3f4f6; color:#374151; }
+        .btn-print:hover { background:#e5e7eb; }
 
-    /* Stats cards */
-    .stats-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 16px; margin-bottom: 28px;
-    }
+        @media print {
+            .sidebar, .filter-bar, .header-actions, .modal-close, .btn-print { display:none!important; }
+            .main { margin-left:0; padding:0; }
+            .modal-overlay { position:static!important; display:block!important; background:none!important; }
+            .modal-box { max-height:none; box-shadow:none; }
+        }
 
-    .stat-card {
-      background: var(--card); padding: 20px;
-      border-radius: var(--radius); box-shadow: var(--shadow);
-      display: flex; flex-direction: column; gap: 8px;
-      border-left: 4px solid transparent;
-    }
-
-    .stat-card:nth-child(1) { border-left-color: #7c3aed; }
-    .stat-card:nth-child(2) { border-left-color: #10b981; }
-    .stat-card:nth-child(3) { border-left-color: #f59e0b; }
-    .stat-card:nth-child(4) { border-left-color: #3b82f6; }
-
-    .stat-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-    .stat-value { font-size: 24px; font-weight: 700; color: #0f172a; }
-    .stat-unit { font-size: 14px; color: var(--muted); font-weight: 500; }
-
-    /* Chart cards */
-    .charts-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
-    .chart-card {
-      background: var(--card); padding: 24px;
-      border-radius: var(--radius); box-shadow: var(--shadow);
-    }
-
-    .chart-card.full-width {
-      grid-column: 1 / -1;
-    }
-
-    .chart-header {
-      display: flex; justify-content: space-between;
-      align-items: center; margin-bottom: 16px;
-    }
-
-    .chart-title {
-      font-size: 16px; font-weight: 700; color: #1f2937;
-      display: flex; align-items: center; gap: 8px;
-    }
-
-    .chart-badge {
-      font-size: 11px; font-weight: 700;
-      padding: 3px 10px; border-radius: 999px;
-    }
-
-    .badge-purple { background: #ede9fe; color: #7c3aed; }
-    .badge-green { background: #d1fae5; color: #065f46; }
-    .badge-amber { background: #fef3c7; color: #92400e; }
-    .badge-blue { background: #dbeafe; color: #1d4ed8; }
-
-    .chart-wrapper {
-      position: relative; width: 100%; height: 320px;
-    }
-
-    .chart-wrapper canvas {
-      width: 100% !important; height: 100% !important;
-    }
-
-    @media (max-width: 1100px) {
-      .charts-grid { grid-template-columns: 1fr; }
-      .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (max-width: 600px) {
-      .stats-grid { grid-template-columns: 1fr; }
-      .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
-    }
-  </style>
+        @media (max-width:1200px) { .content-wrap { grid-template-columns:1fr; } .side-panel { display:grid; grid-template-columns:1fr 1fr; } }
+        @media (max-width:900px)  { .charts-row  { grid-template-columns:1fr; } .stats-grid { grid-template-columns:repeat(2,1fr); } }
+        @media (max-width:600px)  { .stats-grid  { grid-template-columns:1fr; } .side-panel { grid-template-columns:1fr; } .report-grid2 { grid-template-columns:1fr; } }
+    </style>
 </head>
 <body>
 
-<!-- Sidebar -->
+<!-- SIDEBAR -->
 <div class="sidebar">
-  <div class="sidebar-logo">🏨 Hotel Admin</div>
-  <ul class="sidebar-menu">
-    <li><a th:href="@{/admin/dashboard}"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
-    <li><a th:href="@{/admin/users}"><i class="fa-solid fa-users"></i> Người dùng</a></li>
-    <li><a th:href="@{/admin/rooms}"><i class="fa-solid fa-door-open"></i> Phòng</a></li>
-    <li><a th:href="@{/admin/bookings}"><i class="fa-solid fa-calendar-check"></i> Booking</a></li>
-    <li><a th:href="@{/admin/revenue}" class="active"><i class="fa-solid fa-chart-line"></i> Doanh thu</a></li>
-    <li><a th:href="@{/admin/refunds}"><i class="fa-solid fa-money-bill-transfer"></i> Hoàn tiền</a></li>
-    <li><a th:href="@{/admin/roomchanges}"><i class="fa-solid fa-arrows-rotate"></i> Đổi phòng</a></li>
-    <li><a th:href="@{/admin/logout}"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
-  </ul>
+    <div class="sidebar-logo">🏨 Hotel Admin</div>
+    <ul class="sidebar-menu">
+        <li><a th:href="@{/admin/dashboard}"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+        <li><a th:href="@{/admin/users}"><i class="fa-solid fa-users"></i> Người dùng</a></li>
+        <li><a th:href="@{/admin/rooms}"><i class="fa-solid fa-door-open"></i> Phòng</a></li>
+        <li><a th:href="@{/admin/bookings}"><i class="fa-solid fa-calendar-check"></i> Booking</a></li>
+        <li><a th:href="@{/admin/revenue}" class="active"><i class="fa-solid fa-chart-line"></i> Doanh thu</a></li>
+        <li><a th:href="@{/admin/refunds}"><i class="fa-solid fa-money-bill-transfer"></i> Hoàn tiền</a></li>
+        <li><a th:href="@{/admin/roomchanges}"><i class="fa-solid fa-arrows-rotate"></i> Đổi phòng</a></li>
+        <li><a th:href="@{/admin/logout}"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
+    </ul>
 </div>
 
-<!-- Main -->
+<!-- MAIN -->
 <div class="main">
 
-  <!-- Header + Year selector -->
-  <div class="page-header">
-    <div>
-      <div class="page-title">📊 Thống kê doanh thu</div>
-      <div class="page-subtitle">Biểu đồ doanh thu theo ngày, tháng, quý và năm</div>
-    </div>
-    <div class="year-selector">
-      <label for="yearSelect">📅 Năm:</label>
-      <select id="yearSelect" onchange="changeYear(this.value)">
-        <option th:each="y : ${#numbers.sequence(currentYear - 4, currentYear)}"
-                th:value="${y}" th:text="${y}"
-                th:selected="${y == selectedYear}">
-        </option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Stats overview -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-label">💰 Tổng doanh thu</div>
-      <div class="stat-value" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">0</div>
-      <div class="stat-unit">VND</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">📅 Doanh thu tháng này</div>
-      <div class="stat-value" th:text="${#numbers.formatDecimal(currentMonthRevenue, 0, 'COMMA', 0, 'POINT')}">0</div>
-      <div class="stat-unit">VND</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">🌅 Doanh thu hôm nay</div>
-      <div class="stat-value" th:text="${#numbers.formatDecimal(todayRevenue, 0, 'COMMA', 0, 'POINT')}">0</div>
-      <div class="stat-unit">VND</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">✅ Booking đã xác nhận</div>
-      <div class="stat-value" th:text="${totalConfirmedBookings}">0</div>
-      <div class="stat-unit">đơn</div>
-    </div>
-  </div>
-
-  <!-- Charts -->
-  <div class="charts-grid">
-
-    <!-- 1. DAILY REVENUE — Biểu đồ đường, full width -->
-    <div class="chart-card full-width">
-      <div class="chart-header">
-        <div class="chart-title">
-          <i class="fa-solid fa-calendar-day" style="color:#7c3aed;"></i>
-          Doanh thu theo ngày (30 ngày gần nhất)
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div>
+            <div class="page-title">📊 Thống kê doanh thu</div>
+            <div class="page-sub">Chọn khoảng thời gian và xem báo cáo so sánh cùng kỳ</div>
         </div>
-        <span class="chart-badge badge-purple">Line Chart</span>
-      </div>
-      <div class="chart-wrapper">
-        <canvas id="dailyChart"></canvas>
-      </div>
-    </div>
-
-    <!-- 2. MONTHLY REVENUE — Biểu đồ cột -->
-    <div class="chart-card">
-      <div class="chart-header">
-        <div class="chart-title">
-          <i class="fa-solid fa-calendar-days" style="color:#10b981;"></i>
-          Doanh thu theo tháng
+        <div class="header-actions">
+            <label style="font-size:13px;font-weight:600;color:var(--muted);">📅 Năm:</label>
+            <select class="year-select" onchange="changeYear(this.value)">
+                <option th:each="y : ${#numbers.sequence(currentYear - 4, currentYear)}"
+                        th:value="${y}" th:text="${y}" th:selected="${y == selectedYear}"></option>
+            </select>
+            <button class="btn btn-report" onclick="openReportModal()">
+                <i class="fa-solid fa-file-chart-column"></i> Báo cáo so sánh
+            </button>
         </div>
-        <span class="chart-badge badge-green">Bar Chart</span>
-      </div>
-      <div class="chart-wrapper">
-        <canvas id="monthlyChart"></canvas>
-      </div>
     </div>
 
-    <!-- 3. QUARTERLY REVENUE — Biểu đồ tròn (Doughnut) -->
-    <div class="chart-card">
-      <div class="chart-header">
-        <div class="chart-title">
-          <i class="fa-solid fa-chart-pie" style="color:#f59e0b;"></i>
-          Doanh thu theo quý
+    <!-- DATE RANGE FILTER -->
+    <form class="filter-bar" method="get" th:action="@{/admin/revenue}" id="filterForm">
+        <input type="hidden" name="year" th:value="${selectedYear}"/>
+        <i class="fa-solid fa-calendar-range" style="color:var(--accent);"></i>
+        <label>Từ ngày:</label>
+        <input type="date" name="from" id="dateFrom" th:value="${dateFrom}" required/>
+        <label>Đến ngày:</label>
+        <input type="date" name="to"   id="dateTo"   th:value="${dateTo}"   required/>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-magnifying-glass"></i> Xem thống kê
+        </button>
+        <button type="button" class="btn btn-year" onclick="setQuickRange(7)">7 ngày</button>
+        <button type="button" class="btn btn-year" onclick="setQuickRange(30)">30 ngày</button>
+        <button type="button" class="btn btn-year" onclick="setQuickRange(90)">90 ngày</button>
+    </form>
+
+    <!-- STATS OVERVIEW (4 cards) -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">💰 Tổng doanh thu</div>
+            <div class="stat-value" th:text="${#numbers.formatDecimal(totalRevenue,0,'COMMA',0,'POINT')}">0</div>
+            <div class="stat-unit">VND</div>
         </div>
-        <span class="chart-badge badge-amber">Doughnut</span>
-      </div>
-      <div class="chart-wrapper">
-        <canvas id="quarterlyChart"></canvas>
-      </div>
-    </div>
-
-    <!-- 4. YEARLY REVENUE �� Biểu đồ cột ngang -->
-    <div class="chart-card full-width">
-      <div class="chart-header">
-        <div class="chart-title">
-          <i class="fa-solid fa-chart-bar" style="color:#3b82f6;"></i>
-          Doanh thu theo năm (5 năm gần nhất)
+        <div class="stat-card">
+            <div class="stat-label">📅 Tháng này</div>
+            <div class="stat-value" th:text="${#numbers.formatDecimal(currentMonthRevenue,0,'COMMA',0,'POINT')}">0</div>
+            <div class="stat-unit">VND</div>
         </div>
-        <span class="chart-badge badge-blue">Horizontal Bar</span>
-      </div>
-      <div class="chart-wrapper">
-        <canvas id="yearlyChart"></canvas>
-      </div>
+        <div class="stat-card">
+            <div class="stat-label">🌅 Hôm nay</div>
+            <div class="stat-value" th:text="${#numbers.formatDecimal(todayRevenue,0,'COMMA',0,'POINT')}">0</div>
+            <div class="stat-unit">VND</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">✅ Booking xác nhận</div>
+            <div class="stat-value" th:text="${totalConfirmedBookings}">0</div>
+            <div class="stat-unit">đơn</div>
+        </div>
     </div>
 
-  </div>
+    <!-- CONTENT: charts + side panel -->
+    <div class="content-wrap">
+
+        <!-- CHARTS AREA -->
+        <div class="charts-area">
+
+            <!-- Biểu đồ khoảng ngày (thay thế 30 ngày cứng) -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fa-solid fa-calendar-day" style="color:var(--accent);"></i>
+                        Doanh thu từ
+                        <span th:text="${#temporals.format(dateFrom,'dd/MM/yyyy')}"></span>
+                        đến
+                        <span th:text="${#temporals.format(dateTo,'dd/MM/yyyy')}"></span>
+                    </div>
+                    <span class="chart-badge badge-purple">Line Chart</span>
+                </div>
+                <div class="chart-wrap"><canvas id="rangeChart"></canvas></div>
+            </div>
+
+            <!-- Monthly + Quarterly side by side -->
+            <div class="charts-row">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title"><i class="fa-solid fa-calendar-days" style="color:var(--green);"></i> Theo tháng (<span th:text="${selectedYear}"></span>)</div>
+                        <span class="chart-badge badge-green">Bar</span>
+                    </div>
+                    <div class="chart-wrap"><canvas id="monthlyChart"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title"><i class="fa-solid fa-chart-pie" style="color:var(--amber);"></i> Theo quý (<span th:text="${selectedYear}"></span>)</div>
+                        <span class="chart-badge badge-amber">Doughnut</span>
+                    </div>
+                    <div class="chart-wrap"><canvas id="quarterlyChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- Yearly -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title"><i class="fa-solid fa-chart-bar" style="color:var(--blue);"></i> Doanh thu theo năm (5 năm gần nhất)</div>
+                    <span class="chart-badge badge-blue">Horizontal Bar</span>
+                </div>
+                <div class="chart-wrap" style="height:200px;"><canvas id="yearlyChart"></canvas></div>
+            </div>
+
+        </div><!-- /charts-area -->
+
+        <!-- SIDE PANEL -->
+        <div class="side-panel">
+
+            <!-- Date range summary card -->
+            <div class="panel-card">
+                <div class="panel-title"><i class="fa-solid fa-calendar-range" style="color:var(--accent);"></i> Khoảng thời gian đã chọn</div>
+                <div class="range-summary">
+                    <div class="range-total" th:text="${#numbers.formatDecimal(dateRangeRevenue,0,'COMMA',0,'POINT')} + ' VND'">0 VND</div>
+                    <div class="range-label">Tổng doanh thu</div>
+                    <div class="range-meta">
+                        📋 <span th:text="${dateRangeBookingCount}">0</span> booking &nbsp;|&nbsp;
+                        📅 <span th:text="${#temporals.format(dateFrom,'dd/MM')}"></span> → <span th:text="${#temporals.format(dateTo,'dd/MM/yyyy')}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Most booked rooms -->
+            <div class="panel-card">
+                <div class="panel-title"><i class="fa-solid fa-trophy" style="color:#f59e0b;"></i> Phòng đặt nhiều nhất</div>
+                <div th:each="entry,stat : ${mostBookedRooms}" class="room-rank-item">
+                    <div class="room-rank-left">
+                        <div class="rank-num"
+                             th:classappend="${stat.index==0 ? 'top1' : (stat.index==1 ? 'top2' : (stat.index==2 ? 'top3' : ''))}"
+                             th:text="${stat.index+1}"></div>
+                        <div>
+                            <div class="room-name" th:text="'Phòng ' + ${entry.key}"></div>
+                            <div class="room-count" th:text="${entry.value} + ' lần đặt'"></div>
+                        </div>
+                    </div>
+                    <span class="count-badge" th:text="${entry.value}"></span>
+                </div>
+                <div th:if="${mostBookedRooms == null or #maps.size(mostBookedRooms) == 0}"
+                     style="text-align:center;color:var(--muted);font-size:13px;padding:12px 0;">Chưa có dữ liệu</div>
+            </div>
+
+            <!-- Least booked rooms -->
+            <div class="panel-card">
+                <div class="panel-title"><i class="fa-solid fa-arrow-trend-down" style="color:#ef4444;"></i> Phòng đặt ít nhất</div>
+                <div th:each="entry : ${leastBookedRooms}" class="room-rank-item">
+                    <div class="room-rank-left">
+                        <div class="rank-num" style="background:#fee2e2;color:#991b1b;">⚠</div>
+                        <div>
+                            <div class="room-name" th:text="'Phòng ' + ${entry.key}"></div>
+                            <div class="room-count" th:text="${entry.value} + ' lần đặt'"></div>
+                        </div>
+                    </div>
+                    <span class="count-badge low" th:text="${entry.value}"></span>
+                </div>
+                <div th:if="${leastBookedRooms == null or #maps.size(leastBookedRooms) == 0}"
+                     style="text-align:center;color:var(--muted);font-size:13px;padding:12px 0;">Chưa có dữ liệu</div>
+            </div>
+
+            <!-- YoY quick preview (monthly) -->
+            <div class="panel-card">
+                <div class="panel-title"><i class="fa-solid fa-chart-line" style="color:#0ea5e9;"></i> So sánh cùng kỳ (theo quý)</div>
+                <div th:each="entry,stat : ${yoyQuarterly.labels}" class="yoy-row"
+                     th:with="curr=${yoyQuarterly.currentValues[stat.index]}, prev=${yoyQuarterly.prevValues[stat.index]}">
+                    <span class="yoy-quarter" th:text="${entry}">Q1</span>
+                    <span class="yoy-curr" th:text="${#numbers.formatDecimal(curr,0,'COMMA',0,'POINT')}"></span>
+                    <span class="yoy-pct"
+                          th:with="pct=(${prev} > 0 ? (${curr} - ${prev}) * 100.0 / ${prev} : 0)"
+                          th:classappend="${pct > 0 ? 'pct-up' : (pct < 0 ? 'pct-down' : 'pct-flat')}"
+                          th:text="${pct > 0 ? '+' : ''} + ${#numbers.formatDecimal(pct,0,'COMMA',1,'POINT')} + '%'">
+          </span>
+                </div>
+            </div>
+
+        </div><!-- /side-panel -->
+    </div><!-- /content-wrap -->
+
+</div><!-- /main -->
+
+<!-- ===== REPORT MODAL ===== -->
+<div id="reportModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h2>📋 Báo cáo so sánh cùng kỳ — <span th:text="${selectedYear}"></span></h2>
+            <div style="display:flex;gap:8px;">
+                <button class="btn btn-print" onclick="window.print()"><i class="fa-solid fa-print"></i> In</button>
+                <button class="modal-close" onclick="closeReportModal()">✕</button>
+            </div>
+        </div>
+        <div class="modal-body">
+
+            <!-- KPI tổng quan -->
+            <div class="report-section">
+                <div class="report-section-title"><i class="fa-solid fa-gauge" style="color:var(--accent);"></i> Tổng quan năm <span th:text="${selectedYear}"></span> vs <span th:text="${selectedYear - 1}"></span></div>
+                <div class="report-grid2">
+                    <div class="report-kpi">
+                        <label>Tổng DT <span th:text="${selectedYear}"></span></label>
+                        <div class="val" th:text="${#numbers.formatDecimal(yoyMonthly.totalCurrent,0,'COMMA',0,'POINT')} + ' VND'"></div>
+                        <div class="sub">Năm hiện tại</div>
+                        <div class="chg"
+                             th:classappend="${yoyMonthly.changePct > 0 ? 'up' : (yoyMonthly.changePct < 0 ? 'down' : 'flat')}"
+                             th:text="${yoyMonthly.changePct > 0 ? '▲ +' : (yoyMonthly.changePct < 0 ? '▼ ' : '→ ')}
+                           + ${#numbers.formatDecimal(yoyMonthly.changePct,0,'COMMA',1,'POINT')} + '% so với ' + ${selectedYear - 1}">
+                        </div>
+                    </div>
+                    <div class="report-kpi green">
+                        <label>Tổng DT <span th:text="${selectedYear - 1}"></span></label>
+                        <div class="val" th:text="${#numbers.formatDecimal(yoyMonthly.totalPrev,0,'COMMA',0,'POINT')} + ' VND'"></div>
+                        <div class="sub">Cùng kỳ năm trước</div>
+                        <div class="chg flat">— Cơ sở so sánh</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bảng so sánh theo tháng -->
+            <div class="report-section">
+                <div class="report-section-title"><i class="fa-solid fa-calendar-days" style="color:var(--green);"></i> So sánh doanh thu theo từng tháng</div>
+                <table class="report-table">
+                    <thead>
+                    <tr>
+                        <th>Tháng</th>
+                        <th>Năm <span th:text="${selectedYear}"></span></th>
+                        <th>Năm <span th:text="${selectedYear - 1}"></span></th>
+                        <th>Chênh lệch</th>
+                        <th>% Thay đổi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="label,stat : ${yoyMonthly.labels}"
+                        th:with="curr=${yoyMonthly.currentValues[stat.index]},prev=${yoyMonthly.prevValues[stat.index]},diff=${curr}-${prev}">
+                        <td style="font-weight:700;" th:text="${label}">T1</td>
+                        <td th:text="${#numbers.formatDecimal(curr,0,'COMMA',0,'POINT')} + ' VND'"></td>
+                        <td th:text="${#numbers.formatDecimal(prev,0,'COMMA',0,'POINT')} + ' VND'" style="color:var(--muted);"></td>
+                        <td>
+                <span th:if="${curr > prev}" class="up-arrow"
+                      th:text="'▲ +' + ${#numbers.formatDecimal(curr - prev,0,'COMMA',0,'POINT')} + ' VND'"></span>
+                            <span th:if="${curr < prev}" class="down-arrow"
+                                  th:text="'▼ ' + ${#numbers.formatDecimal(prev - curr,0,'COMMA',0,'POINT')} + ' VND'"></span>
+                            <span th:if="${curr == prev}" class="neutral">→ Không đổi</span>
+                        </td>
+                        <td>
+                <span th:if="${prev > 0}"
+                      th:with="pct=(${curr} - ${prev}) * 100.0 / ${prev}"
+                      th:classappend="${pct > 0 ? 'up-arrow' : (pct < 0 ? 'down-arrow' : 'neutral')}"
+                      th:text="${pct > 0 ? '+' : ''} + ${#numbers.formatDecimal(pct,0,'COMMA',1,'POINT')} + '%'">
+                </span>
+                            <span th:if="${prev == 0}" class="neutral">N/A</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Bảng so sánh theo quý -->
+            <div class="report-section">
+                <div class="report-section-title"><i class="fa-solid fa-chart-pie" style="color:var(--amber);"></i> So sánh doanh thu theo từng quý</div>
+                <table class="report-table">
+                    <thead>
+                    <tr>
+                        <th>Quý</th>
+                        <th>Năm <span th:text="${selectedYear}"></span></th>
+                        <th>Năm <span th:text="${selectedYear - 1}"></span></th>
+                        <th>Chênh lệch</th>
+                        <th>% Thay đổi</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="label,stat : ${yoyQuarterly.labels}"
+                        th:with="curr=${yoyQuarterly.currentValues[stat.index]},prev=${yoyQuarterly.prevValues[stat.index]}">
+                        <td style="font-weight:700;" th:text="${label}"></td>
+                        <td th:text="${#numbers.formatDecimal(curr,0,'COMMA',0,'POINT')} + ' VND'"></td>
+                        <td th:text="${#numbers.formatDecimal(prev,0,'COMMA',0,'POINT')} + ' VND'" style="color:var(--muted);"></td>
+                        <td>
+                <span th:if="${curr > prev}" class="up-arrow"
+                      th:text="'▲ +' + ${#numbers.formatDecimal(curr - prev,0,'COMMA',0,'POINT')} + ' VND'"></span>
+                            <span th:if="${curr < prev}" class="down-arrow"
+                                  th:text="'▼ ' + ${#numbers.formatDecimal(prev - curr,0,'COMMA',0,'POINT')} + ' VND'"></span>
+                            <span th:if="${curr == prev}" class="neutral">→ Không đổi</span>
+                        </td>
+                        <td>
+                <span th:if="${prev > 0}"
+                      th:with="pct=(${curr} - ${prev}) * 100.0 / ${prev}"
+                      th:classappend="${pct > 0 ? 'up-arrow' : (pct < 0 ? 'down-arrow' : 'neutral')}"
+                      th:text="${pct > 0 ? '+' : ''} + ${#numbers.formatDecimal(pct,0,'COMMA',1,'POINT')} + '%'">
+                </span>
+                            <span th:if="${prev == 0}" class="neutral">N/A</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Room ranking summary in report -->
+            <div class="report-section">
+                <div class="report-section-title"><i class="fa-solid fa-door-open" style="color:var(--blue);"></i> Hiệu suất phòng (tất cả thời gian)</div>
+                <div class="report-grid2">
+                    <div>
+                        <div style="font-size:13px;font-weight:700;color:#059669;margin-bottom:8px;">🏆 Top 5 phòng đặt nhiều nhất</div>
+                        <table class="report-table">
+                            <thead><tr><th>Hạng</th><th>Phòng</th><th>Số lần đặt</th></tr></thead>
+                            <tbody>
+                            <tr th:each="entry,stat : ${mostBookedRooms}">
+                                <td th:text="${stat.index + 1}"></td>
+                                <td style="font-weight:700;" th:text="'Phòng ' + ${entry.key}"></td>
+                                <td><span class="count-badge" th:text="${entry.value}"></span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <div style="font-size:13px;font-weight:700;color:#dc2626;margin-bottom:8px;">⚠️ Top 5 phòng đặt ít nhất</div>
+                        <table class="report-table">
+                            <thead><tr><th>Hạng</th><th>Phòng</th><th>Số lần đặt</th></tr></thead>
+                            <tbody>
+                            <tr th:each="entry,stat : ${leastBookedRooms}">
+                                <td th:text="${stat.index + 1}"></td>
+                                <td style="font-weight:700;" th:text="'Phòng ' + ${entry.key}"></td>
+                                <td><span class="count-badge low" th:text="${entry.value}"></span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /modal-body -->
+    </div>
 </div>
 
+<!-- SCRIPTS -->
 <script th:inline="javascript">
-  // ===== DATA TỪ SERVER =====
-  const dailyLabels = /*[[${dailyLabels}]]*/ [];
-  const dailyValues = /*[[${dailyValues}]]*/ [];
+    const fmt = v => new Intl.NumberFormat('vi-VN').format(v);
+    const tickFmt = v => { if(v>=1e6) return (v/1e6).toFixed(1)+'M'; if(v>=1e3) return (v/1e3).toFixed(0)+'K'; return v; };
 
-  const monthlyLabels = /*[[${monthlyLabels}]]*/ [];
-  const monthlyValues = /*[[${monthlyValues}]]*/ [];
+    // Data from server
+    const rangeLabels    = /*[[${dateRangeLabels}]]*/ [];
+    const rangeValues    = /*[[${dateRangeValues}]]*/ [];
+    const monthlyLabels  = /*[[${monthlyLabels}]]*/ [];
+    const monthlyValues  = /*[[${monthlyValues}]]*/ [];
+    const quarterlyLabels= /*[[${quarterlyLabels}]]*/ [];
+    const quarterlyValues= /*[[${quarterlyValues}]]*/ [];
+    const yearlyLabels   = /*[[${yearlyLabels}]]*/ [];
+    const yearlyValues   = /*[[${yearlyValues}]]*/ [];
 
-  const quarterlyLabels = /*[[${quarterlyLabels}]]*/ [];
-  const quarterlyValues = /*[[${quarterlyValues}]]*/ [];
+    Chart.defaults.font.family = 'Inter,system-ui,sans-serif';
+    Chart.defaults.font.size   = 12;
 
-  const yearlyLabels = /*[[${yearlyLabels}]]*/ [];
-  const yearlyValues = /*[[${yearlyValues}]]*/ [];
-
-  // ===== CHART DEFAULTS =====
-  Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
-  Chart.defaults.font.size = 12;
-  Chart.defaults.plugins.tooltip.callbacks.label = function(context) {
-    return context.dataset.label + ': ' +
-            new Intl.NumberFormat('vi-VN').format(context.parsed.y || context.parsed) + ' VND';
-  };
-
-  // ===== 1. DAILY CHART — Line =====
-  new Chart(document.getElementById('dailyChart'), {
-    type: 'line',
-    data: {
-      labels: dailyLabels,
-      datasets: [{
-        label: 'Doanh thu',
-        data: dailyValues,
-        borderColor: '#7c3aed',
-        backgroundColor: 'rgba(124, 58, 237, 0.08)',
-        borderWidth: 2.5,
-        pointBackgroundColor: '#7c3aed',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2,
-        pointRadius: 3,
-        pointHoverRadius: 6,
-        tension: 0.35,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1e1b4b',
-          titleColor: '#e2e8f0',
-          bodyColor: '#fff',
-          padding: 12,
-          cornerRadius: 8,
-          callbacks: {
-            label: function(ctx) {
-              return '💰 ' + new Intl.NumberFormat('vi-VN').format(ctx.parsed.y) + ' VND';
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: { maxRotation: 45, font: { size: 11 } }
+    // 1. DATE RANGE LINE CHART
+    new Chart(document.getElementById('rangeChart'), {
+        type: 'line',
+        data: {
+            labels: rangeLabels,
+            datasets: [{
+                label: 'Doanh thu', data: rangeValues,
+                borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.07)',
+                borderWidth: 2.5, tension: 0.35, fill: true,
+                pointBackgroundColor: '#7c3aed', pointBorderColor: '#fff',
+                pointBorderWidth: 2, pointRadius: 3, pointHoverRadius: 6
+            }]
         },
-        y: {
-          beginAtZero: true,
-          grid: { color: '#f3f4f6' },
-          ticks: {
-            callback: function(v) {
-              if (v >= 1000000) return (v / 1000000).toFixed(1) + 'M';
-              if (v >= 1000) return (v / 1000).toFixed(0) + 'K';
-              return v;
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor:'#1e1b4b', padding:12, cornerRadius:8,
+                    callbacks: { label: ctx => '💰 ' + fmt(ctx.parsed.y) + ' VND' }
+                }
+            },
+            scales: {
+                x: { grid:{ display:false }, ticks:{ maxRotation:45, font:{size:11} } },
+                y: { beginAtZero:true, grid:{color:'#f3f4f6'}, ticks:{ callback:tickFmt } }
             }
-          }
         }
-      }
-    }
-  });
+    });
 
-  // ===== 2. MONTHLY CHART — Bar =====
-  new Chart(document.getElementById('monthlyChart'), {
-    type: 'bar',
-    data: {
-      labels: monthlyLabels,
-      datasets: [{
-        label: 'Doanh thu',
-        data: monthlyValues,
-        backgroundColor: [
-          '#10b981', '#34d399', '#6ee7b7', '#a7f3d0',
-          '#10b981', '#34d399', '#6ee7b7', '#a7f3d0',
-          '#10b981', '#34d399', '#6ee7b7', '#a7f3d0'
-        ],
-        borderColor: '#059669',
-        borderWidth: 1,
-        borderRadius: 6,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#064e3b',
-          padding: 12, cornerRadius: 8,
-          callbacks: {
-            label: function(ctx) {
-              return '💰 ' + new Intl.NumberFormat('vi-VN').format(ctx.parsed.y) + ' VND';
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: { font: { size: 11 } }
+    // 2. MONTHLY BAR
+    new Chart(document.getElementById('monthlyChart'), {
+        type: 'bar',
+        data: {
+            labels: monthlyLabels,
+            datasets: [{
+                label: 'Doanh thu', data: monthlyValues, borderRadius: 6, borderSkipped: false,
+                backgroundColor: monthlyValues.map((_,i) => `hsl(${150+i*8},60%,${45+i*2}%)`)
+            }]
         },
-        y: {
-          beginAtZero: true,
-          grid: { color: '#f3f4f6' },
-          ticks: {
-            callback: function(v) {
-              if (v >= 1000000) return (v / 1000000).toFixed(1) + 'M';
-              if (v >= 1000) return (v / 1000).toFixed(0) + 'K';
-              return v;
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend:{display:false}, tooltip:{ backgroundColor:'#064e3b', padding:10, cornerRadius:8,
+                    callbacks:{ label: ctx=>'💰 '+fmt(ctx.parsed.y)+' VND' }
+                }},
+            scales: {
+                x: { grid:{display:false}, ticks:{font:{size:10}} },
+                y: { beginAtZero:true, grid:{color:'#f3f4f6'}, ticks:{callback:tickFmt} }
             }
-          }
         }
-      }
-    }
-  });
+    });
 
-  // ===== 3. QUARTERLY CHART — Doughnut =====
-  new Chart(document.getElementById('quarterlyChart'), {
-    type: 'doughnut',
-    data: {
-      labels: quarterlyLabels,
-      datasets: [{
-        data: quarterlyValues,
-        backgroundColor: ['#7c3aed', '#f59e0b', '#10b981', '#3b82f6'],
-        borderColor: '#fff',
-        borderWidth: 3,
-        hoverBorderWidth: 0,
-        hoverOffset: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '55%',
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: {
-            padding: 16, usePointStyle: true, pointStyle: 'circle',
-            font: { size: 12, weight: '600' }
-          }
+    // 3. QUARTERLY DOUGHNUT
+    new Chart(document.getElementById('quarterlyChart'), {
+        type: 'doughnut',
+        data: {
+            labels: quarterlyLabels,
+            datasets: [{ data: quarterlyValues,
+                backgroundColor:['#7c3aed','#f59e0b','#10b981','#3b82f6'],
+                borderColor:'#fff', borderWidth:3, hoverOffset:8
+            }]
         },
-        tooltip: {
-          backgroundColor: '#1e1b4b',
-          padding: 12, cornerRadius: 8,
-          callbacks: {
-            label: function(ctx) {
-              const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-              const pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
-              return ctx.label + ': ' +
-                      new Intl.NumberFormat('vi-VN').format(ctx.parsed) + ' VND (' + pct + '%)';
+        options: {
+            responsive: true, maintainAspectRatio: false, cutout:'55%',
+            plugins: {
+                legend: { position:'bottom', labels:{ padding:14, usePointStyle:true, pointStyle:'circle', font:{size:11,weight:'600'} } },
+                tooltip: { backgroundColor:'#1e1b4b', padding:10, cornerRadius:8,
+                    callbacks: { label: ctx => {
+                            const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+                            const pct = total>0 ? ((ctx.parsed/total)*100).toFixed(1) : 0;
+                            return ctx.label+': '+fmt(ctx.parsed)+' VND ('+pct+'%)';
+                        }}
+                }
             }
-          }
         }
-      }
-    }
-  });
+    });
 
-  // ===== 4. YEARLY CHART — Horizontal Bar =====
-  new Chart(document.getElementById('yearlyChart'), {
-    type: 'bar',
-    data: {
-      labels: yearlyLabels,
-      datasets: [{
-        label: 'Doanh thu',
-        data: yearlyValues,
-        backgroundColor: ['#93c5fd', '#60a5fa', '#3b82f6', '#2563eb', '#1d4ed8'],
-        borderColor: '#1e40af',
-        borderWidth: 1,
-        borderRadius: 6,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1e3a5f',
-          padding: 12, cornerRadius: 8,
-          callbacks: {
-            label: function(ctx) {
-              return '💰 ' + new Intl.NumberFormat('vi-VN').format(ctx.parsed.x) + ' VND';
-            }
-          }
-        }
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          grid: { color: '#f3f4f6' },
-          ticks: {
-            callback: function(v) {
-              if (v >= 1000000) return (v / 1000000).toFixed(1) + 'M';
-              if (v >= 1000) return (v / 1000).toFixed(0) + 'K';
-              return v;
-            }
-          }
+    // 4. YEARLY HORIZONTAL BAR
+    new Chart(document.getElementById('yearlyChart'), {
+        type: 'bar',
+        data: {
+            labels: yearlyLabels,
+            datasets: [{
+                label: 'Doanh thu', data: yearlyValues, borderRadius: 6, borderSkipped: false,
+                backgroundColor:['#93c5fd','#60a5fa','#3b82f6','#2563eb','#1d4ed8']
+            }]
         },
-        y: {
-          grid: { display: false },
-          ticks: { font: { size: 13, weight: '700' } }
+        options: {
+            indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+            plugins: { legend:{display:false}, tooltip:{ backgroundColor:'#1e3a5f', padding:10, cornerRadius:8,
+                    callbacks:{ label: ctx=>'💰 '+fmt(ctx.parsed.x)+' VND' }
+                }},
+            scales: {
+                x: { beginAtZero:true, grid:{color:'#f3f4f6'}, ticks:{callback:tickFmt} },
+                y: { grid:{display:false}, ticks:{font:{size:13,weight:'700'}} }
+            }
         }
-      }
-    }
-  });
+    });
 
-  // ===== YEAR SELECTOR =====
-  function changeYear(year) {
-    window.location.href = '/admin/revenue?year=' + year;
-  }
+    // Year selector
+    function changeYear(year) {
+        const f = document.getElementById('dateFrom').value;
+        const t = document.getElementById('dateTo').value;
+        window.location.href = '/admin/revenue?year='+year+'&from='+f+'&to='+t;
+    }
+
+    // Quick date range shortcuts
+    function setQuickRange(days) {
+        const to   = new Date();
+        const from = new Date(); from.setDate(from.getDate() - (days - 1));
+        const pad  = n => String(n).padStart(2,'0');
+        const fmt2 = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+        document.getElementById('dateFrom').value = fmt2(from);
+        document.getElementById('dateTo').value   = fmt2(to);
+        document.getElementById('filterForm').submit();
+    }
+
+    // Report modal
+    function openReportModal()  { document.getElementById('reportModal').classList.add('active'); document.body.style.overflow='hidden'; }
+    function closeReportModal() { document.getElementById('reportModal').classList.remove('active'); document.body.style.overflow='auto'; }
+
+    document.getElementById('reportModal').addEventListener('click', function(e) {
+        if (e.target === this) closeReportModal();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key==='Escape' && document.getElementById('reportModal').classList.contains('active')) closeReportModal();
+    });
 </script>
+
 </body>
 </html>
