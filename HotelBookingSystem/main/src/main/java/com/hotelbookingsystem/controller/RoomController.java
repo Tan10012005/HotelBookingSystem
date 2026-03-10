@@ -29,13 +29,13 @@ public class RoomController {
         List<RoomType> roomTypes = roomTypeRepo.findAll();
         model.addAttribute("rooms", rooms);
         model.addAttribute("roomTypes", roomTypes);
-        return "roomList"; // ✅ KHỚP FILE
+        return "roomList";
     }
 
     @GetMapping("/{id}")
     public String selectRoom(@PathVariable Long id, Model model) {
         Room room = roomService.getRoomById(id);
         model.addAttribute("room", room);
-        return "bookingForm"; // ✅ KHỚP FILE
+        return "bookingForm";
     }
 }
