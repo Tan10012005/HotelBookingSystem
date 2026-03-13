@@ -148,7 +148,3 @@ mvn spring-boot:run
 - Truy cập bằng tài khoản vai trò ADMIN để quản lý phòng, booking, người dùng.
 
 ---
-
-## 📄 License
-
-Dự án mở nguồn phục vụ học tập và demo. Vui lòng ghi rõ nguồn khi sử dụng lại.
